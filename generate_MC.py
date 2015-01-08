@@ -7,6 +7,7 @@ import numpy as np
 from cogent_utilities import *
 from cogent_pdfs import surface_events,flat_events
 import lichen.pdfs as pdfs
+import lichen.lichen as lch
 
 import parameters
 
@@ -245,13 +246,13 @@ print results
 etot = np.array([])
 dtot = np.array([])
 rtot = np.array([])
-#energies,days,rise_times = gen_surface_events(4482,1238,'MC_files/mc_test_surface.dat',results)
-energies,days,rise_times = gen_surface_events(4,1238,'MC_files/mc_test_surface.dat',results)
+energies,days,rise_times = gen_surface_events(4482,1238,'MC_files/mc_test_surface.dat',results)
+#energies,days,rise_times = gen_surface_events(4,1238,'MC_files/mc_test_surface.dat',results)
 etot = np.append(etot,energies)
 dtot = np.append(dtot,days)
 rtot = np.append(rtot,rise_times)
-#energies,days,rise_times = gen_flat_events(3140,1238,'MC_files/mc_test_flat.dat',results)
-energies,days,rise_times = gen_flat_events(3,1238,'MC_files/mc_test_flat.dat',results)
+energies,days,rise_times = gen_flat_events(3140,1238,'MC_files/mc_test_flat.dat',results)
+#energies,days,rise_times = gen_flat_events(3,1238,'MC_files/mc_test_flat.dat',results)
 etot = np.append(etot,energies)
 dtot = np.append(dtot,days)
 rtot = np.append(rtot,rise_times)
@@ -274,11 +275,18 @@ h = plt.hist(rise_times,bins=nbins)
 nbins = 50
 plt.figure(figsize=(12,4))
 plt.subplot(1,3,1)
-h = plt.hist(etot,bins=nbins)
+h = lch.hist_err(etot,bins=nbins)
+plt.xlabel('Energy (keVee)')
+
 plt.subplot(1,3,2)
-h = plt.hist(dtot,bins=nbins)
+h = lch.hist_err(dtot,bins=nbins)
+plt.xlabel('Time (days)')
+
 plt.subplot(1,3,3)
-h = plt.hist(rtot,bins=nbins)
+h = lch.hist_err(rtot,bins=nbins)
+plt.xlabel('Rise time ($\mu$s)')
+
+plt.tight_layout()
 
 
 plt.show()
