@@ -9,6 +9,8 @@ from cogent_pdfs import surface_events,flat_events
 import lichen.pdfs as pdfs
 import lichen.lichen as lch
 
+import datetime
+
 import parameters
 
 import sys
@@ -243,20 +245,39 @@ results = eval(results_file.readline())
 print results
 #exit()
 
+print "Generating data!!!!!"
+print datetime.datetime.now()
+
+tag = "bulk_samples"
+
 etot = np.array([])
 dtot = np.array([])
 rtot = np.array([])
-energies,days,rise_times = gen_surface_events(4482,1238,'MC_files/mc_test_surface.dat',results)
+print "Generating surface......"
+print datetime.datetime.now()
+name = "MC_files/mc_surface_%s" % (tag)
+energies,days,rise_times = gen_surface_events(100000,1238,name,results)
+#energies,days,rise_times = gen_surface_events(4482,1238,name,results)
 #energies,days,rise_times = gen_surface_events(4,1238,'MC_files/mc_test_surface.dat',results)
+
 etot = np.append(etot,energies)
 dtot = np.append(dtot,days)
 rtot = np.append(rtot,rise_times)
-energies,days,rise_times = gen_flat_events(3140,1238,'MC_files/mc_test_flat.dat',results)
+print "Generating flat......"
+print datetime.datetime.now()
+name = "MC_files/mc_flat_%s" % (tag)
+energies,days,rise_times = gen_flat_events(100000,1238,name,results)
+#energies,days,rise_times = gen_flat_events(3140,1238,name,results)
 #energies,days,rise_times = gen_flat_events(3,1238,'MC_files/mc_test_flat.dat',results)
+
 etot = np.append(etot,energies)
 dtot = np.append(dtot,days)
 rtot = np.append(rtot,rise_times)
-energies,days,rise_times = gen_cosmogenic_events(900,1238,'MC_files/mc_test_lshell.dat',results)
+print "Generating l-shell......"
+print datetime.datetime.now()
+name = "MC_files/mc_lshell_%s" % (tag)
+energies,days,rise_times = gen_cosmogenic_events(100000,1238,name,results)
+#energies,days,rise_times = gen_cosmogenic_events(900,1238,name,results)
 etot = np.append(etot,energies)
 dtot = np.append(dtot,days)
 rtot = np.append(rtot,rise_times)
@@ -289,4 +310,4 @@ plt.xlabel('Rise time ($\mu$s)')
 plt.tight_layout()
 
 
-plt.show()
+#plt.show()
