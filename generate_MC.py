@@ -248,7 +248,7 @@ print results
 print "Generating data!!!!!"
 print datetime.datetime.now()
 
-tag = "bulk_samples"
+tag = "bulk_samples_1M"
 
 etot = np.array([])
 dtot = np.array([])
@@ -256,7 +256,7 @@ rtot = np.array([])
 print "Generating surface......"
 print datetime.datetime.now()
 name = "MC_files/mc_surface_%s" % (tag)
-energies,days,rise_times = gen_surface_events(100000,1238,name,results)
+energies,days,rise_times = gen_surface_events(1000000,1238,name,results)
 #energies,days,rise_times = gen_surface_events(4482,1238,name,results)
 #energies,days,rise_times = gen_surface_events(4,1238,'MC_files/mc_test_surface.dat',results)
 
@@ -266,7 +266,7 @@ rtot = np.append(rtot,rise_times)
 print "Generating flat......"
 print datetime.datetime.now()
 name = "MC_files/mc_flat_%s" % (tag)
-energies,days,rise_times = gen_flat_events(100000,1238,name,results)
+energies,days,rise_times = gen_flat_events(1000000,1238,name,results)
 #energies,days,rise_times = gen_flat_events(3140,1238,name,results)
 #energies,days,rise_times = gen_flat_events(3,1238,'MC_files/mc_test_flat.dat',results)
 
@@ -276,7 +276,7 @@ rtot = np.append(rtot,rise_times)
 print "Generating l-shell......"
 print datetime.datetime.now()
 name = "MC_files/mc_lshell_%s" % (tag)
-energies,days,rise_times = gen_cosmogenic_events(100000,1238,name,results)
+energies,days,rise_times = gen_cosmogenic_events(1000000,1238,name,results)
 #energies,days,rise_times = gen_cosmogenic_events(900,1238,name,results)
 etot = np.append(etot,energies)
 dtot = np.append(dtot,days)
