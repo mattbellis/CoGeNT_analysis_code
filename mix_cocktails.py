@@ -18,15 +18,17 @@ def write_output_file(energy,time_stamps,rise_times,file_name):
 
 nsamples = int(sys.argv[1])
 
-'''
+#'''
 infile_names = ['MC_files/mc_surface_bulk_samples_1M',
                 'MC_files/mc_flat_bulk_samples_1M',
                 'MC_files/mc_lshell_bulk_samples_1M']
-'''
+#'''
 
+'''
 infile_names = ['MC_files/mc_surface_bulk_samples',
                 'MC_files/mc_flat_bulk_samples',
                 'MC_files/mc_lshell_bulk_samples']
+'''
 
 central_values = [4482, 3140, 900]
 
