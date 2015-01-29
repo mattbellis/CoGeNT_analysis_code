@@ -123,6 +123,8 @@ def get_3yr_cogent_data(infile_name,first_event=0.0,calibration=0):
 
     tseconds = content[index]
     tdays = (tseconds-first_event)/(24.0*3600.0) + 1.0
+    if calibration==1: # Monte Carlo
+        tdays = tseconds
 
     # Get energy
     energies = content[index+1]
