@@ -97,6 +97,8 @@ def main():
 
     infile_name = 'data/LE.txt'
     tdays,energies,rise_time = get_3yr_cogent_data(infile_name,first_event=first_event,calibration=0)
+    #infile_name = 'MC_files/sample_surf_4482_4114_flat_3140_2853_lshell_975_826_0000.dat'
+    #tdays,energies,rise_time = get_3yr_cogent_data(infile_name,first_event=first_event,calibration=999)
     #print tdays
     #print energies
     #print rise_time
@@ -130,10 +132,15 @@ def main():
     print min(data[2]),max(data[2])
     print data[2][data[2]<0]
 
+    print "Len data"
     print len(data[0])
+
     data = cut_events_outside_range(data,ranges)
+    print "Len data after range cuts...."
     print len(data[0])
+
     data = cut_events_outside_subrange(data,subranges[1],data_index=1)
+    print "Len data after subrange cuts...."
     print len(data[0])
 
     print min(data[1]),max(data[1])

@@ -123,7 +123,7 @@ def get_3yr_cogent_data(infile_name,first_event=0.0,calibration=0):
 
     tseconds = content[index]
     tdays = (tseconds-first_event)/(24.0*3600.0) + 1.0
-    if calibration==1: # Monte Carlo
+    if calibration==999: # Monte Carlo
         tdays = tseconds
 
     # Get energy
@@ -177,9 +177,14 @@ def cut_events_outside_range(data,ranges):
 ################################################################################
 def cut_events_outside_subrange(data,subrange,data_index=0):
 
+    if len(subrange)==0:
+        return data
+
+    print "number of data columns: %d" % (len(data))
     index = np.zeros(len(data[data_index]),dtype=np.int)
     for r in subrange:
-        #print r[0],r[1]
+        print "Cutting subranges..."
+        print r[0],r[1]
         index += ((data[data_index]>r[0])*(data[data_index]<r[1]))
         #print data[1][data[1]>107.0]
 

@@ -38,7 +38,7 @@ def write_output_file(energy,time_stamps,rise_times,file_name):
     #zip(energy,time_stamps,rise_times)
     with open(file_name,'w') as f:
         writer = csv.writer(f, delimiter='\t')
-        writer.writerows(zip(energy,time_stamps,rise_times))
+        writer.writerows(zip(time_stamps,energy,rise_times))
         f.close()
 
 ################################################################################
@@ -50,6 +50,9 @@ def gen_surface_events(maxpts,max_days,name_of_output_file,pars):
     lo = [ranges[0][0],ranges[1][0]]
     hi = [ranges[0][1],ranges[1][1]]
 
+    elo = lo[0]
+    ehi = hi[0]
+
     max_prob_calculated = -999
     max_prob = 0.65
     energies = []
@@ -59,7 +62,10 @@ def gen_surface_events(maxpts,max_days,name_of_output_file,pars):
     npts = 0
     while npts < maxpts:
 
-        e = (2.5*np.random.random(1) + 0.5) # This is the energy
+        if npts%100==0:
+            print npts
+
+        e = ((ehi-elo)*np.random.random(1) + elo) # This is the energy
         t = (max_days)*np.random.random(1)
         rt = (6.0)*np.random.random(1)
 
@@ -73,8 +79,10 @@ def gen_surface_events(maxpts,max_days,name_of_output_file,pars):
             print "Max prob to now: %f" % (prob)
             max_prob_calculated = prob
 
+        '''
         if max_prob<prob:
             print prob
+        '''
 
         probtest = max_prob*np.random.random() # This is to see whether or not we keep x!
 
@@ -98,6 +106,9 @@ def gen_flat_events(maxpts,max_days,name_of_output_file,pars):
     lo = [ranges[0][0],ranges[1][0]]
     hi = [ranges[0][1],ranges[1][1]]
 
+    elo = lo[0]
+    ehi = hi[0]
+
     max_prob = 4.533
     energies = []
     days = []
@@ -107,7 +118,10 @@ def gen_flat_events(maxpts,max_days,name_of_output_file,pars):
     max_prob_calculated = -999
     while npts < maxpts:
 
-        e = (2.5*np.random.random(1) + 0.5) # This is the energy
+        if npts%100==0:
+            print npts
+
+        e = ((ehi-elo)*np.random.random(1) + elo) # This is the energy
         t = (max_days)*np.random.random(1)
         rt = (6.0)*np.random.random(1)
 
@@ -121,8 +135,10 @@ def gen_flat_events(maxpts,max_days,name_of_output_file,pars):
             print "Max prob to now: %f" % (prob)
             max_prob_calculated = prob
 
+        '''
         if max_prob<prob:
             print prob
+        '''
 
         probtest = max_prob*np.random.random() # This is to see whether or not we keep x!
 
@@ -180,6 +196,9 @@ def gen_cosmogenic_events(maxpts,max_days,name_of_output_file,pars):
     max_prob_calculated = -999
     efficiency = None
     while npts < maxpts:
+
+        if npts%100==0:
+            print npts
 
         e = (1.1*np.random.random(npts_to_generate) + 0.5) # Generate over a smaller range for the L-shell peaks
         t = (max_days)*np.random.random(npts_to_generate)
@@ -249,14 +268,16 @@ print "Generating data!!!!!"
 print datetime.datetime.now()
 
 tag = "bulk_samples_1M"
+#tag = "bulk_samples_10k"
+nevents = 1000000
 
 etot = np.array([])
 dtot = np.array([])
 rtot = np.array([])
 print "Generating surface......"
 print datetime.datetime.now()
-name = "MC_files/mc_surface_%s" % (tag)
-energies,days,rise_times = gen_surface_events(1000000,1238,name,results)
+name = "MC_files/mc_surface_%s.dat" % (tag)
+energies,days,rise_times = gen_surface_events(nevents,1238,name,results)
 #energies,days,rise_times = gen_surface_events(4482,1238,name,results)
 #energies,days,rise_times = gen_surface_events(4,1238,'MC_files/mc_test_surface.dat',results)
 
@@ -265,8 +286,8 @@ dtot = np.append(dtot,days)
 rtot = np.append(rtot,rise_times)
 print "Generating flat......"
 print datetime.datetime.now()
-name = "MC_files/mc_flat_%s" % (tag)
-energies,days,rise_times = gen_flat_events(1000000,1238,name,results)
+name = "MC_files/mc_flat_%s.dat" % (tag)
+energies,days,rise_times = gen_flat_events(nevents,1238,name,results)
 #energies,days,rise_times = gen_flat_events(3140,1238,name,results)
 #energies,days,rise_times = gen_flat_events(3,1238,'MC_files/mc_test_flat.dat',results)
 
@@ -275,8 +296,8 @@ dtot = np.append(dtot,days)
 rtot = np.append(rtot,rise_times)
 print "Generating l-shell......"
 print datetime.datetime.now()
-name = "MC_files/mc_lshell_%s" % (tag)
-energies,days,rise_times = gen_cosmogenic_events(1000000,1238,name,results)
+name = "MC_files/mc_lshell_%s.dat" % (tag)
+energies,days,rise_times = gen_cosmogenic_events(nevents,1238,name,results)
 #energies,days,rise_times = gen_cosmogenic_events(900,1238,name,results)
 etot = np.append(etot,energies)
 dtot = np.append(dtot,days)
