@@ -66,16 +66,16 @@ def lshell_data(day_ranges):
         for dr in day_ranges:
             #ndecays += num_tot_decays[i]*(1.0-np.exp((dr[1]-1)*decay_constants[i]))
             ndecays += num_tot_decays[i]*(np.exp((dr[0]-1.0)*decay_constants[i])-np.exp((dr[1]-1.0)*decay_constants[i]))
-            print ndecays
+            #print ndecays
 
         num_decays_in_dataset = np.append(num_decays_in_dataset,ndecays)
 
-    print "L-shells!!!!"
-    print means
-    print sigmas
-    print num_tot_decays
-    print num_decays_in_dataset
-    print decay_constants
+    #print "L-shells!!!!"
+    #print means
+    #print sigmas
+    #print num_tot_decays
+    #print num_decays_in_dataset
+    #print decay_constants
     #exit()
     return means,sigmas,num_tot_decays,num_decays_in_dataset,decay_constants
 
@@ -382,7 +382,7 @@ def fitfunc(data,p,parnames,params_dict):
             #print "duration: ",1000*duration
         num_tot += num_wimps
 
-    print "fitfunc num_tot: %12.3f" % (num_tot)
+    #print "fitfunc num_tot: %12.3f" % (num_tot)
     ############################################################################
     # Start building the pdfs
     ############################################################################
@@ -427,7 +427,7 @@ def fitfunc(data,p,parnames,params_dict):
     #num_alphas /= num_tot
     #num_comp /= num_tot
 
-    print " -------------------------------------- "
+    #print " -------------------------------------- "
     #print "energy: ",x[0:8]
     #print "time stamp: ",y[0:8]
     ########################################################################
@@ -486,7 +486,7 @@ def fitfunc(data,p,parnames,params_dict):
     tot_pdf += pdf
 
     #print "%f %f %f" % (num_tot,num_wimps/num_tot,num_flat)
-    print "%f %f" % (num_tot,num_wimps/num_tot)
+    #print "%f %f" % (num_tot,num_wimps/num_tot)
 
     return tot_pdf,num_wimps
 ################################################################################

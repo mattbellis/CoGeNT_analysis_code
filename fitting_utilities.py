@@ -257,19 +257,19 @@ def emlf_normalized_minuit(data,p,parnames,params_dict):
         #num_tot += num_wimps
 
     tot_pdf,num_wimps = fitfunc(data,p,parnames,params_dict)
-    print "num_wimps: ",num_wimps
+    #print "num_wimps: ",num_wimps
     if flag==2 or flag==3 or flag==4 or flag==6:
         num_tot += num_wimps
 
-    print "pois:         %12.3f %12.3f" % (num_tot,ndata)
+    #print "pois:         %12.3f %12.3f" % (num_tot,ndata)
     #likelihood_func = (-np.log(fitfunc(data,p,parnames,params_dict))).sum()
     #print tot_pdf
     for d0,d1,t in zip(data[0],data[1],tot_pdf):
         if t<0:
             print "IN FITTING UTILITIES: ",d0,d1,t,np.log(t)
     likelihood_func = (-np.log(tot_pdf)).sum()
-    print "nevents, nevents_fit: %f %f" % (ndata,num_tot)
-    print "vals         : %12.3f %12.3f %12.3f" % (likelihood_func,pois(num_tot,ndata),likelihood_func-pois(num_tot,ndata))
+    #print "nevents, nevents_fit: %f %f" % (ndata,num_tot)
+    #print "vals         : %12.3f %12.3f %12.3f" % (likelihood_func,pois(num_tot,ndata),likelihood_func-pois(num_tot,ndata))
     ret = likelihood_func - pois(num_tot,ndata)
     #print "vals         : %12.3f %12.3f %12.3f" % (likelihood_func,num_tot,likelihood_func-num_tot)
     #ret = likelihood_func - num_tot
