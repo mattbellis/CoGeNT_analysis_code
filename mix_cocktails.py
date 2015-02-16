@@ -53,17 +53,17 @@ def cut_subranges(data,subrange,which_one=0):
 
 nsamples = int(sys.argv[1])
 
-'''
-infile_names = ['MC_files/mc_surface_bulk_samples_1M',
-                'MC_files/mc_flat_bulk_samples_1M',
-                'MC_files/mc_lshell_bulk_samples_1M']
-'''
-
 #'''
+infile_names = ['MC_files/mc_surface_bulk_samples_1M.dat',
+                'MC_files/mc_flat_bulk_samples_1M.dat',
+                'MC_files/mc_lshell_bulk_samples_1M.dat']
+#'''
+
+'''
 infile_names = ['MC_files/mc_surface_bulk_samples_10k.dat',
                 'MC_files/mc_flat_bulk_samples_10k.dat',
                 'MC_files/mc_lshell_bulk_samples_10k.dat']
-#'''
+'''
 
 central_values = [4482, 3140, 975]
 ranges,subranges,nbins = parameters.fitting_parameters(0)

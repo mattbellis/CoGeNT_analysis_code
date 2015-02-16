@@ -151,7 +151,7 @@ def print_data(energies,tdays):
             output += "%7.2f " % (t)
             i+=1
         if i==10:
-            print output
+            #print output
             output = ""
             i=0
 
@@ -162,7 +162,7 @@ def cut_events_outside_range(data,ranges):
 
     index = np.ones(len(data[0]),dtype=np.int)
     for i,r in enumerate(ranges):
-        print i,r[0],r[1]
+        #print i,r[0],r[1]
         if len(r)>0:
             index *= ((data[i]>r[0])*(data[i]<r[1]))
 
@@ -174,7 +174,7 @@ def cut_events_outside_range(data,ranges):
     for i in xrange(len(data)):
         #print data[i][index!=True]
         data[i] = data[i][index==True]
-        print "here: ",min(data[i])
+        #print "here: ",min(data[i])
 
     return data
 
@@ -186,11 +186,11 @@ def cut_events_outside_subrange(data,subrange,data_index=0):
     if len(subrange)==0:
         return data
 
-    print "number of data columns: %d" % (len(data))
+    #print "number of data columns: %d" % (len(data))
     index = np.zeros(len(data[data_index]),dtype=np.int)
     for r in subrange:
-        print "Cutting subranges..."
-        print r[0],r[1]
+        #print "Cutting subranges..."
+        #print r[0],r[1]
         index += ((data[data_index]>r[0])*(data[data_index]<r[1]))
         #print data[1][data[1]>107.0]
 
@@ -360,7 +360,7 @@ def cogent_convolve(x,y):
         if ypt>0:
             # Convert energy to eV
             sigma = np.sqrt(sigman2 + (2.35**2)*((xpt/1000.0)*eta*F)) # sigma is energy dependent
-            print sigma
+            #print sigma
             #sigma = 0.5 + xpt*0.1 # FOR TESTING
             #sigma = 0.1
             #print sigma

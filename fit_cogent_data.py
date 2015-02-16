@@ -42,6 +42,8 @@ def main():
     # Parse the command lines.
     ############################################################################
     parser = argparse.ArgumentParser()
+    parser.add_argument('input_file_name', type=str, default=None,
+                        help='Input file name')
     parser.add_argument('--fit', dest='fit', type=int,\
             default=0, help='Which fit to perform (0,1,2)')
     parser.add_argument('--verbose', dest='verbose', action='store_true',\
@@ -96,7 +98,15 @@ def main():
     #tdays,energies = get_cogent_data(infile_name,first_event=first_event,calibration=0)
 
     infile_name = 'data/LE.txt'
-    tdays,energies,rise_time = get_3yr_cogent_data(infile_name,first_event=first_event,calibration=0)
+    if args.input_file_name is not None:
+        infile_name = args.input_file_name
+        tdays,energies,rise_time = get_3yr_cogent_data(infile_name,first_event=first_event,calibration=999)
+        print "INPUT FILE: %s" % (infile_name)
+    else:
+        tdays,energies,rise_time = get_3yr_cogent_data(infile_name,first_event=first_event,calibration=0)
+
+
+
     #infile_name = 'MC_files/sample_surf_4482_4114_flat_3140_2853_lshell_975_826_0000.dat'
     #tdays,energies,rise_time = get_3yr_cogent_data(infile_name,first_event=first_event,calibration=999)
     #print tdays
@@ -109,7 +119,7 @@ def main():
         infile_name = 'data/cogent_mc.dat'
         tdays,energies = get_cogent_data(infile_name,first_event=first_event,calibration=999)
 
-    print energies
+    #print energies
     if args.verbose:
         print_data(energies,tdays)
 
@@ -128,9 +138,9 @@ def main():
     ############################################################################
     # Cut events out that fall outside the range.
     ############################################################################
-    print min(data[1]),max(data[1])
-    print min(data[2]),max(data[2])
-    print data[2][data[2]<0]
+    #print min(data[1]),max(data[1])
+    #print min(data[2]),max(data[2])
+    #print data[2][data[2]<0]
 
     print "Len data"
     print len(data[0])
@@ -143,9 +153,9 @@ def main():
     print "Len data after subrange cuts...."
     print len(data[0])
 
-    print min(data[1]),max(data[1])
-    print min(data[2]),max(data[2])
-    print data[2][data[2]<0]
+    #print min(data[1]),max(data[1])
+    #print min(data[2]),max(data[2])
+    #print data[2][data[2]<0]
     #exit()
 
     if args.verbose:
@@ -228,7 +238,7 @@ def main():
     rt_fast /= (ranges[0][1]-ranges[0][0])
     rt_slow /= (ranges[0][1]-ranges[0][0])
 
-    print (ranges[0][1]-ranges[0][0])
+    #print (ranges[0][1]-ranges[0][0])
 
     # FOR DIAGNOSTIC PURPOSES #
     #rt_fast = np.ones(len(rt_fast))
@@ -236,21 +246,21 @@ def main():
 
     #exit()
 
-    print rt_fast
-    print rt_slow
+    #print rt_fast
+    #print rt_slow
 
-    print min(rt_fast),max(rt_fast)
-    print min(rt_slow),max(rt_slow)
+    #print min(rt_fast),max(rt_fast)
+    #print min(rt_slow),max(rt_slow)
 
-    print "EHREHRE"
-    print rt_fast[rt_fast!=rt_fast]
-    print rt_slow[rt_slow!=rt_slow]
+    #print "EHREHRE"
+    #print rt_fast[rt_fast!=rt_fast]
+    #print rt_slow[rt_slow!=rt_slow]
 
     # Catch any that are nan
     rt_fast[rt_fast!=rt_fast] = 0.0
     rt_slow[rt_slow!=rt_slow] = 0.0
-    print rt_fast[rt_fast!=rt_fast]
-    print rt_slow[rt_slow!=rt_slow]
+    #print rt_fast[rt_fast!=rt_fast]
+    #print rt_slow[rt_slow!=rt_slow]
     #exit()
 
     data.append(rt_fast)
@@ -296,16 +306,16 @@ def main():
     ax1 = fig0b.add_subplot(1,1,1)
 
     lch.hist_err(data[0],bins=nbins[0],range=ranges[0],axes=ax0)
-    print data[1]
+    #print data[1]
     index0 = data[1]>539.0
     index1 = data[1]<566.4
     index = index0*index1
-    print data[1][index]
+    #print data[1][index]
     h,xpts,ypts,xpts_err,ypts_err = lch.hist_err(data[1],bins=nbins[1],range=ranges[1],axes=ax1)
 
     # Do an acceptance correction of some t-bins by hand.
     tbwidth = (ranges[1][1]-ranges[1][0])/float(nbins[1])
-    print "tbwidth: ",tbwidth
+    #print "tbwidth: ",tbwidth
     acc_corr = np.zeros(len(ypts))
     for i,ac in enumerate(acc_corr):
         lo = i*tbwidth + ranges[1][0]
@@ -322,16 +332,16 @@ def main():
                     tot += vwidth
         #print tot,tot_vals
         if tot!=0 and abs(tot-tot_vals)>2.0*vwidth:
-            print lo,hi,tot,tot_vals
+            #print lo,hi,tot,tot_vals
             #acc_corr[i] = tot_vals/(tot_vals-tot)
             acc_corr[i] = tot_vals/(tot)
-            print acc_corr[i]
+            #print acc_corr[i]
 
-    print ypts
-    print acc_corr
+    #print ypts
+    #print acc_corr
     #exit()
 
-    print acc_corr*ypts
+    #print acc_corr*ypts
     ax1.errorbar(xpts, acc_corr*ypts,xerr=xpts_err,yerr=acc_corr*ypts_err,fmt='o', \
                         color='red',ecolor='red',markersize=2,barsabove=False,capsize=0,linewidth=2)
 
@@ -519,7 +529,7 @@ def main():
 
     f = Minuit_FCN([data],params_dict)
 
-    kwd['print_level'] = 2
+    kwd['print_level'] = 1
     # For maximum likelihood method.
     kwd['errordef'] = 0.5
 
