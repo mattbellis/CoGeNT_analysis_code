@@ -43,7 +43,7 @@ def main():
     ############################################################################
     parser = argparse.ArgumentParser()
     parser.add_argument('input_file_name', type=str, default=None,
-                        help='Input file name')
+                        help='Input file name',nargs='?')
     parser.add_argument('--fit', dest='fit', type=int,\
             default=0, help='Which fit to perform (0,1,2)')
     parser.add_argument('--verbose', dest='verbose', action='store_true',\
@@ -64,6 +64,7 @@ def main():
             default=False, help='Run in batch mode (exit on completion).')
 
     args = parser.parse_args()
+    print args
 
     ############################################################################
 
