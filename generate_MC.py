@@ -62,9 +62,6 @@ def gen_surface_events(maxpts,max_days,name_of_output_file,pars):
     npts = 0
     while npts < maxpts:
 
-        if npts%100==0:
-            print npts
-
         e = ((ehi-elo)*np.random.random(1) + elo) # This is the energy
         t = (max_days)*np.random.random(1)
         rt = (6.0)*np.random.random(1)
@@ -91,6 +88,9 @@ def gen_surface_events(maxpts,max_days,name_of_output_file,pars):
             days.append(t[0])
             rise_times.append(rt[0])
             npts += 1
+            if npts%1000==0:
+                print npts
+
 
     write_output_file(energies,days,rise_times,name_of_output_file)
 
@@ -118,9 +118,6 @@ def gen_compton_events(maxpts,max_days,name_of_output_file,pars):
     max_prob_calculated = -999
     while npts < maxpts:
 
-        if npts%100==0:
-            print npts
-
         e = ((ehi-elo)*np.random.random(1) + elo) # This is the energy
         t = (max_days)*np.random.random(1)
         rt = (6.0)*np.random.random(1)
@@ -147,6 +144,9 @@ def gen_compton_events(maxpts,max_days,name_of_output_file,pars):
             days.append(t[0])
             rise_times.append(rt[0])
             npts += 1
+            if npts%1000==0:
+                print npts
+
 
     write_output_file(energies,days,rise_times,name_of_output_file)
                             
@@ -172,9 +172,6 @@ def gen_neutron_events(maxpts,max_days,name_of_output_file,pars):
     npts = 0
     max_prob_calculated = -999
     while npts < maxpts:
-
-        if npts%100==0:
-            print npts
 
         e = ((ehi-elo)*np.random.random(1) + elo) # This is the energy
         t = (max_days)*np.random.random(1)
@@ -202,6 +199,9 @@ def gen_neutron_events(maxpts,max_days,name_of_output_file,pars):
             days.append(t[0])
             rise_times.append(rt[0])
             npts += 1
+            if npts%1000==0:
+                print npts
+
 
     write_output_file(energies,days,rise_times,name_of_output_file)
                             
@@ -227,9 +227,6 @@ def gen_flat_events(maxpts,max_days,name_of_output_file,pars):
     npts = 0
     max_prob_calculated = -999
     while npts < maxpts:
-
-        if npts%100==0:
-            print npts
 
         e = ((ehi-elo)*np.random.random(1) + elo) # This is the energy
         t = (max_days)*np.random.random(1)
@@ -257,6 +254,9 @@ def gen_flat_events(maxpts,max_days,name_of_output_file,pars):
             days.append(t[0])
             rise_times.append(rt[0])
             npts += 1
+            if npts%1000==0:
+                print npts
+
 
     write_output_file(energies,days,rise_times,name_of_output_file)
                             
@@ -306,9 +306,6 @@ def gen_cosmogenic_events(maxpts,max_days,name_of_output_file,pars):
     max_prob_calculated = -999
     efficiency = None
     while npts < maxpts:
-
-        if npts%100==0:
-            print npts
 
         e = (1.1*np.random.random(npts_to_generate) + 0.5) # Generate over a smaller range for the L-shell peaks
         t = (max_days)*np.random.random(npts_to_generate)
@@ -360,6 +357,11 @@ def gen_cosmogenic_events(maxpts,max_days,name_of_output_file,pars):
             rise_times[npts:final_index] = rt[index][0:max_to_insert]
             
             npts += npts_good
+
+            print npts
+            #if npts%1000==0:
+            #print npts
+
             #print npts
 
     write_output_file(energies,days,rise_times,name_of_output_file)
@@ -378,8 +380,8 @@ print "Generating data!!!!!"
 print datetime.datetime.now()
 
 #tag = "bulk_samples_1M"
-tag = "bulk_samples_10k"
-nevents = 10000
+tag = "bulk_samples_100k"
+nevents = 100000
 
 etot = np.array([])
 dtot = np.array([])
