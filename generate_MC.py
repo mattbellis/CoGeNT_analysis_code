@@ -5,7 +5,7 @@ from chris_kelso_code import dRdErSHM
 import csv
 import numpy as np
 from cogent_utilities import *
-from cogent_pdfs import surface_events,flat_events
+from cogent_pdfs import surface_events,flat_events,compton_events,neutron_events
 import lichen.pdfs as pdfs
 import lichen.lichen as lch
 
@@ -96,6 +96,116 @@ def gen_surface_events(maxpts,max_days,name_of_output_file,pars):
 
     return energies,days,rise_times
 
+
+################################################################################
+################################################################################
+def gen_compton_events(maxpts,max_days,name_of_output_file,pars):
+
+    ranges,subranges,nbins = parameters.fitting_parameters(0)
+
+    lo = [ranges[0][0],ranges[1][0]]
+    hi = [ranges[0][1],ranges[1][1]]
+
+    elo = lo[0]
+    ehi = hi[0]
+
+    max_prob = 4.533
+    energies = []
+    days = []
+    rise_times = []
+
+    npts = 0
+    max_prob_calculated = -999
+    while npts < maxpts:
+
+        if npts%100==0:
+            print npts
+
+        e = ((ehi-elo)*np.random.random(1) + elo) # This is the energy
+        t = (max_days)*np.random.random(1)
+        rt = (6.0)*np.random.random(1)
+
+        rt_fast = rise_time_prob_fast_exp_dist(rt,e,mu0,sigma0,fast_mean_rel_k,fast_sigma_rel_k,fast_num_rel_k,ranges[2][0],ranges[2][1])
+
+        data = [e,t,0,rt_fast,0]
+
+        prob = compton_events(data,pars,lo,hi,subranges=subranges,efficiency=None)
+
+        if max_prob_calculated<prob:
+            print "Max prob to now: %f" % (prob)
+            max_prob_calculated = prob
+
+        '''
+        if max_prob<prob:
+            print prob
+        '''
+
+        probtest = max_prob*np.random.random() # This is to see whether or not we keep x!
+
+        if probtest<prob:
+            energies.append(e[0])
+            days.append(t[0])
+            rise_times.append(rt[0])
+            npts += 1
+
+    write_output_file(energies,days,rise_times,name_of_output_file)
+                            
+    return energies,days,rise_times
+
+################################################################################
+################################################################################
+def gen_neutron_events(maxpts,max_days,name_of_output_file,pars):
+
+    ranges,subranges,nbins = parameters.fitting_parameters(0)
+
+    lo = [ranges[0][0],ranges[1][0]]
+    hi = [ranges[0][1],ranges[1][1]]
+
+    elo = lo[0]
+    ehi = hi[0]
+
+    max_prob = 4.533
+    energies = []
+    days = []
+    rise_times = []
+
+    npts = 0
+    max_prob_calculated = -999
+    while npts < maxpts:
+
+        if npts%100==0:
+            print npts
+
+        e = ((ehi-elo)*np.random.random(1) + elo) # This is the energy
+        t = (max_days)*np.random.random(1)
+        rt = (6.0)*np.random.random(1)
+
+        rt_fast = rise_time_prob_fast_exp_dist(rt,e,mu0,sigma0,fast_mean_rel_k,fast_sigma_rel_k,fast_num_rel_k,ranges[2][0],ranges[2][1])
+
+        data = [e,t,0,rt_fast,0]
+
+        prob = neutron_events(data,pars,lo,hi,subranges=subranges,efficiency=None)
+
+        if max_prob_calculated<prob:
+            print "Max prob to now: %f" % (prob)
+            max_prob_calculated = prob
+
+        '''
+        if max_prob<prob:
+            print prob
+        '''
+
+        probtest = max_prob*np.random.random() # This is to see whether or not we keep x!
+
+        if probtest<prob:
+            energies.append(e[0])
+            days.append(t[0])
+            rise_times.append(rt[0])
+            npts += 1
+
+    write_output_file(energies,days,rise_times,name_of_output_file)
+                            
+    return energies,days,rise_times
 
 ################################################################################
 ################################################################################
@@ -267,9 +377,9 @@ print results
 print "Generating data!!!!!"
 print datetime.datetime.now()
 
-tag = "bulk_samples_1M"
-#tag = "bulk_samples_10k"
-nevents = 1000000
+#tag = "bulk_samples_1M"
+tag = "bulk_samples_10k"
+nevents = 10000
 
 etot = np.array([])
 dtot = np.array([])
@@ -280,20 +390,31 @@ name = "MC_files/mc_surface_%s.dat" % (tag)
 energies,days,rise_times = gen_surface_events(nevents,1238,name,results)
 #energies,days,rise_times = gen_surface_events(4482,1238,name,results)
 #energies,days,rise_times = gen_surface_events(4,1238,'MC_files/mc_test_surface.dat',results)
-
 etot = np.append(etot,energies)
 dtot = np.append(dtot,days)
 rtot = np.append(rtot,rise_times)
-print "Generating flat......"
+
+print "Generating neutron......"
 print datetime.datetime.now()
-name = "MC_files/mc_flat_%s.dat" % (tag)
-energies,days,rise_times = gen_flat_events(nevents,1238,name,results)
+name = "MC_files/mc_neutron_%s.dat" % (tag)
+energies,days,rise_times = gen_neutron_events(nevents,1238,name,results)
+etot = np.append(etot,energies)
+dtot = np.append(dtot,days)
+rtot = np.append(rtot,rise_times)
+
+print "Generating compton......"
+print datetime.datetime.now()
+name = "MC_files/mc_compton_%s.dat" % (tag)
+energies,days,rise_times = gen_compton_events(nevents,1238,name,results)
+#name = "MC_files/mc_flat_%s.dat" % (tag)
+#energies,days,rise_times = gen_flat_events(nevents,1238,name,results)
 #energies,days,rise_times = gen_flat_events(3140,1238,name,results)
 #energies,days,rise_times = gen_flat_events(3,1238,'MC_files/mc_test_flat.dat',results)
-
 etot = np.append(etot,energies)
 dtot = np.append(dtot,days)
 rtot = np.append(rtot,rise_times)
+
+
 print "Generating l-shell......"
 print datetime.datetime.now()
 name = "MC_files/mc_lshell_%s.dat" % (tag)
