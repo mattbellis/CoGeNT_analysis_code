@@ -26,8 +26,8 @@ import iminuit as minuit
 import argparse
 
 pi = np.pi
-first_event = 2750361.2
-start_date = datetime(2009, 12, 3, 0, 0, 0, 0) #
+#first_event = 2750361.2
+#start_date = datetime(2009, 12, 3, 0, 0, 0, 0) #
 
 np.random.seed(200)
 
@@ -64,6 +64,7 @@ def main():
             default=False, help='Run in batch mode (exit on completion).')
 
     args = parser.parse_args()
+    print args
 
     ############################################################################
 

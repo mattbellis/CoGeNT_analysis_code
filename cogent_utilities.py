@@ -1,6 +1,8 @@
 import numpy as np
 #from fitting_utilities import sigmoid
 #from cogent_pdfs import sigmoid
+from datetime import datetime,timedelta
+
 
 from scipy import integrate
 
@@ -14,6 +16,9 @@ import iminuit as minuit
 import scipy.signal as signal
 
 import scipy.stats as stats
+
+first_event = 2750361.2
+start_date = datetime(2009, 12, 3, 0, 0, 0, 0) #
 
 ################################################################################
 # Sigmoid function.
@@ -79,6 +84,7 @@ def cogent_efficiency(data,threshold,sigmoid_sigma,max_val):
 
     data[0] = data[0][indices==1]
     data[1] = data[1][indices==1]
+    data[2] = data[2][indices==1]
 
     return data
 
