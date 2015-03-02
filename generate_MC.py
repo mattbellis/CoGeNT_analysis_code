@@ -379,9 +379,9 @@ print results
 print "Generating data!!!!!"
 print datetime.datetime.now()
 
-#tag = "bulk_samples_1M"
-tag = "bulk_samples_100k"
-nevents = 100000
+tag = "bulk_samples_1M"
+#tag = "bulk_samples_100k"
+nevents = 1000000
 
 etot = np.array([])
 dtot = np.array([])

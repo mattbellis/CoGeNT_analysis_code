@@ -61,7 +61,7 @@ infile_names = ['MC_files/mc_surface_bulk_samples_1M.dat',
 '''
 
 bkg_names = ['surface','neutron','compton','lshell']
-tag = '10k'
+tag = '100k'
 infile_names = []
 for b in bkg_names:
     name = "MC_files/mc_%s_bulk_samples_%s.dat" % (b,tag)
