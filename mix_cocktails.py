@@ -61,7 +61,8 @@ infile_names = ['MC_files/mc_surface_bulk_samples_1M.dat',
 '''
 
 bkg_names = ['surface','neutron','compton','lshell']
-tag = '100k'
+#tag = '100k'
+tag = '1M'
 infile_names = []
 for b in bkg_names:
     name = "MC_files/mc_%s_bulk_samples_%s.dat" % (b,tag)
@@ -151,7 +152,7 @@ for i in xrange(0,nsamples):
         #print tot_bkgs
 
     #testname = "MC_files/sample_surf_%d_%d_neutrons_%d_%d_comptons_lshell_%d_%d_%04d.dat" % (central_values[0],num_to_grab[0],central_values[1],num_to_grab[1],central_values[2],num_to_grab[2],i)
-    testname += "_%0d.dat" % (i)
+    testname += "_from_%s_samples_%0d.dat" % (i,tag)
     print testname
     #print tot_bkgs.shape
     #print len(tot_bkgs)
