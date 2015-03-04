@@ -291,7 +291,7 @@ def gen_cosmogenic_events(maxpts,max_days,name_of_output_file,pars):
     
     num_tot = 0
 
-    npts_to_generate = 5000
+    npts_to_generate = 10000
 
     for i in xrange(11):
         name = "ls_mean%d" % (i)
@@ -305,7 +305,7 @@ def gen_cosmogenic_events(maxpts,max_days,name_of_output_file,pars):
         name = "ls_dc%d" % (i)
         decay_constants.append(pars[name])
 
-    max_prob = 25.0
+    max_prob = 26.0
     print "Max prob currently is: %f" % (max_prob)
     energies = np.zeros(maxpts)
     days = np.zeros(maxpts)
@@ -336,10 +336,12 @@ def gen_cosmogenic_events(maxpts,max_days,name_of_output_file,pars):
 
         prob = tot_pdf
         
+        #print "MAX:"
+        #print max(prob)
         if max(prob)>max_prob_calculated:
             print "Max prob to now: %f" % max(prob)
             max_prob_calculated = max(prob)
-            max_prob = prob
+            max_prob = max(prob)
 
         if len(prob[prob>max_prob])>0:
             print max_prob,prob[prob>max_prob]
@@ -394,8 +396,9 @@ if len(sys.argv)>2:
 print "Generating data!!!!!"
 #print datetime.datetime.now()
 
-#tag = "bulk_samples_1M"
 tag = "bulk_samples_1M"
+#tag = "bulk_samples_100k"
+#tag = "bulk_samples_1M"
 nevents = 1000000
 
 etot = np.array([])
