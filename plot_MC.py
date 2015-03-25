@@ -23,7 +23,7 @@ plt.xlabel('Days since XXX')
 plt.ylim(0)
 
 plt.subplot(1,3,3)
-lch.hist_err(risetimes,bins=50)
+lch.hist_err(risetimes,bins=50,range=(0,6))
 plt.xlabel(r'Rise times ($\mu$s)')
 plt.ylim(0)
 
