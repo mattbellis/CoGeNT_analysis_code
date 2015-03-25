@@ -62,7 +62,8 @@ infile_names = ['MC_files/mc_surface_bulk_samples_1M.dat',
 
 bkg_names = ['surface','neutron','compton','lshell']
 #tag = '100k'
-tag = '1M'
+#tag = '1M'
+tag = '10k'
 infile_names = []
 for b in bkg_names:
     name = "MC_files/mc_%s_bulk_samples_%s.dat" % (b,tag)
@@ -77,7 +78,8 @@ infile_names = ['MC_files/mc_surface_bulk_samples_10k.dat',
 
 #central_values = [4482, 3140, 975]
 #central_values = [4482, 862, 2287, 975]
-central_values = [7000, 1350, 3650, 1250]
+#central_values = [7000, 1350, 3650, 1250]
+central_values = [7000, 1500, 0, 1250]
 ranges,subranges,nbins = parameters.fitting_parameters(0)
 
 #data = [tdays,energies,rise_time]

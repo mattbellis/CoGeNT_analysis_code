@@ -192,6 +192,9 @@ def main():
             print "Len d after subrange cuts...."
             print len(d[0])
             org_values_after_fiducial_cuts.append(len(d[0]))
+    else:
+        org_values_after_fiducial_cuts = [0.,0.,0.,0.]
+
 
     print org_values_after_fiducial_cuts
     print sum(org_values_after_fiducial_cuts)
@@ -505,6 +508,7 @@ def main():
     nsurface *= partial_live_days/tot_live_days
 
     nsurface = 4400.0 # 3yr data.
+    #nsurface = 0.0 # 3yr data.
 
     # Exp 1 is the surface term
     #params_dict['e_surf'] = {'fix':False,'start_val':1.0/3.36,'limits':(0.0,10.0)}
@@ -515,6 +519,7 @@ def main():
 
     #params_dict['num_flat'] = {'fix':False,'start_val':3200.0,'limits':(0.0,100000.0),'error':0.01}
     params_dict['num_comp'] = {'fix':False,'start_val':2200.0,'limits':(0.0,100000.0),'error':0.01}
+    #params_dict['num_comp'] = {'fix':False,'start_val':0.0,'limits':(0.0,100000.0),'error':0.01}
     params_dict['e_exp_flat'] = {'fix':False,'start_val':-0.05,'limits':(0.00001,10.0),'error':0.01}
     params_dict['t_exp_flat'] = {'fix':False,'start_val':0.001,'limits':(0.0000001,10.0),'error':0.01}
     #params_dict['flat_frac'] = {'fix':True,'start_val':0.51,'limits':(0.00001,10.0),'error':0.01}
@@ -524,6 +529,7 @@ def main():
     #params_dict['flat_neutrons_amp'] = {'fix':True,'start_val':14.0,'limits':(0.00001,10.0),'error':0.01}
     #params_dict['flat_neutrons_offset'] = {'fix':True,'start_val':0.783,'limits':(0.00001,10.0),'error':0.01}
     params_dict['num_neutrons'] = {'fix':False,'start_val':880.0,'limits':(0.0,100000.0),'error':0.01}
+    #params_dict['num_neutrons'] = {'fix':False,'start_val':1200.0,'limits':(0.0,100000.0),'error':0.01}
     params_dict['flat_neutrons_slope'] = {'fix':True,'start_val':0.920,'limits':(0.00001,10.0),'error':0.01}
     params_dict['flat_neutrons_amp'] = {'fix':True,'start_val':17.4,'limits':(0.00001,10.0),'error':0.01}
     params_dict['flat_neutrons_offset'] = {'fix':True,'start_val':2.38,'limits':(0.00001,10.0),'error':0.01}
