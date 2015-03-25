@@ -31,6 +31,7 @@ plt.xlim(0,6)
 plt.tight_layout()
 
 
+'''
 # Scatter
 plt.figure(figsize=(12,4))
 
@@ -55,6 +56,7 @@ plt.ylabel(r'Rise times ($\mu$s)')
 
 plt.tight_layout()
 
+'''
 
 plt.show()
 
