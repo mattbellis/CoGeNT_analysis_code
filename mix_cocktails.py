@@ -61,6 +61,8 @@ infile_names = ['MC_files/mc_surface_bulk_samples_1M.dat',
 '''
 
 bkg_names = ['surface','neutron','compton','lshell']
+#tag = '100k'
+#tag = '1M'
 tag = '10k'
 infile_names = []
 for b in bkg_names:
@@ -76,7 +78,8 @@ infile_names = ['MC_files/mc_surface_bulk_samples_10k.dat',
 
 #central_values = [4482, 3140, 975]
 #central_values = [4482, 862, 2287, 975]
-central_values = [5500, 1100, 2900, 1250]
+#central_values = [7000, 1350, 3650, 1250]
+central_values = [7000, 1500, 0, 1250]
 ranges,subranges,nbins = parameters.fitting_parameters(0)
 
 #data = [tdays,energies,rise_time]
@@ -151,7 +154,7 @@ for i in xrange(0,nsamples):
         #print tot_bkgs
 
     #testname = "MC_files/sample_surf_%d_%d_neutrons_%d_%d_comptons_lshell_%d_%d_%04d.dat" % (central_values[0],num_to_grab[0],central_values[1],num_to_grab[1],central_values[2],num_to_grab[2],i)
-    testname += "_%0d.dat" % (i)
+    testname += "_from_%s_samples_%03d.dat" % (tag,i)
     print testname
     #print tot_bkgs.shape
     #print len(tot_bkgs)

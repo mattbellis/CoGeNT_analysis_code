@@ -98,14 +98,25 @@ def main():
     #infile_name = 'data/high_gain.txt'
     #tdays,energies = get_cogent_data(infile_name,first_event=first_event,calibration=0)
 
+    org_values = [0.0,0.0,0.0,0.0]
     infile_name = 'data/LE.txt'
     if args.input_file_name is not None:
         infile_name = args.input_file_name
         tdays,energies,rise_time = get_3yr_cogent_data(infile_name,first_event=first_event,calibration=999)
+        vals = infile_name.split('_')
+        org_values[0] = int(vals[5])
+        org_values[1] = int(vals[9])
+        org_values[2] = int(vals[13])
+        org_values[3] = int(vals[17])
         print "INPUT FILE: %s" % (infile_name)
     else:
         tdays,energies,rise_time = get_3yr_cogent_data(infile_name,first_event=first_event,calibration=0)
 
+
+    print infile_name
+    print org_values
+
+    #exit()
 
 
     #infile_name = 'MC_files/sample_surf_4482_4114_flat_3140_2853_lshell_975_826_0000.dat'
@@ -136,6 +147,18 @@ def main():
     print "data before range cuts: ",len(data[0]),len(data[1]),len(data[2])
     #exit()
 
+    ################# MONTE CARLO ##############################################
+    temp_data = []
+    if args.input_file_name is not None:
+        # Figure out how many original events survive the fiducial cuts.
+        start = 0
+        for i in range(0,len(org_values)):
+            stop = org_values[i]+start
+            print start,stop
+            temp_data.append([energies[start:stop].copy(),tdays[start:stop].copy(),rise_time[start:stop].copy()])
+            start = stop
+
+
     ############################################################################
     # Cut events out that fall outside the range.
     ############################################################################
@@ -154,9 +177,27 @@ def main():
     print "Len data after subrange cuts...."
     print len(data[0])
 
-    #print min(data[1]),max(data[1])
-    #print min(data[2]),max(data[2])
-    #print data[2][data[2]<0]
+    ################# MONTE CARLO ##############################################
+    org_values_after_fiducial_cuts = []
+    if args.input_file_name is not None:
+        print "MONTE CARLO cuts....."
+        for d in temp_data:
+            print "Len d before range cuts...."
+            print len(d[0])
+            d = cut_events_outside_range(d,ranges)
+            print "Len d after range cuts...."
+            print len(d[0])
+
+            d = cut_events_outside_subrange(d,subranges[1],data_index=1)
+            print "Len d after subrange cuts...."
+            print len(d[0])
+            org_values_after_fiducial_cuts.append(len(d[0]))
+    else:
+        org_values_after_fiducial_cuts = [0.,0.,0.,0.]
+
+
+    print org_values_after_fiducial_cuts
+    print sum(org_values_after_fiducial_cuts)
     #exit()
 
     if args.verbose:
@@ -467,6 +508,7 @@ def main():
     nsurface *= partial_live_days/tot_live_days
 
     nsurface = 4400.0 # 3yr data.
+    #nsurface = 0.0 # 3yr data.
 
     # Exp 1 is the surface term
     #params_dict['e_surf'] = {'fix':False,'start_val':1.0/3.36,'limits':(0.0,10.0)}
@@ -477,6 +519,7 @@ def main():
 
     #params_dict['num_flat'] = {'fix':False,'start_val':3200.0,'limits':(0.0,100000.0),'error':0.01}
     params_dict['num_comp'] = {'fix':False,'start_val':2200.0,'limits':(0.0,100000.0),'error':0.01}
+    #params_dict['num_comp'] = {'fix':False,'start_val':0.0,'limits':(0.0,100000.0),'error':0.01}
     params_dict['e_exp_flat'] = {'fix':False,'start_val':-0.05,'limits':(0.00001,10.0),'error':0.01}
     params_dict['t_exp_flat'] = {'fix':False,'start_val':0.001,'limits':(0.0000001,10.0),'error':0.01}
     #params_dict['flat_frac'] = {'fix':True,'start_val':0.51,'limits':(0.00001,10.0),'error':0.01}
@@ -486,6 +529,7 @@ def main():
     #params_dict['flat_neutrons_amp'] = {'fix':True,'start_val':14.0,'limits':(0.00001,10.0),'error':0.01}
     #params_dict['flat_neutrons_offset'] = {'fix':True,'start_val':0.783,'limits':(0.00001,10.0),'error':0.01}
     params_dict['num_neutrons'] = {'fix':False,'start_val':880.0,'limits':(0.0,100000.0),'error':0.01}
+    #params_dict['num_neutrons'] = {'fix':False,'start_val':1200.0,'limits':(0.0,100000.0),'error':0.01}
     params_dict['flat_neutrons_slope'] = {'fix':True,'start_val':0.920,'limits':(0.00001,10.0),'error':0.01}
     params_dict['flat_neutrons_amp'] = {'fix':True,'start_val':17.4,'limits':(0.00001,10.0),'error':0.01}
     params_dict['flat_neutrons_offset'] = {'fix':True,'start_val':2.38,'limits':(0.00001,10.0),'error':0.01}
@@ -960,13 +1004,17 @@ def main():
     ndata = len(data[0])
 
     print "\n"
+    print "%-15s %15.0f" % ('org_surface',org_values_after_fiducial_cuts[0])
+    print "%-15s %15.0f" % ('org_neutron',org_values_after_fiducial_cuts[1])
+    print "%-15s %15.0f" % ('org_compton',org_values_after_fiducial_cuts[2])
+    print "%-15s %15.0f" % ('org_lshell',org_values_after_fiducial_cuts[3])
+    print "\n"
     print "%-15s %15.7f" % ('ndata',ndata)
     print "%-15s %15.7f" % ('ndata fit',nevents_from_fit)
     print "%-15s %15.7f" % ('poisson',pois(nevents_from_fit,ndata))
     print "%-15s %15.7f" % ('max poisson',pois(ndata,ndata))
     print "%-15s %15.7f" % ('lh sans poisson',final_lh+pois(nevents_from_fit,ndata))
     print "%-15s %15.7f" % ('final lh',final_lh)
-
 
     name = "fit_results/results_%s.txt" % (tag)
     out_results = open(name,'w')
