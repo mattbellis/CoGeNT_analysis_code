@@ -483,9 +483,9 @@ def main():
         name = "ls_ncalc%d" % (i)
         #if i==999:
         if i==2 or i==3:
-            params_dict[name] = {'fix':False,'start_val':val,'error':0.01,'limits':(0,50000)}
+            params_dict[name] = {'fix':True,'start_val':0.0,'error':0.01,'limits':(0,50000)}
         else:
-            params_dict[name] = {'fix':True,'start_val':val,'error':0.01,'limits':(0,50000)}
+            params_dict[name] = {'fix':True,'start_val':0.0,'error':0.01,'limits':(0,50000)}
     for i,val in enumerate(decay_constants):
         name = "ls_dc%d" % (i)
         params_dict[name] = {'fix':True,'start_val':val,'error':0.01}
@@ -495,33 +495,29 @@ def main():
     # surf is the surface events.
     ############################################################################
 
-    nsurface = 575.0 # For full 917 days
-    #nsurface = 506.0 # For full 917 days
-    #tot_live_days = 808.0 # For the full 917 days
     tot_live_days = 1131.0 # For the full 1238 days
-    #tot_live_days = 447.0 # For the time before the fire
     partial_live_days = 0.0
     for sr in subranges[1]:
         partial_live_days += (sr[1]-sr[0])
         print partial_live_days
 
-    nsurface *= partial_live_days/tot_live_days
-
-    nsurface = 4400.0 # 3yr data.
+    #nsurface = 4400.0 # 3yr data.
+    nsurface = 0.0 # 3yr data.
     #nsurface = 0.0 # 3yr data.
 
     # Exp 1 is the surface term
-    #params_dict['e_surf'] = {'fix':False,'start_val':1.0/3.36,'limits':(0.0,10.0)}
-    params_dict['k1_surf'] = {'fix':False,'start_val':-0.503,'limits':(-0.7,-0.4),'error':0.1}
+    #params_dict['k1_surf'] = {'fix':False,'start_val':-0.503,'limits':(-0.7,-0.4),'error':0.1}
+    #params_dict['k2_surf'] = {'fix':True,'start_val':0.0806,'limits':(0.0,0.2),'error':0.01}
+    params_dict['t_surf'] = {'fix':True,'start_val':0.0002,'limits':(0.0,10.0),'error':0.01}
+    params_dict['k1_surf'] = {'fix':True,'start_val':-0.503,'limits':(-0.7,-0.4),'error':0.1}
     params_dict['k2_surf'] = {'fix':True,'start_val':0.0806,'limits':(0.0,0.2),'error':0.01}
-    params_dict['t_surf'] = {'fix':False,'start_val':0.50,'limits':(0.0,10.0),'error':0.01}
     params_dict['num_surf'] = {'fix':False,'start_val':nsurface,'limits':(0.0,100000.0),'error':0.01}
 
     #params_dict['num_flat'] = {'fix':False,'start_val':3200.0,'limits':(0.0,100000.0),'error':0.01}
     params_dict['num_comp'] = {'fix':False,'start_val':2200.0,'limits':(0.0,100000.0),'error':0.01}
     #params_dict['num_comp'] = {'fix':False,'start_val':0.0,'limits':(0.0,100000.0),'error':0.01}
-    params_dict['e_exp_flat'] = {'fix':False,'start_val':-0.05,'limits':(0.00001,10.0),'error':0.01}
-    params_dict['t_exp_flat'] = {'fix':False,'start_val':0.001,'limits':(0.0000001,10.0),'error':0.01}
+    params_dict['e_exp_flat'] = {'fix':False,'start_val':0.00005,'limits':(0.00001,10.0),'error':0.01}
+    params_dict['t_exp_flat'] = {'fix':False,'start_val':0.0002,'limits':(0.0000001,10.0),'error':0.01}
     #params_dict['flat_frac'] = {'fix':True,'start_val':0.51,'limits':(0.00001,10.0),'error':0.01}
     #params_dict['flat_frac'] = {'fix':False,'start_val':0.66,'limits':(0.00001,1.0),'error':0.01}
 

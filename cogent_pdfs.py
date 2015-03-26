@@ -177,7 +177,10 @@ def compton_events(data,pars,lo,hi,subranges=None,efficiency=None):
     yhi = hi[1]
 
     pdf  = pdfs.exp(x,pars['e_exp_flat'],xlo,xhi,efficiency=efficiency)
-    pdf *= pdfs.exp(y,pars['t_exp_flat'],ylo,yhi,subranges=subranges[1])
+    if subranges is not None:
+        pdf *= pdfs.exp(y,pars['t_exp_flat'],ylo,yhi,subranges=subranges[1])
+    else:
+        pdf *= pdfs.exp(y,pars['t_exp_flat'],ylo,yhi)
 
     pdf *= pars['num_comp']
 
@@ -201,7 +204,10 @@ def neutron_events(data,pars,lo,hi,subranges=None,efficiency=None):
     yhi = hi[1]
 
     pdf  = pdfs.exp_plus_flat(x,pars['flat_neutrons_slope'],pars['flat_neutrons_amp'],pars['flat_neutrons_offset'],xlo,xhi,efficiency=efficiency)
-    pdf *= pdfs.poly(y,[],ylo,yhi,subranges=subranges[1])
+    if subranges is not None:
+        pdf *= pdfs.poly(y,[],ylo,yhi,subranges=subranges[1])
+    else:
+        pdf *= pdfs.poly(y,[],ylo,yhi)
 
     pdf *= pars['num_neutrons']
 
@@ -269,7 +275,10 @@ def surface_events(data,pars,lo,hi,subranges=None,efficiency=None):
     pdf  = pdfs.poly(x,[pars['k1_surf'],pars['k2_surf']],xlo,xhi,efficiency=efficiency)
 
     # Time
-    pdf *= pdfs.exp(y,pars['t_surf'],ylo,yhi,subranges=subranges[1])
+    if subranges is not None:
+        pdf *= pdfs.exp(y,pars['t_surf'],ylo,yhi,subranges=subranges[1])
+    else:
+        pdf *= pdfs.exp(y,pars['t_surf'],ylo,yhi)
 
     # Rise time
     pdf *= rts # This will be the slow rise times
