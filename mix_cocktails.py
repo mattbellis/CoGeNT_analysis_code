@@ -70,7 +70,7 @@ for b in bkg_names:
 #central_values = [7000, 1350, 3650, 1250]
 #central_values = [7000, 1500, 0, 1250]
 #central_values = [0, 1500, 1500, 0]
-central_values = [1000, 0, 1500, 0, 300]
+central_values = [1000, 1500, 0, 0, 385]
 ranges,subranges,nbins = parameters.fitting_parameters(0)
 
 #data = [tdays,energies,rise_time]

@@ -77,9 +77,12 @@ def amp_to_energy(amplitude, calibration=0):
 ################################################################################
 def cogent_efficiency(data,threshold,sigmoid_sigma,max_val):
 
+    #eff_scaling = 1.0 # old data
+    eff_scaling = 0.9 # 3yr dataset
+
     indices = np.zeros(len(data[0]),dtype=np.int)
     for i,pt in enumerate(data[0]):
-        if np.random.random()<sigmoid(pt,threshold,sigmoid_sigma,max_val):
+        if np.random.random()<sigmoid(pt,threshold,sigmoid_sigma,max_val)*eff_scaling:
             indices[i] = 1
 
     data[0] = data[0][indices==1]
