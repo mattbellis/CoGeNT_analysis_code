@@ -177,7 +177,10 @@ def compton_events(data,pars,lo,hi,subranges=None,efficiency=None):
     yhi = hi[1]
 
     pdf  = pdfs.exp(x,pars['e_exp_flat'],xlo,xhi,efficiency=efficiency)
-    pdf *= pdfs.exp(y,pars['t_exp_flat'],ylo,yhi,subranges=subranges[1])
+    if subranges is not None:
+        pdf *= pdfs.exp(y,pars['t_exp_flat'],ylo,yhi,subranges=subranges[1])
+    else:
+        pdf *= pdfs.exp(y,pars['t_exp_flat'],ylo,yhi)
 
     pdf *= pars['num_comp']
 
@@ -201,7 +204,10 @@ def neutron_events(data,pars,lo,hi,subranges=None,efficiency=None):
     yhi = hi[1]
 
     pdf  = pdfs.exp_plus_flat(x,pars['flat_neutrons_slope'],pars['flat_neutrons_amp'],pars['flat_neutrons_offset'],xlo,xhi,efficiency=efficiency)
-    pdf *= pdfs.poly(y,[],ylo,yhi,subranges=subranges[1])
+    if subranges is not None:
+        pdf *= pdfs.poly(y,[],ylo,yhi,subranges=subranges[1])
+    else:
+        pdf *= pdfs.poly(y,[],ylo,yhi)
 
     pdf *= pars['num_neutrons']
 
@@ -269,7 +275,10 @@ def surface_events(data,pars,lo,hi,subranges=None,efficiency=None):
     pdf  = pdfs.poly(x,[pars['k1_surf'],pars['k2_surf']],xlo,xhi,efficiency=efficiency)
 
     # Time
-    pdf *= pdfs.exp(y,pars['t_surf'],ylo,yhi,subranges=subranges[1])
+    if subranges is not None:
+        pdf *= pdfs.exp(y,pars['t_surf'],ylo,yhi,subranges=subranges[1])
+    else:
+        pdf *= pdfs.exp(y,pars['t_surf'],ylo,yhi)
 
     # Rise time
     pdf *= rts # This will be the slow rise times
@@ -460,7 +469,7 @@ def fitfunc(data,p,parnames,params_dict):
     if flag==0 or flag==1 or flag==5:
         num_exp0 /= num_tot
 
-    num_surf /= num_tot
+    #num_surf /= num_tot
     #num_flat /= num_tot
     #num_alphas /= num_tot
     #num_comp /= num_tot
@@ -492,7 +501,7 @@ def fitfunc(data,p,parnames,params_dict):
         pdf *= num_spike/num_tot
     
     elif flag==2 or flag==3 or flag==4 or flag==6:
-        print "num_wimps mDM: %12.3f %12.3f %12.3e" % (num_wimps,mDM,sigma_n)
+        #print "num_wimps mDM: %12.3f %12.3f %12.3e" % (num_wimps,mDM,sigma_n)
         wimp_norm = num_wimps
         #print "wimp_norm: ",wimp_norm
         pdf = wimp(y,x,AGe,mDM,sigma_n,efficiency=efficiency,model=wimp_model)/(1.0*num_tot)
@@ -505,6 +514,7 @@ def fitfunc(data,p,parnames,params_dict):
         #print "wimp pdf: ",pdf[0:8]*(num_tot)/num_wimps
         #print "wimp pdf: ",pdf[0:8]
 
+    #print "surf/neut/comp/wimps: %8.2f %8.2f %8.2f %8.2f" % (num_surf,num_neutrons,num_comp,num_wimps)
     #print "wimp pdf: ",pdf[0:8]
     tot_pdf += pdf
 

@@ -98,18 +98,17 @@ def main():
     #infile_name = 'data/high_gain.txt'
     #tdays,energies = get_cogent_data(infile_name,first_event=first_event,calibration=0)
 
-    #org_values = [0.0,0.0,0.0,0.0]
-    org_values = [4000,2000,0,0]
+    org_values = [0.0,0.0,0.0,0.0,0.0]
     infile_name = 'data/LE.txt'
     if args.input_file_name is not None:
         infile_name = args.input_file_name
         tdays,energies,rise_time = get_3yr_cogent_data(infile_name,first_event=first_event,calibration=999)
         vals = infile_name.split('_')
-        if len(vals)>17:
-            org_values[0] = int(vals[5])
-            org_values[1] = int(vals[9])
-            org_values[2] = int(vals[13])
-            org_values[3] = int(vals[17])
+        org_values[0] = int(vals[5])
+        org_values[1] = int(vals[9])
+        org_values[2] = int(vals[13])
+        org_values[3] = int(vals[17])
+        org_values[4] = int(vals[21])
         print "INPUT FILE: %s" % (infile_name)
     else:
         tdays,energies,rise_time = get_3yr_cogent_data(infile_name,first_event=first_event,calibration=0)
@@ -194,6 +193,9 @@ def main():
             print "Len d after subrange cuts...."
             print len(d[0])
             org_values_after_fiducial_cuts.append(len(d[0]))
+    else:
+        org_values_after_fiducial_cuts = [0.,0.,0.,0.,0.]
+
 
     print org_values_after_fiducial_cuts
     print sum(org_values_after_fiducial_cuts)
@@ -482,11 +484,9 @@ def main():
         name = "ls_ncalc%d" % (i)
         #if i==999:
         if i==2 or i==3:
-            params_dict[name] = {'fix':False,'start_val':val,'error':0.01,'limits':(0,50000)}
+            params_dict[name] = {'fix':True,'start_val':0.0,'error':0.01,'limits':(0,50000)}
         else:
             params_dict[name] = {'fix':True,'start_val':val,'error':0.01,'limits':(0,50000)}
-        # FOR TESTING SET LSHELL TO 0
-        params_dict[name] = {'fix':True,'start_val':0.0,'error':0.01,'limits':(0,50000)}
     for i,val in enumerate(decay_constants):
         name = "ls_dc%d" % (i)
         params_dict[name] = {'fix':True,'start_val':val,'error':0.01}
@@ -496,38 +496,43 @@ def main():
     # surf is the surface events.
     ############################################################################
 
-    nsurface = 575.0 # For full 917 days
-    #nsurface = 506.0 # For full 917 days
-    #tot_live_days = 808.0 # For the full 917 days
     tot_live_days = 1131.0 # For the full 1238 days
-    #tot_live_days = 447.0 # For the time before the fire
     partial_live_days = 0.0
     for sr in subranges[1]:
         partial_live_days += (sr[1]-sr[0])
         print partial_live_days
 
-    nsurface *= partial_live_days/tot_live_days
-
-    nsurface = 4400.0 # 3yr data.
+    #nsurface = 4400.0 # 3yr data.
+    #nsurface = 0.0 # 3yr data.
+    nsurface = float(org_values_after_fiducial_cuts[0])+0.01 # 3yr data.
+    #nsurface = 0.0 # 3yr data.
 
     # Exp 1 is the surface term
-    #params_dict['e_surf'] = {'fix':False,'start_val':1.0/3.36,'limits':(0.0,10.0)}
-    params_dict['k1_surf'] = {'fix':False,'start_val':-0.503,'limits':(-0.7,-0.4),'error':0.1}
+    #params_dict['k1_surf'] = {'fix':False,'start_val':-0.503,'limits':(-0.7,-0.4),'error':0.1}
+    #params_dict['k2_surf'] = {'fix':True,'start_val':0.0806,'limits':(0.0,0.2),'error':0.01}
+    params_dict['t_surf'] = {'fix':True,'start_val':0.000189,'limits':(0.0,10.0),'error':0.01}
+    params_dict['k1_surf'] = {'fix':True,'start_val':-0.5125,'limits':(-0.7,-0.4),'error':0.1}
     params_dict['k2_surf'] = {'fix':True,'start_val':0.0806,'limits':(0.0,0.2),'error':0.01}
-    params_dict['t_surf'] = {'fix':False,'start_val':0.50,'limits':(0.0,10.0),'error':0.01}
     params_dict['num_surf'] = {'fix':False,'start_val':nsurface,'limits':(0.0,100000.0),'error':0.01}
 
     #params_dict['num_flat'] = {'fix':False,'start_val':3200.0,'limits':(0.0,100000.0),'error':0.01}
-    params_dict['num_comp'] = {'fix':False,'start_val':2200.0,'limits':(0.0,100000.0),'error':0.01}
-    params_dict['e_exp_flat'] = {'fix':False,'start_val':-0.05,'limits':(0.00001,10.0),'error':0.01}
-    params_dict['t_exp_flat'] = {'fix':False,'start_val':0.001,'limits':(0.0000001,10.0),'error':0.01}
+
+    #params_dict['num_comp'] = {'fix':False,'start_val':2200.0,'limits':(0.0,100000.0),'error':0.01}
+    #print "num_comp: ",float(org_values_after_fiducial_cuts[2])
+    #print org_values_after_fiducial_cuts
+    params_dict['num_comp'] = {'fix':False,'start_val':float(org_values_after_fiducial_cuts[2])+0.01,'limits':(0.0,100000.0),'error':0.01}
+    #params_dict['num_comp'] = {'fix':False,'start_val':0.0,'limits':(0.0,1000.0),'error':0.01}
+    params_dict['e_exp_flat'] = {'fix':True,'start_val':0.00001,'limits':(0.00001,10.0),'error':0.01}
+    params_dict['t_exp_flat'] = {'fix':True,'start_val':0.0002,'limits':(0.0000001,10.0),'error':0.01}
     #params_dict['flat_frac'] = {'fix':True,'start_val':0.51,'limits':(0.00001,10.0),'error':0.01}
     #params_dict['flat_frac'] = {'fix':False,'start_val':0.66,'limits':(0.00001,1.0),'error':0.01}
 
     #params_dict['flat_neutrons_slope'] = {'fix':True,'start_val':0.532,'limits':(0.00001,10.0),'error':0.01}
     #params_dict['flat_neutrons_amp'] = {'fix':True,'start_val':14.0,'limits':(0.00001,10.0),'error':0.01}
     #params_dict['flat_neutrons_offset'] = {'fix':True,'start_val':0.783,'limits':(0.00001,10.0),'error':0.01}
-    params_dict['num_neutrons'] = {'fix':False,'start_val':880.0,'limits':(0.0,100000.0),'error':0.01}
+
+    #params_dict['num_neutrons'] = {'fix':False,'start_val':880.0,'limits':(0.0,100000.0),'error':0.01}
+    params_dict['num_neutrons'] = {'fix':False,'start_val':org_values_after_fiducial_cuts[1]+0.01,'limits':(0.0,100000.0),'error':0.01}
     params_dict['flat_neutrons_slope'] = {'fix':True,'start_val':0.920,'limits':(0.00001,10.0),'error':0.01}
     params_dict['flat_neutrons_amp'] = {'fix':True,'start_val':17.4,'limits':(0.00001,10.0),'error':0.01}
     params_dict['flat_neutrons_offset'] = {'fix':True,'start_val':2.38,'limits':(0.00001,10.0),'error':0.01}
@@ -1006,6 +1011,7 @@ def main():
     print "%-15s %15.0f" % ('org_neutron',org_values_after_fiducial_cuts[1])
     print "%-15s %15.0f" % ('org_compton',org_values_after_fiducial_cuts[2])
     print "%-15s %15.0f" % ('org_lshell',org_values_after_fiducial_cuts[3])
+    print "%-15s %15.0f" % ('org_wimps',org_values_after_fiducial_cuts[4])
     print "\n"
     print "%-15s %15.7f" % ('ndata',ndata)
     print "%-15s %15.7f" % ('ndata fit',nevents_from_fit)
@@ -1013,6 +1019,8 @@ def main():
     print "%-15s %15.7f" % ('max poisson',pois(ndata,ndata))
     print "%-15s %15.7f" % ('lh sans poisson',final_lh+pois(nevents_from_fit,ndata))
     print "%-15s %15.7f" % ('final lh',final_lh)
+    print "\n"
+    print "%-15s %15.7f %5.2f %5.2e" % ('final lh/mDM/sigma_n',final_lh,values['mDM'],values['sigma_n'])
 
     name = "fit_results/results_%s.txt" % (tag)
     out_results = open(name,'w')

@@ -28,8 +28,35 @@ plt.xlabel(r'Rise times ($\mu$s)')
 plt.ylim(0)
 plt.xlim(0,6)
 
+plt.tight_layout()
+
+
+'''
+# Scatter
+plt.figure(figsize=(12,4))
+
+plt.subplot(1,3,1)
+plt.plot(energies,days,'o',markersize=1,alpha=0.1)
+plt.xlabel('Recoil energy (keVee)')
+plt.ylabel('Days since XXX')
+#plt.ylim(0)
+
+plt.subplot(1,3,2)
+plt.plot(days,risetimes,'o',markersize=1,alpha=0.1)
+plt.xlabel('Days since XXX')
+plt.ylabel(r'Rise times ($\mu$s)')
+#plt.ylim(0)
+
+plt.subplot(1,3,3)
+plt.plot(energies,risetimes,'o',markersize=1,alpha=0.1)
+plt.xlabel('Recoil energy (keVee)')
+plt.ylabel(r'Rise times ($\mu$s)')
+#plt.ylim(0)
+#plt.xlim(0,6)
 
 plt.tight_layout()
+
+'''
 
 plt.show()
 

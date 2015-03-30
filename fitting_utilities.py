@@ -188,6 +188,11 @@ def emlf_normalized_minuit(data,p,parnames,params_dict):
 
     flag = p[parnames.index('flag')]
 
+    pn = parnames
+    num_comp = p[pn.index('num_comp')]
+    num_neutrons = p[pn.index('num_neutrons')]
+    num_surf = p[pn.index('num_surf')]
+
     # Grab all the fitting paramters.
     ranges,subranges,nbins = parameters.fitting_parameters(flag)
 
@@ -272,6 +277,8 @@ def emlf_normalized_minuit(data,p,parnames,params_dict):
     #print "vals         : %12.3f %12.3f %12.3f" % (likelihood_func,pois(num_tot,ndata),likelihood_func-pois(num_tot,ndata))
     ret = likelihood_func - pois(num_tot,ndata)
     #print "vals         : %12.3f %12.3f %12.3f" % (likelihood_func,num_tot,likelihood_func-num_tot)
+    print "nll: %12.3f\tsurf/neut/comp/wimps: %8.2f %8.2f %8.2f %8.2f" % (likelihood_func,num_surf,num_neutrons,num_comp,num_wimps)
+    #print "nll         : %12.3f" % (likelihood_func)
     #ret = likelihood_func - num_tot
 
     return ret
