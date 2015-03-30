@@ -108,7 +108,7 @@ def sigmoid(x,thresh,sigma,max_val):
 ################################################################################
 # WIMP signal
 ################################################################################
-def wimp(org_day,x,AGe,mDM,sigma_n,efficiency=None,model='shm',vDeb1=340,vSag=220,v0Sag=25):
+def wimp(org_day,x,AGe,mDM,sigma_n,efficiency=None,model='shm',vDeb1=340,vSag=220,v0Sag=25,num_wimps=None):
 
     if not (model=='shm' or model=='stream' or model=='debris'):
         print "Not correct model for plotting WIMP PDF!"
@@ -154,9 +154,9 @@ def wimp(org_day,x,AGe,mDM,sigma_n,efficiency=None,model='shm',vDeb1=340,vSag=22
     dEr_dEee = dmm.quench_dEr_dEee(x)
     dR *= dEr_dEee
 
-    # Do the CoGeNT convolution.
-    #smeared,smeared_x = cogent_convolve(x,dR)
-    #print smeared-dR
+    # Normalize
+    if num_wimps is not None:
+        dR /= num_wimps
 
     return dR
     #return smeared
@@ -182,7 +182,7 @@ def compton_events(data,pars,lo,hi,subranges=None,efficiency=None):
     else:
         pdf *= pdfs.exp(y,pars['t_exp_flat'],ylo,yhi)
 
-    pdf *= pars['num_comp']
+    #pdf *= pars['num_comp']
 
     # Rise time
     pdf *= rtf # This will be the fast rise times
@@ -209,7 +209,7 @@ def neutron_events(data,pars,lo,hi,subranges=None,efficiency=None):
     else:
         pdf *= pdfs.poly(y,[],ylo,yhi)
 
-    pdf *= pars['num_neutrons']
+    #pdf *= pars['num_neutrons']
 
     # Rise time
     pdf *= rtf # This will be the fast rise times
@@ -284,7 +284,7 @@ def surface_events(data,pars,lo,hi,subranges=None,efficiency=None):
     pdf *= rts # This will be the slow rise times
 
     # Normalization
-    pdf *= pars['num_surf']
+    #pdf *= pars['num_surf']
     
     return pdf
 
@@ -323,6 +323,8 @@ def fitfunc(data,p,parnames,params_dict):
     rtf = data[3]
     rts = data[4]
     rtflat = data[5]
+    precached_num_wimps = data[6]
+    precached_wimp_pdf = data[7]
 
     xlo = params_dict['var_e']['limits'][0]
     xhi = params_dict['var_e']['limits'][1]
@@ -422,11 +424,12 @@ def fitfunc(data,p,parnames,params_dict):
 
     if flag==2 or flag==3 or flag==4 or flag==6:
         num_wimps = 0
-        for sr in subranges[1]:
-            #start = time.time()
-            num_wimps += integrate.dblquad(wimp,loE,hiE,lambda x: sr[0],lambda x:sr[1],args=(AGe,mDM,sigma_n,efficiency,wimp_model),epsabs=dblqtol)[0]*(0.333)
-            #duration = time.time() - start
-            #print "duration: ",1000*duration
+        if precached_num_wimps is None:
+            for sr in subranges[1]:
+                num_wimps += integrate.dblquad(wimp,loE,hiE,lambda x: sr[0],lambda x:sr[1],args=(AGe,mDM,sigma_n,efficiency,wimp_model),epsabs=dblqtol)[0]*(0.333)
+        else:
+            num_wimps = precached_num_wimps
+
         num_tot += num_wimps
 
     #print "fitfunc num_tot: %12.3f" % (num_tot)
@@ -499,43 +502,66 @@ def fitfunc(data,p,parnames,params_dict):
         pdf *= pdfs.cos(y,spike_freq,spike_phase,spike_amp,spike_offst,ylo,yhi,subranges=subranges[1])
         pdf *= rtf # This will be the fast rise times
         pdf *= num_spike/num_tot
+
+        tot_pdf += pdf
     
     elif flag==2 or flag==3 or flag==4 or flag==6:
         #print "num_wimps mDM: %12.3f %12.3f %12.3e" % (num_wimps,mDM,sigma_n)
-        wimp_norm = num_wimps
+        #wimp_norm = num_wimps
         #print "wimp_norm: ",wimp_norm
-        pdf = wimp(y,x,AGe,mDM,sigma_n,efficiency=efficiency,model=wimp_model)/(1.0*num_tot)
-        for d0,d1,t in zip(data[0],data[1],pdf):
-            if t<0:
-                print "t is less than 0: ",d0,d1,t, np.log(t)
+        pdf = None
+        if precached_wimp_pdf is None:
+            pdf = wimp(y,x,AGe,mDM,sigma_n,efficiency=efficiency,model=wimp_model) #/(1.0*num_tot)
+            for d0,d1,t in zip(data[0],data[1],pdf):
+                if t<0:
+                    print "t is less than 0: ",d0,d1,t, np.log(t)
+            pdf /= num_wimps
 
+        else:
+            pdf = precached_wimp_pdf.copy()
+            #print pdf
+
+        #print "WIMP"
+        #print pdf[0:10]
         pdf *= (0.333) # Active volume of CoGeNT
+        #print pdf[0:10]
         pdf *= rtf # This will be the fast rise times
+        #print pdf[0:10]
+        pdf *= (num_wimps/num_tot)
+        #print pdf[0:10]
         #print "wimp pdf: ",pdf[0:8]*(num_tot)/num_wimps
         #print "wimp pdf: ",pdf[0:8]
 
-    #print "surf/neut/comp/wimps: %8.2f %8.2f %8.2f %8.2f" % (num_surf,num_neutrons,num_comp,num_wimps)
-    #print "wimp pdf: ",pdf[0:8]
-    tot_pdf += pdf
+        tot_pdf += pdf
 
     ############################################################################
     # Second exponential in energy (Surface events)
     ############################################################################
+    #print "SURF"
     pdf = surface_events(data,local_pars,[xlo,ylo],[xhi,yhi],subranges=subranges,efficiency=efficiency)
+    pdf *= num_surf
     pdf /= num_tot # Need to divide by num_tot because of the normalization for the total PDF.
-    if flag!=5 and flag!=6:
-        tot_pdf += pdf
+    #print pdf[0:10]
+    tot_pdf += pdf
 
     ############################################################################
     # Neutrons and comptons term
     ############################################################################
+    #print "NEUTRONS"
     pdf = neutron_events(data,local_pars,[xlo,ylo],[xhi,yhi],subranges=subranges,efficiency=efficiency)
+    pdf *= num_neutrons
     pdf /= num_tot # Need to divide by num_tot because of the normalization for the total PDF.
+    #print pdf[0:10]
     tot_pdf += pdf
 
+    #print "COMPTONS"
     pdf = compton_events(data,local_pars,[xlo,ylo],[xhi,yhi],subranges=subranges,efficiency=efficiency)
+    pdf *= num_comp
     pdf /= num_tot # Need to divide by num_tot because of the normalization for the total PDF.
+    #print pdf[0:10]
     tot_pdf += pdf
+
+    #exit()
 
     ############################################################################
     # Flat term
@@ -548,7 +574,8 @@ def fitfunc(data,p,parnames,params_dict):
     #print "%f %f %f" % (num_tot,num_wimps/num_tot,num_flat)
     #print "%f %f" % (num_tot,num_wimps/num_tot)
 
-    return tot_pdf,num_wimps
+    del pdf
+    return tot_pdf,num_wimps,num_tot
 ################################################################################
 
 
