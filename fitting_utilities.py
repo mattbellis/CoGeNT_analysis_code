@@ -199,6 +199,7 @@ def emlf_normalized_minuit(data,p,parnames,params_dict):
     wimp_model = None
 
     num_tot = 0
+    '''
     for name in parnames:
         if flag==0 or flag==1 or flag==10:
             if 'num_' in name or 'ncalc' in name:
@@ -215,7 +216,9 @@ def emlf_normalized_minuit(data,p,parnames,params_dict):
     # MC
     if flag==6:
         num_tot += p[parnames.index('num_flat')]
+    '''
 
+    '''
     if flag==2 or flag==3 or flag==4 or flag==6:
         mDM = p[parnames.index('mDM')]
         sigma_n = p[parnames.index('sigma_n')]
@@ -231,15 +234,17 @@ def emlf_normalized_minuit(data,p,parnames,params_dict):
             wimp_model = 'stream'
         elif flag==6:
             wimp_model = 'shm'
+    '''
 
         #subranges = [[],[[1,68],[75,102],[108,306],[309,459]]]
         #subranges = [[],[[1,68],[75,102],[108,306],[309,459],[551,917]]]
-        '''
+    '''
         subranges = [[],[[1,68],[75,102],[108,306],[309,459]]]
         if flag==5 or flag==6:
             subranges = [[],[[1,917]]]
-        '''
+    '''
 
+    '''
         max_val = 0.86786
         threshold = 0.345
         sigmoid_sigma = 0.241
@@ -248,23 +253,14 @@ def emlf_normalized_minuit(data,p,parnames,params_dict):
         eff_scaling = 0.9 # 3yr data
 
         efficiency = lambda x: sigmoid(x,threshold,sigmoid_sigma,max_val)/eff_scaling
+    '''
 
-        #num_wimps = 0
-        '''
-        for sr in subranges[1]:
-            start = time.time()
-            num_wimps += integrate.dblquad(wimp,loE,hiE,lambda x: sr[0],lambda x:sr[1],args=(AGe,mDM,sigma_n,efficiency,wimp_model),epsabs=dblqtol)[0]*(0.333)
-            duration = time.time() - start
-            print "duration: ",1000*duration
-
-        '''
-        #print "num_wimps: ",num_wimps
-        #num_tot += num_wimps
-
-    tot_pdf,num_wimps = fitfunc(data,p,parnames,params_dict)
+    tot_pdf,num_wimps,num_tot = fitfunc(data,p,parnames,params_dict)
     #print "num_wimps: ",num_wimps
+    '''
     if flag==2 or flag==3 or flag==4 or flag==6:
         num_tot += num_wimps
+    '''
 
     #print "pois:         %12.3f %12.3f" % (num_tot,ndata)
     #likelihood_func = (-np.log(fitfunc(data,p,parnames,params_dict))).sum()

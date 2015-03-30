@@ -81,6 +81,31 @@ def main():
         plt.switch_backend('Agg')
 
     ############################################################################
+    # What WIMP model are we using?
+    ############################################################################
+    wimp_model = None
+    if args.fit==2:
+        wimp_model = 'shm'
+    elif args.fit==3:
+        wimp_model = 'debris'
+    elif args.fit==4:
+        wimp_model = 'stream'
+    elif args.fit==6:
+        wimp_model = 'shm'
+
+    ############################################################################
+    # Set up the efficiency function.
+    ############################################################################
+    max_val = 0.86786
+    threshold = 0.345
+    sigmoid_sigma = 0.241
+
+    #eff_scaling = 1.0 # old data
+    eff_scaling = 0.9 # 3yr dataset
+    efficiency = lambda x: sigmoid(x,threshold,sigmoid_sigma,max_val)/eff_scaling
+    if args.turn_off_eff:
+        efficiency = lambda x: 1.0
+    ############################################################################
     # Declare the ranges.
     ############################################################################
     ranges,subranges,nbins = parameters.fitting_parameters(args.fit)
@@ -208,7 +233,6 @@ def main():
 
     nevents = float(len(data[0]))
 
-    num_wimps = 0.0
     ############################################################################
     # Pre-calculate the slow and fast log-normal probabilities.
     ############################################################################
@@ -315,6 +339,32 @@ def main():
 
     data.append(rt_flat)
 
+
+    ############################################################################
+    # Calc number of WIMPs for caching.
+    ############################################################################
+    num_wimps = None
+    if args.mDM is not None and args.sigma_n is not None:
+        num_wimps = 0.0
+        for sr in subranges[1]:
+            num_wimps += integrate.dblquad(wimp,ranges[0][0],ranges[0][1],lambda x:sr[0],lambda x:sr[1],args=(AGe,args.mDM,args.sigma_n,efficiency,wimp_model),epsabs=dblqtol)[0]*(0.333)
+
+    #print "# WIMPS: %5.2f" % (num_wimps)
+
+    data.append(num_wimps)
+
+    ##### Precalculate the WIMP PDF
+    print "precalculating the WIMP PDF....."
+    wimp_pdf = None
+    if args.mDM is not None and args.sigma_n is not None:
+        wimp_pdf = wimp(data[1],data[0],AGe,args.mDM,args.sigma_n,efficiency=efficiency,model=wimp_model,num_wimps=num_wimps)
+
+    print wimp_pdf
+    if wimp_pdf is not None:
+        data.append(wimp_pdf.copy())
+    else:
+        data.append(wimp_pdf)
+
     #figrt0 = plt.figure(figsize=(12,4),dpi=100)
     #axrt0 = figrt0.add_subplot(1,1,1)
     #lch.hist_err(data[2],bins=nbins[2],range=ranges[2],axes=axrt0)
@@ -397,18 +447,6 @@ def main():
     #ax1.set_ylim(0.0,420.0)
     #plt.show()
     #exit()
-    ############################################################################
-    # Set up the efficiency function.
-    ############################################################################
-    max_val = 0.86786
-    threshold = 0.345
-    sigmoid_sigma = 0.241
-
-    #eff_scaling = 1.0 # old data
-    eff_scaling = 0.9 # 3yr dataset
-    efficiency = lambda x: sigmoid(x,threshold,sigmoid_sigma,max_val)/eff_scaling
-    if args.turn_off_eff:
-        efficiency = lambda x: 1.0
 
     ############################################################################
     # Look at the rise-time information.
@@ -484,7 +522,7 @@ def main():
         name = "ls_ncalc%d" % (i)
         #if i==999:
         if i==2 or i==3:
-            params_dict[name] = {'fix':True,'start_val':0.0,'error':0.01,'limits':(0,50000)}
+            params_dict[name] = {'fix':False,'start_val':val,'error':0.01,'limits':(0,50000)}
         else:
             params_dict[name] = {'fix':True,'start_val':val,'error':0.01,'limits':(0,50000)}
     for i,val in enumerate(decay_constants):
@@ -503,8 +541,9 @@ def main():
         print partial_live_days
 
     #nsurface = 4400.0 # 3yr data.
+    nsurface = 6000.0 # 3yr data.
     #nsurface = 0.0 # 3yr data.
-    nsurface = float(org_values_after_fiducial_cuts[0])+0.01 # 3yr data.
+    #nsurface = float(org_values_after_fiducial_cuts[0])+1.01 # 3yr data.
     #nsurface = 0.0 # 3yr data.
 
     # Exp 1 is the surface term
@@ -518,9 +557,9 @@ def main():
     #params_dict['num_flat'] = {'fix':False,'start_val':3200.0,'limits':(0.0,100000.0),'error':0.01}
 
     #params_dict['num_comp'] = {'fix':False,'start_val':2200.0,'limits':(0.0,100000.0),'error':0.01}
-    #print "num_comp: ",float(org_values_after_fiducial_cuts[2])
-    #print org_values_after_fiducial_cuts
-    params_dict['num_comp'] = {'fix':False,'start_val':float(org_values_after_fiducial_cuts[2])+0.01,'limits':(0.0,100000.0),'error':0.01}
+    params_dict['num_comp'] = {'fix':False,'start_val':500.0,'limits':(0.0,100000.0),'error':0.01}
+    #params_dict['num_comp'] = {'fix':True,'start_val':0.0,'limits':(0.0,100000.0),'error':0.01}
+    #params_dict['num_comp'] = {'fix':False,'start_val':float(org_values_after_fiducial_cuts[2])+0.000001,'limits':(0.0,100000.0),'error':0.01}
     #params_dict['num_comp'] = {'fix':False,'start_val':0.0,'limits':(0.0,1000.0),'error':0.01}
     params_dict['e_exp_flat'] = {'fix':True,'start_val':0.00001,'limits':(0.00001,10.0),'error':0.01}
     params_dict['t_exp_flat'] = {'fix':True,'start_val':0.0002,'limits':(0.0000001,10.0),'error':0.01}
@@ -532,10 +571,16 @@ def main():
     #params_dict['flat_neutrons_offset'] = {'fix':True,'start_val':0.783,'limits':(0.00001,10.0),'error':0.01}
 
     #params_dict['num_neutrons'] = {'fix':False,'start_val':880.0,'limits':(0.0,100000.0),'error':0.01}
-    params_dict['num_neutrons'] = {'fix':False,'start_val':org_values_after_fiducial_cuts[1]+0.01,'limits':(0.0,100000.0),'error':0.01}
-    params_dict['flat_neutrons_slope'] = {'fix':True,'start_val':0.920,'limits':(0.00001,10.0),'error':0.01}
-    params_dict['flat_neutrons_amp'] = {'fix':True,'start_val':17.4,'limits':(0.00001,10.0),'error':0.01}
-    params_dict['flat_neutrons_offset'] = {'fix':True,'start_val':2.38,'limits':(0.00001,10.0),'error':0.01}
+    params_dict['num_neutrons'] = {'fix':False,'start_val':1500.0,'limits':(0.0,100000.0),'error':0.01}
+    #params_dict['num_neutrons'] = {'fix':False,'start_val':org_values_after_fiducial_cuts[1]+1.01,'limits':(0.0,100000.0),'error':0.01}
+    # Orig
+    #params_dict['flat_neutrons_slope'] = {'fix':True,'start_val':0.920,'limits':(0.00001,10.0),'error':0.01}
+    #params_dict['flat_neutrons_amp'] = {'fix':True,'start_val':17.4,'limits':(0.00001,10.0),'error':0.01}
+    #params_dict['flat_neutrons_offset'] = {'fix':True,'start_val':2.38,'limits':(0.00001,10.0),'error':0.01}
+    # Try no flat term
+    params_dict['flat_neutrons_slope'] = {'fix':False,'start_val':1.20,'limits':(0.00001,10.0),'error':0.01}
+    params_dict['flat_neutrons_amp'] = {'fix':True,'start_val':1.0,'limits':(0.00001,10.0),'error':0.01}
+    params_dict['flat_neutrons_offset'] = {'fix':True,'start_val':0.00,'limits':(0.00001,10.0),'error':0.01}
 
     #params_dict['num_exp0'] = {'fix':False,'start_val':296.0,'limits':(0.0,10000.0),'error':0.01}
     params_dict['num_exp0'] = {'fix':True,'start_val':0.0,'limits':(0.0,10000.0),'error':0.01}
@@ -590,7 +635,7 @@ def main():
 
 
     m.migrad()
-    #m.hesse()
+    m.hesse()
 
     print "Finished fit!!\n"
 
@@ -685,19 +730,11 @@ def main():
 
     # Plot wimp term
     if args.fit==2 or args.fit==3 or args.fit==4 or args.fit==6:
-        wimp_model = None
-        if args.fit==2:
-            wimp_model = 'shm'
-        elif args.fit==3:
-            wimp_model = 'debris'
-        elif args.fit==4:
-            wimp_model = 'stream'
-        elif args.fit==6:
-            wimp_model = 'shm'
 
-        num_wimps = 0.0
-        for sr in subranges[1]:
-            num_wimps += integrate.dblquad(wimp,ranges[0][0],ranges[0][1],lambda x:sr[0],lambda x:sr[1],args=(AGe,values['mDM'],values['sigma_n'],efficiency,wimp_model),epsabs=dblqtol)[0]*(0.333)
+        if num_wimps is None:
+            num_wimps = 0.0
+            for sr in subranges[1]:
+                num_wimps += integrate.dblquad(wimp,ranges[0][0],ranges[0][1],lambda x:sr[0],lambda x:sr[1],args=(AGe,values['mDM'],values['sigma_n'],efficiency,wimp_model),epsabs=dblqtol)[0]*(0.333)
 
         #func = lambda x: plot_wimp_er(x,AGe,values['mDM'],values['sigma_n'],time_range=[1,459],model=wimp_model)
         func = lambda x: plot_wimp_er(x,AGe,values['mDM'],values['sigma_n'],time_range=ranges[1],model=wimp_model)
@@ -962,7 +999,7 @@ def main():
 
     ax1.set_xlim(ranges[1])
     #ax1.set_ylim(0.0,values['num_flat']/8)
-    ax1.set_ylim(0.0,350)
+    #ax1.set_ylim(0.0,350)
     ax1.set_xlabel("Days since 12/4/2009",fontsize=12)
     label = "Interactions/%4.1f days" % (bin_widths[1])
     ax1.set_ylabel(label,fontsize=12)
@@ -989,11 +1026,17 @@ def main():
     #print "num spike: %f" % (values['num_spike'])
 
     # Nums
+    nlshell = 0.0
     nevents_from_fit = 0
     for v in values:
         if v.find('num')>=0 or v.find('ncalc')>=0:
             nevents_from_fit += values[v]
             print "%-15s %9.4f" % (v,values[v])
+        if v.find('ls_ncalc')>=0:
+            nlshell += values[v]
+
+    if num_wimps is None:
+        num_wimps = 0.0
     print "%-15s %9.4f" % ('num_wimps',num_wimps)
     nevents_from_fit += num_wimps
     print "\nnevents_from_fit: %f" % (nevents_from_fit)
@@ -1004,6 +1047,7 @@ def main():
         if not m.is_fixed(v):
             print "%-15s %9.4f +/- %9.4f     %9.4f" % (v,values[v],errors[v],values_initial[v])
 
+    print "%-15s %9.4f +/- %9.4f     %9.4f" % ('# l-shell',nlshell,0.0,0.0)
     ndata = len(data[0])
 
     print "\n"
@@ -1020,7 +1064,10 @@ def main():
     print "%-15s %15.7f" % ('lh sans poisson',final_lh+pois(nevents_from_fit,ndata))
     print "%-15s %15.7f" % ('final lh',final_lh)
     print "\n"
-    print "%-15s %15.7f %5.2f %5.2e" % ('final lh/mDM/sigma_n',final_lh,values['mDM'],values['sigma_n'])
+    if args.fit==2 or args.fit==3 or args.fit==4:
+        print "%-15s %15.7f %5.2f %5.2e" % ('final lh/mDM/sigma_n',final_lh,values['mDM'],values['sigma_n'])
+    else:
+        print "%-15s %15.7f %5.2f %5.2e" % ('final lh/mDM/sigma_n',final_lh,0.0,0.0)
 
     name = "fit_results/results_%s.txt" % (tag)
     out_results = open(name,'w')
