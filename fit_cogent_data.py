@@ -98,16 +98,18 @@ def main():
     #infile_name = 'data/high_gain.txt'
     #tdays,energies = get_cogent_data(infile_name,first_event=first_event,calibration=0)
 
-    org_values = [0.0,0.0,0.0,0.0]
+    #org_values = [0.0,0.0,0.0,0.0]
+    org_values = [4000,2000,0,0]
     infile_name = 'data/LE.txt'
     if args.input_file_name is not None:
         infile_name = args.input_file_name
         tdays,energies,rise_time = get_3yr_cogent_data(infile_name,first_event=first_event,calibration=999)
         vals = infile_name.split('_')
-        org_values[0] = int(vals[5])
-        org_values[1] = int(vals[9])
-        org_values[2] = int(vals[13])
-        org_values[3] = int(vals[17])
+        if len(vals)>17:
+            org_values[0] = int(vals[5])
+            org_values[1] = int(vals[9])
+            org_values[2] = int(vals[13])
+            org_values[3] = int(vals[17])
         print "INPUT FILE: %s" % (infile_name)
     else:
         tdays,energies,rise_time = get_3yr_cogent_data(infile_name,first_event=first_event,calibration=0)
@@ -483,6 +485,8 @@ def main():
             params_dict[name] = {'fix':False,'start_val':val,'error':0.01,'limits':(0,50000)}
         else:
             params_dict[name] = {'fix':True,'start_val':val,'error':0.01,'limits':(0,50000)}
+        # FOR TESTING SET LSHELL TO 0
+        params_dict[name] = {'fix':True,'start_val':0.0,'error':0.01,'limits':(0,50000)}
     for i,val in enumerate(decay_constants):
         name = "ls_dc%d" % (i)
         params_dict[name] = {'fix':True,'start_val':val,'error':0.01}
