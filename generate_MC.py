@@ -134,6 +134,8 @@ def gen_shm_events(maxpts,max_days,mDM,sigma_n,name_of_output_file,pars):
 
         re = dmm.quench_keVee_to_keVr(e)
         prob = dRdErSHM(re,t,target_atom,mDM,sigma_n)
+
+        prob *= rt_fast
         #prob = compton_events(data,pars,lo,hi,subranges=subranges,efficiency=None)
 
         if max_prob_calculated<prob:
