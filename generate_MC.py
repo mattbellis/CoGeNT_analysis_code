@@ -461,11 +461,11 @@ if len(sys.argv)>2:
 print "Generating data!!!!!"
 #print datetime.datetime.now()
 
-#tag = "bulk_samples_1M"
+tag = "bulk_samples_1M"
 #tag = "bulk_samples_100k"
-tag = "bulk_samples_10k"
+#tag = "bulk_samples_10k"
 #tag = "bulk_samples_1M"
-nevents = 10000
+nevents = 1000000
 
 etot = np.array([])
 dtot = np.array([])
