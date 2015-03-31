@@ -174,7 +174,7 @@ def cut_events_outside_range(data,ranges):
         print x,y
     '''
 
-    print data
+    #print data
     for i in xrange(len(data)):
         #print len(data[i][index==True])
         #print len(data[i])

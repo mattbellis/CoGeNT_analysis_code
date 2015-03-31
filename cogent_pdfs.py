@@ -182,10 +182,9 @@ def compton_events(data,pars,lo,hi,subranges=None,efficiency=None):
     else:
         pdf *= pdfs.exp(y,pars['t_exp_flat'],ylo,yhi)
 
-    #pdf *= pars['num_comp']
-
     # Rise time
     pdf *= rtf # This will be the fast rise times
+    #pdf = rtf # This will be the fast rise times
 
     return pdf
 
@@ -209,10 +208,9 @@ def neutron_events(data,pars,lo,hi,subranges=None,efficiency=None):
     else:
         pdf *= pdfs.poly(y,[],ylo,yhi)
 
-    #pdf *= pars['num_neutrons']
-
     # Rise time
     pdf *= rtf # This will be the fast rise times
+    #pdf = rtf # This will be the fast rise times
 
     return pdf
 
@@ -249,10 +247,6 @@ def flat_events(data,pars,lo,hi,subranges=None,efficiency=None):
     # Rise time
     pdf *= rtf # This will be the fast rise times
 
-    # Normalization
-    # For when we use the frac (ratio of the two)
-    #pdf *= pars['num_flat']
-    
     return pdf
 
 
@@ -282,10 +276,8 @@ def surface_events(data,pars,lo,hi,subranges=None,efficiency=None):
 
     # Rise time
     pdf *= rts # This will be the slow rise times
+    #pdf = rts # This will be the slow rise times
 
-    # Normalization
-    #pdf *= pars['num_surf']
-    
     return pdf
 
 
@@ -526,6 +518,7 @@ def fitfunc(data,p,parnames,params_dict):
         pdf *= (0.333) # Active volume of CoGeNT
         #print pdf[0:10]
         pdf *= rtf # This will be the fast rise times
+        #pdf = rtf # This will be the fast rise times
         #print pdf[0:10]
         pdf *= (num_wimps/num_tot)
         #print pdf[0:10]
