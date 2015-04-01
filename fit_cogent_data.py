@@ -522,9 +522,9 @@ def main():
         name = "ls_ncalc%d" % (i)
         #if i==999:
         if i==2 or i==3:
-            params_dict[name] = {'fix':True,'start_val':0.0,'error':0.01,'limits':(0,50000)}
+            params_dict[name] = {'fix':False,'start_val':val,'error':0.01,'limits':(0,50000)}
         else:
-            params_dict[name] = {'fix':True,'start_val':0.0,'error':0.01,'limits':(0,50000)}
+            params_dict[name] = {'fix':True,'start_val':val,'error':0.01,'limits':(0,50000)}
     for i,val in enumerate(decay_constants):
         name = "ls_dc%d" % (i)
         params_dict[name] = {'fix':True,'start_val':val,'error':0.01}
@@ -578,7 +578,11 @@ def main():
     #params_dict['flat_neutrons_amp'] = {'fix':True,'start_val':17.4,'limits':(0.00001,10.0),'error':0.01}
     #params_dict['flat_neutrons_offset'] = {'fix':True,'start_val':2.38,'limits':(0.00001,10.0),'error':0.01}
     # Try no flat term
-    params_dict['flat_neutrons_slope'] = {'fix':True,'start_val':0.920,'limits':(0.00001,10.0),'error':0.01}
+    #params_dict['flat_neutrons_slope'] = {'fix':True,'start_val':0.920,'limits':(0.00001,10.0),'error':0.01}
+    #params_dict['flat_neutrons_amp'] = {'fix':True,'start_val':1.0,'limits':(0.00001,10.0),'error':0.01}
+    #params_dict['flat_neutrons_offset'] = {'fix':True,'start_val':0.00,'limits':(0.00001,10.0),'error':0.01}
+    #
+    params_dict['flat_neutrons_slope'] = {'fix':True,'start_val':0.520,'limits':(0.00001,10.0),'error':0.01}
     params_dict['flat_neutrons_amp'] = {'fix':True,'start_val':1.0,'limits':(0.00001,10.0),'error':0.01}
     params_dict['flat_neutrons_offset'] = {'fix':True,'start_val':0.00,'limits':(0.00001,10.0),'error':0.01}
 
