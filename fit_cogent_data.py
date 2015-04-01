@@ -302,8 +302,8 @@ def main():
     ############################################################################
 
     ####### DO WE NEED THIS FOR THE NORMALIZATION in 2D? #######################
-    rt_fast /= (ranges[0][1]-ranges[0][0])
-    rt_slow /= (ranges[0][1]-ranges[0][0])
+    #rt_fast /= (ranges[0][1]-ranges[0][0])
+    #rt_slow /= (ranges[0][1]-ranges[0][0])
 
     #print (ranges[0][1]-ranges[0][0])
 
@@ -541,9 +541,9 @@ def main():
         print partial_live_days
 
     #nsurface = 4400.0 # 3yr data.
-    nsurface = 6000.0 # 3yr data.
+    #nsurface = 6000.0 # 3yr data.
     #nsurface = 0.0 # 3yr data.
-    #nsurface = float(org_values_after_fiducial_cuts[0])+1.01 # 3yr data.
+    nsurface = float(org_values_after_fiducial_cuts[0])+1.01 # 3yr data.
     #nsurface = 0.0 # 3yr data.
 
     # Exp 1 is the surface term
@@ -557,9 +557,9 @@ def main():
     #params_dict['num_flat'] = {'fix':False,'start_val':3200.0,'limits':(0.0,100000.0),'error':0.01}
 
     #params_dict['num_comp'] = {'fix':False,'start_val':2200.0,'limits':(0.0,100000.0),'error':0.01}
-    params_dict['num_comp'] = {'fix':False,'start_val':500.0,'limits':(0.0,100000.0),'error':0.01}
+    #params_dict['num_comp'] = {'fix':False,'start_val':1500.0,'limits':(0.0,100000.0),'error':0.01}
     #params_dict['num_comp'] = {'fix':True,'start_val':0.0,'limits':(0.0,100000.0),'error':0.01}
-    #params_dict['num_comp'] = {'fix':False,'start_val':float(org_values_after_fiducial_cuts[2])+0.000001,'limits':(0.0,100000.0),'error':0.01}
+    params_dict['num_comp'] = {'fix':False,'start_val':float(org_values_after_fiducial_cuts[2])+0.000001,'limits':(0.0,100000.0),'error':0.01}
     #params_dict['num_comp'] = {'fix':False,'start_val':0.0,'limits':(0.0,1000.0),'error':0.01}
     params_dict['e_exp_flat'] = {'fix':True,'start_val':0.00001,'limits':(0.00001,10.0),'error':0.01}
     params_dict['t_exp_flat'] = {'fix':True,'start_val':0.0002,'limits':(0.0000001,10.0),'error':0.01}
@@ -571,14 +571,18 @@ def main():
     #params_dict['flat_neutrons_offset'] = {'fix':True,'start_val':0.783,'limits':(0.00001,10.0),'error':0.01}
 
     #params_dict['num_neutrons'] = {'fix':False,'start_val':880.0,'limits':(0.0,100000.0),'error':0.01}
-    params_dict['num_neutrons'] = {'fix':False,'start_val':1500.0,'limits':(0.0,100000.0),'error':0.01}
-    #params_dict['num_neutrons'] = {'fix':False,'start_val':org_values_after_fiducial_cuts[1]+1.01,'limits':(0.0,100000.0),'error':0.01}
+    #params_dict['num_neutrons'] = {'fix':False,'start_val':1500.0,'limits':(0.0,100000.0),'error':0.01}
+    params_dict['num_neutrons'] = {'fix':False,'start_val':org_values_after_fiducial_cuts[1]+1.01,'limits':(0.0,100000.0),'error':0.01}
     # Orig
     #params_dict['flat_neutrons_slope'] = {'fix':True,'start_val':0.920,'limits':(0.00001,10.0),'error':0.01}
     #params_dict['flat_neutrons_amp'] = {'fix':True,'start_val':17.4,'limits':(0.00001,10.0),'error':0.01}
     #params_dict['flat_neutrons_offset'] = {'fix':True,'start_val':2.38,'limits':(0.00001,10.0),'error':0.01}
     # Try no flat term
-    params_dict['flat_neutrons_slope'] = {'fix':False,'start_val':1.20,'limits':(0.00001,10.0),'error':0.01}
+    #params_dict['flat_neutrons_slope'] = {'fix':True,'start_val':0.920,'limits':(0.00001,10.0),'error':0.01}
+    #params_dict['flat_neutrons_amp'] = {'fix':True,'start_val':1.0,'limits':(0.00001,10.0),'error':0.01}
+    #params_dict['flat_neutrons_offset'] = {'fix':True,'start_val':0.00,'limits':(0.00001,10.0),'error':0.01}
+    #
+    params_dict['flat_neutrons_slope'] = {'fix':True,'start_val':0.520,'limits':(0.00001,10.0),'error':0.01}
     params_dict['flat_neutrons_amp'] = {'fix':True,'start_val':1.0,'limits':(0.00001,10.0),'error':0.01}
     params_dict['flat_neutrons_offset'] = {'fix':True,'start_val':0.00,'limits':(0.00001,10.0),'error':0.01}
 

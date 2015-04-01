@@ -1,4 +1,3 @@
-#import dm_models as dmm
 import matplotlib.pylab as plt
 import numpy as np
 import chris_kelso_code as dmm
@@ -233,7 +232,8 @@ def gen_neutron_events(maxpts,max_days,name_of_output_file,pars):
     elo = lo[0]
     ehi = hi[0]
 
-    max_prob = 0.9
+    #max_prob = 0.9
+    max_prob = 0.0012
     #max_prob = 3.3
     print "Max prob currently is: %f" % (max_prob)
     energies = []
