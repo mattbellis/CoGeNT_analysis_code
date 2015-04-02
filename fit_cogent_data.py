@@ -550,8 +550,8 @@ def main():
     #params_dict['k1_surf'] = {'fix':False,'start_val':-0.503,'limits':(-0.7,-0.4),'error':0.1}
     #params_dict['k2_surf'] = {'fix':True,'start_val':0.0806,'limits':(0.0,0.2),'error':0.01}
     params_dict['t_surf'] = {'fix':True,'start_val':0.000189,'limits':(0.0,10.0),'error':0.01}
-    params_dict['k1_surf'] = {'fix':True,'start_val':-0.5125,'limits':(-0.7,-0.4),'error':0.1}
-    params_dict['k2_surf'] = {'fix':True,'start_val':0.0806,'limits':(0.0,0.2),'error':0.01}
+    params_dict['k1_surf'] = {'fix':False,'start_val':-0.5641,'limits':(-0.7,-0.4),'error':0.1}
+    params_dict['k2_surf'] = {'fix':False,'start_val':0.0974,'limits':(0.0,0.2),'error':0.01}
     params_dict['num_surf'] = {'fix':False,'start_val':nsurface,'limits':(0.0,100000.0),'error':0.01}
 
     #params_dict['num_flat'] = {'fix':False,'start_val':3200.0,'limits':(0.0,100000.0),'error':0.01}
