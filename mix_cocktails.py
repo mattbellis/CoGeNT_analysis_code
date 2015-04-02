@@ -57,9 +57,9 @@ if len(sys.argv)>1:
     nsamples = int(sys.argv[1])
 
 bkg_names = ['surface','neutron','compton','lshell','shm_wimps']
-#tag = '100k'
+tag = '100k'
 #tag = '1M'
-tag = '10k'
+#tag = '10k'
 infile_names = []
 for b in bkg_names:
     name = "MC_files/mc_%s_bulk_samples_%s.dat" % (b,tag)
@@ -67,11 +67,11 @@ for b in bkg_names:
 
 #central_values = [4482, 3140, 975]
 #central_values = [4482, 862, 2287, 975]
-#central_values = [7000, 1350, 3650, 1250]
+central_values = [7000, 1350, 3650, 1250, 0] # Background only for FIT0001
 #central_values = [7000, 1500, 0, 1250]
 #central_values = [0, 1500, 1500, 0]
 #central_values = [1000, 1500, 0, 0, 385]
-central_values = [1000, 1500, 1500, 0, 0]
+#central_values = [1000, 1500, 1500, 0, 0]
 ranges,subranges,nbins = parameters.fitting_parameters(0)
 
 #data = [tdays,energies,rise_time]
@@ -105,7 +105,8 @@ for n in nentries:
 for i in xrange(0,nsamples):
     tot_bkgs = np.array([])
     num_to_grab = []
-    testname = "MC_files/sample"
+    #testname = "MC_files/sample"
+    testname = "MC_files/sample_FIT0001"
     for bkg,bkg_name,index,cv in zip(bkgs,bkg_names,indices,central_values):
 
         np.random.shuffle(index)
