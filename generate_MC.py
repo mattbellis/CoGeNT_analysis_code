@@ -54,7 +54,7 @@ def gen_surface_events(maxpts,max_days,name_of_output_file,pars):
     ehi = hi[0]
 
     max_prob_calculated = -999
-    max_prob = 1.48
+    max_prob = 0.00035
     #max_prob = 0.7
     print "Max prob currently is: %f" % (max_prob)
     energies = []
@@ -174,9 +174,9 @@ def gen_compton_events(maxpts,max_days,name_of_output_file,pars):
     elo = lo[0]
     ehi = hi[0]
 
-    max_prob = 3.3
-    #max_prob = 17.
-    #print "Max prob currently is: %f" % (max_prob)
+    #max_prob = 3.3
+    max_prob = 0.00155
+    print "Max prob currently is: %f" % (max_prob)
     energies = []
     days = []
     rise_times = []
@@ -232,8 +232,8 @@ def gen_neutron_events(maxpts,max_days,name_of_output_file,pars):
     elo = lo[0]
     ehi = hi[0]
 
-    #max_prob = 0.9
-    max_prob = 0.0012
+    max_prob = 0.00096
+    #max_prob = 0.0012
     #max_prob = 3.3
     print "Max prob currently is: %f" % (max_prob)
     energies = []
@@ -463,11 +463,11 @@ if len(sys.argv)>2:
 print "Generating data!!!!!"
 #print datetime.datetime.now()
 
-tag = "bulk_samples_1M"
-#tag = "bulk_samples_100k"
+#tag = "bulk_samples_1M"
+tag = "bulk_samples_100k"
 #tag = "bulk_samples_10k"
 #tag = "bulk_samples_1M"
-nevents = 1000000
+nevents = 100000
 
 etot = np.array([])
 dtot = np.array([])
