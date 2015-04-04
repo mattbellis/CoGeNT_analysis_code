@@ -523,9 +523,9 @@ def main():
         name = "ls_ncalc%d" % (i)
         #if i==999:
         if i==2 or i==3:
-            params_dict[name] = {'fix':True,'start_val':0.0,'error':0.01,'limits':(0,50000)}
+            params_dict[name] = {'fix':False,'start_val':val,'error':0.01,'limits':(0,50000)}
         else:
-            params_dict[name] = {'fix':False,'start_val':0.0,'error':0.01,'limits':(0,50000)}
+            params_dict[name] = {'fix':True,'start_val':val,'error':0.01,'limits':(0,50000)}
     for i,val in enumerate(decay_constants):
         name = "ls_dc%d" % (i)
         params_dict[name] = {'fix':True,'start_val':val,'error':0.01}
