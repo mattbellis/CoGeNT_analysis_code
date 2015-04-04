@@ -64,7 +64,7 @@ def main():
             default=False, help='Run in batch mode (exit on completion).')
 
     args = parser.parse_args()
-    print args
+    #print args
 
     ############################################################################
 
@@ -123,17 +123,19 @@ def main():
     #infile_name = 'data/high_gain.txt'
     #tdays,energies = get_cogent_data(infile_name,first_event=first_event,calibration=0)
 
+    #label_offset = 0
+    label_offset = 1 # For FIT0001 runs
     org_values = [0.0,0.0,0.0,0.0,0.0]
     infile_name = 'data/LE.txt'
     if args.input_file_name is not None:
         infile_name = args.input_file_name
         tdays,energies,rise_time = get_3yr_cogent_data(infile_name,first_event=first_event,calibration=999)
         vals = infile_name.split('_')
-        org_values[0] = int(vals[5])
-        org_values[1] = int(vals[9])
-        org_values[2] = int(vals[13])
-        org_values[3] = int(vals[17])
-        org_values[4] = int(vals[21])
+        org_values[0] = int(vals[5+label_offset])
+        org_values[1] = int(vals[9+label_offset])
+        org_values[2] = int(vals[13+label_offset])
+        org_values[3] = int(vals[17+label_offset])
+        org_values[4] = int(vals[21+label_offset])
         print "INPUT FILE: %s" % (infile_name)
     else:
         tdays,energies,rise_time = get_3yr_cogent_data(infile_name,first_event=first_event,calibration=0)
@@ -141,7 +143,6 @@ def main():
 
     print infile_name
     print org_values
-
     #exit()
 
 
@@ -522,9 +523,9 @@ def main():
         name = "ls_ncalc%d" % (i)
         #if i==999:
         if i==2 or i==3:
-            params_dict[name] = {'fix':False,'start_val':val,'error':0.01,'limits':(0,50000)}
+            params_dict[name] = {'fix':True,'start_val':0.0,'error':0.01,'limits':(0,50000)}
         else:
-            params_dict[name] = {'fix':True,'start_val':val,'error':0.01,'limits':(0,50000)}
+            params_dict[name] = {'fix':False,'start_val':0.0,'error':0.01,'limits':(0,50000)}
     for i,val in enumerate(decay_constants):
         name = "ls_dc%d" % (i)
         params_dict[name] = {'fix':True,'start_val':val,'error':0.01}
@@ -550,8 +551,8 @@ def main():
     #params_dict['k1_surf'] = {'fix':False,'start_val':-0.503,'limits':(-0.7,-0.4),'error':0.1}
     #params_dict['k2_surf'] = {'fix':True,'start_val':0.0806,'limits':(0.0,0.2),'error':0.01}
     params_dict['t_surf'] = {'fix':True,'start_val':0.000189,'limits':(0.0,10.0),'error':0.01}
-    params_dict['k1_surf'] = {'fix':False,'start_val':-0.5641,'limits':(-0.7,-0.4),'error':0.1}
-    params_dict['k2_surf'] = {'fix':False,'start_val':0.0974,'limits':(0.0,0.2),'error':0.01}
+    params_dict['k1_surf'] = {'fix':True,'start_val':-0.5641,'limits':(-0.7,-0.4),'error':0.1}
+    params_dict['k2_surf'] = {'fix':True,'start_val':0.0974,'limits':(0.0,0.2),'error':0.01}
     params_dict['num_surf'] = {'fix':False,'start_val':nsurface,'limits':(0.0,100000.0),'error':0.01}
 
     #params_dict['num_flat'] = {'fix':False,'start_val':3200.0,'limits':(0.0,100000.0),'error':0.01}
@@ -1069,7 +1070,7 @@ def main():
     print "%-15s %15.7f" % ('final lh',final_lh)
     print "\n"
     if args.fit==2 or args.fit==3 or args.fit==4:
-        print "%-15s %15.7f %5.2f %5.2e" % ('final lh/mDM/sigma_n',final_lh,values['mDM'],values['sigma_n'])
+        print "%-15s %15.7f %5.2f %5.2e %5.2f %5.2f" % ('final lh/mDM/sigma_n',final_lh,values['mDM'],values['sigma_n'],org_values_after_fiducial_cuts[4],num_wimps)
     else:
         print "%-15s %15.7f %5.2f %5.2e" % ('final lh/mDM/sigma_n',final_lh,0.0,0.0)
 
