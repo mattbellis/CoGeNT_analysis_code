@@ -273,7 +273,7 @@ def emlf_normalized_minuit(data,p,parnames,params_dict):
     #print "vals         : %12.3f %12.3f %12.3f" % (likelihood_func,pois(num_tot,ndata),likelihood_func-pois(num_tot,ndata))
     ret = likelihood_func - pois(num_tot,ndata)
     #print "vals         : %12.3f %12.3f %12.3f" % (likelihood_func,num_tot,likelihood_func-num_tot)
-    print "nll: %12.3f\tsurf/neut/comp/wimps: %8.2f %8.2f %8.2f %8.2f" % (likelihood_func,num_surf,num_neutrons,num_comp,num_wimps)
+    print "nll: %12.3f\tsurf/neut/comp/wimps: %8.2f %8.2f %8.2f %8.2f" % (ret,num_surf,num_neutrons,num_comp,num_wimps)
     #print "nll         : %12.3f" % (likelihood_func)
     #ret = likelihood_func - num_tot
 
