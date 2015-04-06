@@ -4,8 +4,8 @@ while ( $i < 8 )
 
     #echo csh run_many_fits.csh $start log_FIT0001B_"$i".log 
     #csh run_many_fits.csh $start >& log_FIT0001B_"$i".log &
-    echo csh run_many_mass_sec_scans.csh $start log_FIT0002B_"$i".log 
-    csh run_many_mass_sec_scans.csh $start >& log_FIT0002B_"$i".log &
+    echo csh run_many_mass_sec_scans.csh $start log_FIT0001C_"$i".log 
+    csh run_many_mass_sec_scans.csh $start >& log_FIT0001C_"$i".log &
 
     @ i += 1
 end
