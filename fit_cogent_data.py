@@ -541,10 +541,9 @@ def main():
         partial_live_days += (sr[1]-sr[0])
         print partial_live_days
 
-    #nsurface = 4400.0 # 3yr data.
+    nsurface = 4400.0 # 3yr data.
     #nsurface = 6000.0 # 3yr data.
-    #nsurface = 0.0 # 3yr data.
-    nsurface = float(org_values_after_fiducial_cuts[0])+1.01 # 3yr data.
+    #nsurface = float(org_values_after_fiducial_cuts[0])+1.01 # 3yr data.
     #nsurface = 0.0 # 3yr data.
 
     # Expected number of neutron events.
@@ -562,9 +561,9 @@ def main():
     #params_dict['num_flat'] = {'fix':False,'start_val':3200.0,'limits':(0.0,100000.0),'error':0.01}
 
     #params_dict['num_comp'] = {'fix':False,'start_val':2200.0,'limits':(0.0,100000.0),'error':0.01}
-    #params_dict['num_comp'] = {'fix':False,'start_val':1500.0,'limits':(0.0,100000.0),'error':0.01}
+    params_dict['num_comp'] = {'fix':False,'start_val':1500.0,'limits':(0.0,100000.0),'error':0.01}
     #params_dict['num_comp'] = {'fix':True,'start_val':0.0,'limits':(0.0,100000.0),'error':0.01}
-    params_dict['num_comp'] = {'fix':False,'start_val':float(org_values_after_fiducial_cuts[2])+0.000001,'limits':(0.0,100000.0),'error':0.01}
+    #params_dict['num_comp'] = {'fix':False,'start_val':float(org_values_after_fiducial_cuts[2])+0.000001,'limits':(0.0,100000.0),'error':0.01}
     #params_dict['num_comp'] = {'fix':False,'start_val':0.0,'limits':(0.0,1000.0),'error':0.01}
     params_dict['e_exp_flat'] = {'fix':True,'start_val':0.00001,'limits':(0.00001,10.0),'error':0.01}
     params_dict['t_exp_flat'] = {'fix':True,'start_val':0.0002,'limits':(0.0000001,10.0),'error':0.01}
