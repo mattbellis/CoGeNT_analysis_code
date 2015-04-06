@@ -32,4 +32,5 @@ foreach file($*)
   #set R = `grep e_exp_flat $file | tail -1| awk '{print$4}'`
   #printf "$surface0\t$neutron0\t$compton0\t$lshell0\t$A\t$B\t$C\t$D\t$E\t$F\t$G\t$H\t$I\t$J\t$K\t$L\t$M\t$N\t$O\t$P\t$Q\t$R\n"
   printf "$surface0\t$neutron0\t$compton0\t$lshell0\t$A\t$B\t$C\t$D\t$E\t$F\t$G\t$H\t$I\t$J\t$K\t$L\t$M\t$N\t$O\t$P\n"
+  #printf "$surface0\t$neutron0\t$compton0\t$lshell0\t$A\t$B\t$C\t$D\t$E\t$F\t$G\t$H\t$M\t$N\t$O\t$P\n"
 end

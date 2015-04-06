@@ -193,6 +193,8 @@ def emlf_normalized_minuit(data,p,parnames,params_dict):
     num_neutrons = p[pn.index('num_neutrons')]
     num_surf = p[pn.index('num_surf')]
 
+    expected_neutrons = p[pn.index('expected_neutrons')]
+
     # Grab all the fitting paramters.
     ranges,subranges,nbins = parameters.fitting_parameters(flag)
 
@@ -272,6 +274,10 @@ def emlf_normalized_minuit(data,p,parnames,params_dict):
     #print "nevents, nevents_fit: %f %f" % (ndata,num_tot)
     #print "vals         : %12.3f %12.3f %12.3f" % (likelihood_func,pois(num_tot,ndata),likelihood_func-pois(num_tot,ndata))
     ret = likelihood_func - pois(num_tot,ndata)
+
+    ######### CONSTRAIN NUM NEUTRONS #############
+    ret += ((num_neutrons-expected_neutrons)**2)/(2*(75.0**2)) # Use 75 as the uncertainty.
+
     #print "vals         : %12.3f %12.3f %12.3f" % (likelihood_func,num_tot,likelihood_func-num_tot)
     print "nll: %12.3f\tsurf/neut/comp/wimps: %8.2f %8.2f %8.2f %8.2f" % (ret,num_surf,num_neutrons,num_comp,num_wimps)
     #print "nll         : %12.3f" % (likelihood_func)

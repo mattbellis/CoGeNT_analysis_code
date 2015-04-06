@@ -10,7 +10,7 @@ while ( $i < $stop)
     set search_string = `printf "samples_%03d.dat" $i`
     #echo $search_string
     set file = `ls MC_files/sample_FIT0001_*100k* | grep $search_string | tail -1`
-    set logfile_name = "log_files/log_"`basename $file dat`"log"
+    set logfile_name = "log_files/log_FIT0001B_"`basename $file dat`"log"
     
     echo $file
     echo $logfile_name
