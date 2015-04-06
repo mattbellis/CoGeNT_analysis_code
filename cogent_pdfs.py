@@ -202,7 +202,8 @@ def neutron_events(data,pars,lo,hi,subranges=None,efficiency=None):
     ylo = lo[1]
     yhi = hi[1]
 
-    pdf  = pdfs.exp_plus_flat(x,pars['flat_neutrons_slope'],pars['flat_neutrons_amp'],pars['flat_neutrons_offset'],xlo,xhi,efficiency=efficiency)
+    #pdf  = pdfs.exp_plus_flat(x,pars['flat_neutrons_slope'],pars['flat_neutrons_amp'],pars['flat_neutrons_offset'],xlo,xhi,efficiency=efficiency)
+    pdf  = pdfs.exp(x,pars['flat_neutrons_slope'],xlo,xhi,efficiency=efficiency)
     if subranges is not None:
         pdf *= pdfs.poly(y,[],ylo,yhi,subranges=subranges[1])
     else:
@@ -276,7 +277,6 @@ def surface_events(data,pars,lo,hi,subranges=None,efficiency=None):
 
     # Rise time
     pdf *= rts # This will be the slow rise times
-    #pdf = rts # This will be the slow rise times
 
     return pdf
 

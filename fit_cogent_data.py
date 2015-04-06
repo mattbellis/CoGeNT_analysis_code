@@ -546,6 +546,10 @@ def main():
     #nsurface = float(org_values_after_fiducial_cuts[0])+1.01 # 3yr data.
     #nsurface = 0.0 # 3yr data.
 
+    # Expected number of neutron events.
+    #num_neutrons_expected = 937.*(tot_live_days/442.) # Taken from page 18 of the CoGeNT long paper.
+    num_neutrons_expected = org_values_after_fiducial_cuts[1]+np.random.normal(0,75,1)[0]
+
     # Exp 1 is the surface term
     #params_dict['k1_surf'] = {'fix':False,'start_val':-0.503,'limits':(-0.7,-0.4),'error':0.1}
     #params_dict['k2_surf'] = {'fix':True,'start_val':0.0806,'limits':(0.0,0.2),'error':0.01}
@@ -571,8 +575,9 @@ def main():
     #params_dict['flat_neutrons_offset'] = {'fix':True,'start_val':0.783,'limits':(0.00001,10.0),'error':0.01}
 
     #params_dict['num_neutrons'] = {'fix':False,'start_val':880.0,'limits':(0.0,100000.0),'error':0.01}
-    params_dict['num_neutrons'] = {'fix':False,'start_val':1500.0,'limits':(0.0,100000.0),'error':0.01}
-    #params_dict['num_neutrons'] = {'fix':False,'start_val':org_values_after_fiducial_cuts[1]+1.01,'limits':(0.0,100000.0),'error':0.01}
+    #params_dict['num_neutrons'] = {'fix':False,'start_val':1500.0,'limits':(0.0,100000.0),'error':0.01}
+    params_dict['num_neutrons'] = {'fix':False,'start_val':org_values_after_fiducial_cuts[1]+1.01,'limits':(0.0,100000.0),'error':0.01}
+    params_dict['expected_neutrons'] = {'fix':True,'start_val':num_neutrons_expected,'limits':(0.0,100000.0),'error':0.01}
     # Orig
     #params_dict['flat_neutrons_slope'] = {'fix':True,'start_val':0.920,'limits':(0.00001,10.0),'error':0.01}
     #params_dict['flat_neutrons_amp'] = {'fix':True,'start_val':17.4,'limits':(0.00001,10.0),'error':0.01}
