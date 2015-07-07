@@ -276,7 +276,21 @@ def emlf_normalized_minuit(data,p,parnames,params_dict):
     ret = likelihood_func - pois(num_tot,ndata)
 
     ######### CONSTRAIN NUM NEUTRONS #############
-    ret += ((num_neutrons-expected_neutrons)**2)/(2*(75.0**2)) # Use 75 as the uncertainty.
+    #ret += ((num_neutrons-expected_neutrons)**2)/(2*(75.0**2)) # Use 75 as the uncertainty.
+    ret += ((num_neutrons-expected_neutrons)**2)/(2*(0.2*expected_neutrons)**2) # Use 20% uncertainty (from long paper).
+
+    ######### CONSTRAIN num L-shell #############
+
+    for i in xrange(11):
+        name = "ls_nexpected%d" % (i)
+        expected = p[pn.index(name)]
+        name = "ls_ncalc%d" % (i)
+        fitval = p[pn.index(name)]
+        uncert = np.sqrt(expected) # Use sqrt(N) as the uncertainty.
+        if i==2 or i==3:
+            uncert = 2.0*np.sqrt(expected) # Use 2x sqrt(N) as the uncertainty.
+        #print fitval,expected,uncert
+        ret += ((fitval-expected)**2)/(2*(uncert**2)) 
 
     #print "vals         : %12.3f %12.3f %12.3f" % (likelihood_func,num_tot,likelihood_func-num_tot)
     print "nll: %12.3f\tsurf/neut/comp/wimps: %8.2f %8.2f %8.2f %8.2f" % (ret,num_surf,num_neutrons,num_comp,num_wimps)

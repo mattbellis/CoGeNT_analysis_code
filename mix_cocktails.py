@@ -56,8 +56,11 @@ nsamples = 1
 if len(sys.argv)>1:
     nsamples = int(sys.argv[1])
 
-bkg_names = ['surface','neutron','compton','lshell','shm_wimps']
-tag = '100k'
+#bkg_names = ['surface','neutron','compton','lshell','shm_wimps']
+bkg_names = ['surface','neutron','compton','lshell','lshell']
+#tag = '100k'
+#tag = '1year_10k'
+tag = '1year_100k'
 #tag = '1M'
 #tag = '10k'
 infile_names = []
@@ -71,13 +74,16 @@ for b in bkg_names:
 #central_values = [7920, 1440, 4460, 1400, 385] # Adding WIMP for FIT0002, #WIMPS=385 for 0.5-4.0
 #central_values = [7920, 1440, 4460, 0, 0] # Background only test, FIT003, no l-shell
 #central_values = [0, 1440, 4460, 0, 0] # Background only test, FIT004, no l-shell, no surface
-central_values = [7920, 1440, 0, 0, 0] # Background only test, FIT005
+#central_values = [7920, 1440, 0, 0, 0] # Background only test, FIT005
+#central_values = [7920/3.5, 1440/3.5, 4460/3.5, 1400/3.5, 0] # Background only for FIT0001, CoGeNT, 1 year
+central_values = [1.53*7920/3.5, 3.13*1440/3.5, 0.62*4460/3.5, 3.12*1400/3.5, 0] # Background only for FIT0001, C4, 1 year
 
 #fittag = "FIT0001"
 #fittag = "FIT0002"
 #fittag = "FIT0003"
 #fittag = "FIT0004"
-fittag = "FIT0005"
+#fittag = "FIT0001_1year_CoGeNT_bkg_only"
+fittag = "FIT0001_1year_C4_bkg_only"
 
 ranges,subranges,nbins = parameters.fitting_parameters(0)
 
@@ -139,7 +145,10 @@ for i in xrange(0,nsamples):
         testname += "_%d" % (len(new_bkg))
 
         # Cut out the deadtime regions.
-        cut_bkg = cut_subranges(new_bkg,subranges[1],0)
+        #cut_bkg = cut_subranges(new_bkg,subranges[1],0)
+
+        # Don't cut out the deadtime regions.
+        cut_bkg = new_bkg
 
         testname += "_%d" % (len(cut_bkg))
 

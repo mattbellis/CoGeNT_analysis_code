@@ -464,8 +464,8 @@ print "Generating data!!!!!"
 #print datetime.datetime.now()
 
 #tag = "bulk_samples_1M"
-tag = "bulk_samples_100k"
-#tag = "bulk_samples_10k"
+#tag = "bulk_samples_100k"
+tag = "bulk_samples_1year_100k"
 #tag = "bulk_samples_1M"
 nevents = 100000
 
@@ -473,11 +473,14 @@ etot = np.array([])
 dtot = np.array([])
 rtot = np.array([])
 
+#ndays = 1238
+ndays = 365
+
 if which_sample_to_generate==0 or which_sample_to_generate is None:
     print "Generating surface......"
     print datetime.datetime.now()
     name = "MC_files/mc_surface_%s.dat" % (tag)
-    energies,days,rise_times = gen_surface_events(nevents,1238,name,results)
+    energies,days,rise_times = gen_surface_events(nevents,ndays,name,results)
     etot = np.append(etot,energies)
     dtot = np.append(dtot,days)
     rtot = np.append(rtot,rise_times)
@@ -487,7 +490,7 @@ elif which_sample_to_generate==1 or which_sample_to_generate is None:
     print "Generating neutron......"
     print datetime.datetime.now()
     name = "MC_files/mc_neutron_%s.dat" % (tag)
-    energies,days,rise_times = gen_neutron_events(nevents,1238,name,results)
+    energies,days,rise_times = gen_neutron_events(nevents,ndays,name,results)
     etot = np.append(etot,energies)
     dtot = np.append(dtot,days)
     rtot = np.append(rtot,rise_times)
@@ -497,7 +500,7 @@ elif which_sample_to_generate==2 or which_sample_to_generate is None:
     print "Generating compton......"
     print datetime.datetime.now()
     name = "MC_files/mc_compton_%s.dat" % (tag)
-    energies,days,rise_times = gen_compton_events(nevents,1238,name,results)
+    energies,days,rise_times = gen_compton_events(nevents,ndays,name,results)
     etot = np.append(etot,energies)
     dtot = np.append(dtot,days)
     rtot = np.append(rtot,rise_times)
@@ -508,7 +511,7 @@ elif which_sample_to_generate==3 or which_sample_to_generate is None:
     print "Generating l-shell......"
     print datetime.datetime.now()
     name = "MC_files/mc_lshell_%s.dat" % (tag)
-    energies,days,rise_times = gen_cosmogenic_events(nevents,1238,name,results)
+    energies,days,rise_times = gen_cosmogenic_events(nevents,ndays,name,results)
     etot = np.append(etot,energies)
     dtot = np.append(dtot,days)
     rtot = np.append(rtot,rise_times)
@@ -518,7 +521,7 @@ elif which_sample_to_generate==4 or which_sample_to_generate is None:
     print "Generating SHM WIMPs....."
     print datetime.datetime.now()
     name = "MC_files/mc_shm_wimps_%s.dat" % (tag)
-    energies,days,rise_times = gen_shm_events(nevents,1238,10,7e-41,name,results)
+    energies,days,rise_times = gen_shm_events(nevents,ndays,10,7e-41,name,results)
     etot = np.append(etot,energies)
     dtot = np.append(dtot,days)
     rtot = np.append(rtot,rise_times)

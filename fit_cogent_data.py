@@ -521,11 +521,14 @@ def main():
         params_dict[name] = {'fix':True,'start_val':val}
     for i,val in enumerate(num_decays_in_dataset):
         name = "ls_ncalc%d" % (i)
+        val *= 1.1
         #if i==999:
         if i==2 or i==3:
             params_dict[name] = {'fix':False,'start_val':val,'error':0.01,'limits':(0,50000)}
         else:
-            params_dict[name] = {'fix':True,'start_val':val,'error':0.01,'limits':(0,50000)}
+            params_dict[name] = {'fix':False,'start_val':val,'error':0.01,'limits':(0,50000)}
+        name = "ls_nexpected%d" % (i)
+        params_dict[name] = {'fix':True,'start_val':val,'error':0.01,'limits':(0,50000)}
     for i,val in enumerate(decay_constants):
         name = "ls_dc%d" % (i)
         params_dict[name] = {'fix':True,'start_val':val,'error':0.01}
@@ -548,6 +551,7 @@ def main():
 
     # Expected number of neutron events.
     #num_neutrons_expected = 937.*(tot_live_days/442.) # Taken from page 18 of the CoGeNT long paper.
+    #num_neutrons_expected = 340.*(tot_live_days/442.) # Taken from page 18 of the CoGeNT long paper.
     num_neutrons_expected = org_values_after_fiducial_cuts[1]+np.random.normal(0,75,1)[0]
 
     # Exp 1 is the surface term
@@ -576,7 +580,8 @@ def main():
 
     #params_dict['num_neutrons'] = {'fix':False,'start_val':880.0,'limits':(0.0,100000.0),'error':0.01}
     #params_dict['num_neutrons'] = {'fix':False,'start_val':1500.0,'limits':(0.0,100000.0),'error':0.01}
-    params_dict['num_neutrons'] = {'fix':False,'start_val':org_values_after_fiducial_cuts[1]+1.01,'limits':(0.0,100000.0),'error':0.01}
+    #params_dict['num_neutrons'] = {'fix':False,'start_val':org_values_after_fiducial_cuts[1]+1.01,'limits':(0.0,100000.0),'error':0.01}
+    params_dict['num_neutrons'] = {'fix':False,'start_val':num_neutrons_expected,'limits':(0.0,100000.0),'error':0.01}
     params_dict['expected_neutrons'] = {'fix':True,'start_val':num_neutrons_expected,'limits':(0.0,100000.0),'error':0.01}
     # Orig
     #params_dict['flat_neutrons_slope'] = {'fix':True,'start_val':0.920,'limits':(0.00001,10.0),'error':0.01}
