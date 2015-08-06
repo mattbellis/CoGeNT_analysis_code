@@ -1,6 +1,6 @@
 foreach file ($1)
     # MC
-    set logfile_name = "log_files/log_MASS_SCAN_FIT0001C_"`basename $file dat`"log"
+    set logfile_name = "log_files/log_MASS_SCAN_FIT0001D_"`basename $file dat`"log"
     # Data
     #set logfile_name = "log_files/log_data.log"
     rm -f $logfile_name
