@@ -69,21 +69,74 @@ elif sys.argv[2]=="2":
     Eylim[0] = 0;Eylim[1] = 0.60
     tylim[0] = 0;tylim[1] = 0.0015
 
+elif sys.argv[2]=="3":
+    # Compton events
+    tag = "L-shell"
+    label = "%s events" % (tag)
+    fmt = 'r-'
+    means = []
+    sigmas = []
+    numls = []
+    decay_constants = []
+    for i in xrange(11):
+        name = "ls_mean%d" % (i)
+        means.append(pars[name])
+        name = "ls_sigma%d" % (i)
+        sigmas.append(pars[name])
+        name = "ls_ncalc%d" % (i)
+        #numls.append(pars[name]/num_tot) # Normalized this # to number of events.
+        numls.append(pars[name])
+        name = "ls_dc%d" % (i)
+        decay_constants.append(pars[name])
 
-plt.figure(figsize=(6,4))
+    Epdf = np.zeros(len(E))
+    tpdf = np.zeros(len(t))
+    figE = plt.figure("figE",figsize=(6,4))
+    figt = plt.figure("figt",figsize=(6,4))
+    for n,m,s,dc in zip(numls,means,sigmas,decay_constants):
+        print n
+        Epdf_temp = n*pdfs.gauss(E,m,s,elo,ehi)
+        #print E,Epdf_temp
+        tpdf_temp = n*pdfs.exp(t,-dc,tlo,thi)
+
+        Epdf += Epdf_temp
+        tpdf += tpdf_temp
+
+        plt.figure("figE")
+        plt.plot(E,Epdf_temp,'r--',linewidth=2)
+        plt.figure("figt")
+        plt.plot(t,tpdf_temp,'r--',linewidth=2)
+        Eylim[0] = 0;Eylim[1] = 3500
+        tylim[0] = 0.001;tylim[1] = 5.0
+
+
+if sys.argv[2]!="3":
+    plt.figure(figsize=(6,4))
+else:
+    plt.figure("figE")
 plt.plot(E,Epdf,fmt,linewidth=4,label=label)
 plt.xlabel(r'Energy (keVee)',fontsize=18)
 plt.ylabel('PDF (arbitrary units)',fontsize=18)
 plt.xlim(elo,ehi)
+if sys.argv[2]=="3":
+    plt.xlim(0.5,1.6)
 plt.ylim(Eylim[0],Eylim[1])
 plt.xticks(fontsize=14)
 plt.yticks(fontsize=14)
-plt.legend(fontsize=18)
+
+if sys.argv[2]=="3":
+    plt.legend(fontsize=18,loc='upper left')
+else:
+    plt.legend(fontsize=18,loc='upper right')
 plt.tight_layout()
 name = "Plots/pdf_%s_E.png" % (tag)
 plt.savefig(name)
 
-plt.figure(figsize=(6,4))
+if sys.argv[2]!="3":
+    plt.figure(figsize=(6,4))
+else:
+    plt.figure("figt")
+    plt.yscale('log')
 plt.plot(t,tpdf,fmt,linewidth=4,label=label)
 plt.xlabel(r'Days since 12/3/2009',fontsize=18)
 plt.ylabel('PDF (arbitrary units)',fontsize=18)

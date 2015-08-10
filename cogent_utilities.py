@@ -3,7 +3,6 @@ import numpy as np
 #from cogent_pdfs import sigmoid
 from datetime import datetime,timedelta
 
-
 from scipy import integrate
 
 from scipy.interpolate import interp1d
@@ -144,7 +143,7 @@ def get_3yr_cogent_data(infile_name,first_event=0.0,calibration=0):
 
     # Get energy
     energies = content[index+1]
-    rise_time = content[index+2]
+    rise_time = np.abs(content[index+2])
 
     return tdays,energies,rise_time
 
