@@ -463,18 +463,20 @@ if len(sys.argv)>2:
 print "Generating data!!!!!"
 #print datetime.datetime.now()
 
+nevents = 1000
+#ndays = 1238
+ndays = 365
+
 #tag = "bulk_samples_1M"
 #tag = "bulk_samples_100k"
-tag = "bulk_samples_1year_100k"
+#tag = "bulk_samples_1year_100k"
 #tag = "bulk_samples_1M"
-nevents = 100000
+tag = "bulk_samples_%ddays_%devents" % (ndays,nevents)
+
 
 etot = np.array([])
 dtot = np.array([])
 rtot = np.array([])
-
-#ndays = 1238
-ndays = 365
 
 if which_sample_to_generate==0 or which_sample_to_generate is None:
     print "Generating surface......"
