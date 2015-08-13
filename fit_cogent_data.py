@@ -571,10 +571,15 @@ def main():
     #params_dict['num_comp'] = {'fix':True,'start_val':0.0,'limits':(0.0,100000.0),'error':0.01}
     #params_dict['num_comp'] = {'fix':False,'start_val':float(org_values_after_fiducial_cuts[2])+0.000001,'limits':(0.0,100000.0),'error':0.01}
     #params_dict['num_comp'] = {'fix':False,'start_val':0.0,'limits':(0.0,1000.0),'error':0.01}
-    params_dict['e_exp_flat'] = {'fix':True,'start_val':0.00001,'limits':(0.00001,10.0),'error':0.01}
+    # This is what I did before meeting with Juan and Chris (8/13/15)
+    #params_dict['e_exp_flat'] = {'fix':True,'start_val':0.00001,'limits':(0.00001,10.0),'error':0.01}
+    params_dict['e_exp_flat'] = {'fix':True,'start_val':0.0001,'limits':(0.00001,10.0),'error':0.01}
     params_dict['t_exp_flat'] = {'fix':True,'start_val':0.0002,'limits':(0.0000001,10.0),'error':0.01}
     #params_dict['flat_frac'] = {'fix':True,'start_val':0.51,'limits':(0.00001,10.0),'error':0.01}
     #params_dict['flat_frac'] = {'fix':False,'start_val':0.66,'limits':(0.00001,1.0),'error':0.01}
+    if args.fit==20: # Additional X-ray shape
+        params_dict['gammas_k'] = {'fix':True,'start_val':0.0001,'limits':(0.0,2.0),'error':0.01}
+        params_dict['gammas_scale'] = {'fix':True,'start_val':1.0,'limits':(0.2,2.0),'error':0.01}
 
     #params_dict['flat_neutrons_slope'] = {'fix':True,'start_val':0.532,'limits':(0.00001,10.0),'error':0.01}
     #params_dict['flat_neutrons_amp'] = {'fix':True,'start_val':14.0,'limits':(0.00001,10.0),'error':0.01}
@@ -603,7 +608,7 @@ def main():
     #params_dict['num_exp0'] = {'fix':False,'start_val':575.0,'limits':(0.0,10000.0),'error':0.01}
 
     # Exponential term in energy
-    if args.fit==0 or args.fit==1 or args.fit==5:
+    if args.fit==0 or args.fit==1 or args.fit==5 or args.fit==20:
         #params_dict['e_exp0'] = {'fix':False,'start_val':2.51,'limits':(0.0,10.0),'error':0.01}
         params_dict['e_exp0'] = {'fix':True,'start_val':0.005,'limits':(0.0,10.0),'error':0.01}
 
@@ -839,7 +844,11 @@ def main():
     ############################################################################
     #'''
     # Energy
-    ypts  = pdfs.exp(expts,values['e_exp_flat'],ranges[0][0],ranges[0][1])
+    ypts = None
+    if args.fit!=20:
+        ypts  = pdfs.exp(expts,values['e_exp_flat'],ranges[0][0],ranges[0][1])
+    else:
+        ypts  = pdfs.Ge_gamma_response(expts,values['e_exp_flat'],values['gammas_k'],values['gammas_scale'],ranges[0][0],ranges[0][1],efficiency=efficiency)
     y,plot = plot_pdf(expts,ypts,bin_width=bin_widths[0],scale=values['num_comp'],fmt='m-',axes=ax0,efficiency=eff,label='Comptons: resistor and cosmogenic activations',linewidth=4)
     eytot += y
 

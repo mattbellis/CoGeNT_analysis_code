@@ -126,6 +126,8 @@ plt.yticks(fontsize=14)
 
 if sys.argv[2]=="3":
     plt.legend(fontsize=18,loc='upper left')
+    plt.yscale('log')
+    plt.ylim(1,5000)
 else:
     plt.legend(fontsize=18,loc='upper right')
 plt.tight_layout()

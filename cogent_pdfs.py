@@ -165,7 +165,7 @@ def wimp(org_day,x,AGe,mDM,sigma_n,efficiency=None,model='shm',vDeb1=340,vSag=22
 ############################################################################
 # Comptons, flat in energy, might be decaying away.
 ############################################################################
-def compton_events(data,pars,lo,hi,subranges=None,efficiency=None):
+def compton_events(data,pars,lo,hi,subranges=None,efficiency=None,flag=0):
 
     x = data[0]
     y = data[1]
@@ -176,7 +176,13 @@ def compton_events(data,pars,lo,hi,subranges=None,efficiency=None):
     ylo = lo[1]
     yhi = hi[1]
 
-    pdf  = pdfs.exp(x,pars['e_exp_flat'],xlo,xhi,efficiency=efficiency)
+    pdf = None
+    if flag!=20: # Not the weird shape
+        pdf  = pdfs.exp(x,pars['e_exp_flat'],xlo,xhi,efficiency=efficiency)
+    else: # The weird shape
+        #pdf  = pdfs.exp(x,pars['e_exp_flat'],xlo,xhi,efficiency=efficiency)
+        pdf  = pdfs.Ge_gamma_response(x,pars['e_exp_flat'],pars['gammas_k'],pars['gammas_scale'],xlo,xhi,efficiency=efficiency)
+
     if subranges is not None:
         pdf *= pdfs.exp(y,pars['t_exp_flat'],ylo,yhi,subranges=subranges[1])
     else:
@@ -189,7 +195,7 @@ def compton_events(data,pars,lo,hi,subranges=None,efficiency=None):
     return pdf
 
 ############################################################################
-# Neurtons, flat in energy, might be decaying away.
+# Neutrons, flat in energy, might be decaying away.
 ############################################################################
 def neutron_events(data,pars,lo,hi,subranges=None,efficiency=None):
 
@@ -219,7 +225,7 @@ def neutron_events(data,pars,lo,hi,subranges=None,efficiency=None):
 ############################################################################
 # ``Flat" events, flat in energy
 ############################################################################
-def flat_events(data,pars,lo,hi,subranges=None,efficiency=None):
+def flat_events(data,pars,lo,hi,subranges=None,efficiency=None,flag=None):
 
     x = data[0]
     y = data[1]
@@ -233,7 +239,7 @@ def flat_events(data,pars,lo,hi,subranges=None,efficiency=None):
     # ``Flat" part in energy. Might be decaying away.
     # Energy
     # Comptons
-    pdf0  = pdfs.exp(x,pars['e_exp_flat'],xlo,xhi,efficiency=efficiency)
+    pdf0  = pdfs.exp(x,pars['e_exp_flat'],xlo,xhi,efficiency=efficiency,flag=flag)
     pdf0 *= pdfs.exp(y,pars['t_exp_flat'],ylo,yhi,subranges=subranges[1])
     #pdf *= pdfs.cos(y,wmod_freq,wmod_phase,wmod_amp,wmod_offst,ylo,yhi,subranges=subranges[1])
 
@@ -358,7 +364,7 @@ def fitfunc(data,p,parnames,params_dict):
     t_exp_flat = p[pn.index('t_exp_flat')]
     num_spike = p[pn.index('num_spike')]
 
-    if flag==0 or flag==1 or flag==5:
+    if flag==0 or flag==1 or flag==5 or flag==20:
         e_exp0 = p[pn.index('e_exp0')]
 
     if flag==1:
@@ -397,7 +403,7 @@ def fitfunc(data,p,parnames,params_dict):
     ############################################################################
     num_tot = 0.0
     for name in pn:
-        if flag==0 or flag==1 or flag==10:
+        if flag==0 or flag==1 or flag==10 or flag==20:
             if 'num_' in name or 'ncalc' in name:
                 num_tot += p[pn.index(name)]
         elif flag==2 or flag==3 or flag==4:
@@ -461,7 +467,7 @@ def fitfunc(data,p,parnames,params_dict):
     ############################################################################
     # Normalize the number of events to the total.
     ############################################################################
-    if flag==0 or flag==1 or flag==5:
+    if flag==0 or flag==1 or flag==5 or flag==20:
         num_exp0 /= num_tot
 
     #num_surf /= num_tot
@@ -475,7 +481,7 @@ def fitfunc(data,p,parnames,params_dict):
     ########################################################################
     # Wimp-like signal
     ########################################################################
-    if flag==0 or flag==5:
+    if flag==0 or flag==5 or flag==20:
         pdf  = pdfs.exp(x,e_exp0,xlo,xhi,efficiency=efficiency)
         pdf *= pdfs.poly(y,[],ylo,yhi,subranges=subranges[1])
         pdf *= rtf # This will be the fast rise times
@@ -548,7 +554,7 @@ def fitfunc(data,p,parnames,params_dict):
     tot_pdf += pdf
 
     #print "COMPTONS"
-    pdf = compton_events(data,local_pars,[xlo,ylo],[xhi,yhi],subranges=subranges,efficiency=efficiency)
+    pdf = compton_events(data,local_pars,[xlo,ylo],[xhi,yhi],subranges=subranges,efficiency=efficiency,flag=flag)
     pdf *= num_comp
     pdf /= num_tot # Need to divide by num_tot because of the normalization for the total PDF.
     #print pdf[0:10]
