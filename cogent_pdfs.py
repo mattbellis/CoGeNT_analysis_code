@@ -181,7 +181,12 @@ def compton_events(data,pars,lo,hi,subranges=None,efficiency=None,flag=0):
         pdf  = pdfs.exp(x,pars['e_exp_flat'],xlo,xhi,efficiency=efficiency)
     else: # The weird shape
         #pdf  = pdfs.exp(x,pars['e_exp_flat'],xlo,xhi,efficiency=efficiency)
+        #print pdf
+        #print pdf.sum()
         pdf  = pdfs.Ge_gamma_response(x,pars['e_exp_flat'],pars['gammas_k'],pars['gammas_scale'],xlo,xhi,efficiency=efficiency)
+        #print pdf
+        #print pdf.sum()
+        #exit()
 
     if subranges is not None:
         pdf *= pdfs.exp(y,pars['t_exp_flat'],ylo,yhi,subranges=subranges[1])

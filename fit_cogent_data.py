@@ -573,13 +573,13 @@ def main():
     #params_dict['num_comp'] = {'fix':False,'start_val':0.0,'limits':(0.0,1000.0),'error':0.01}
     # This is what I did before meeting with Juan and Chris (8/13/15)
     #params_dict['e_exp_flat'] = {'fix':True,'start_val':0.00001,'limits':(0.00001,10.0),'error':0.01}
-    params_dict['e_exp_flat'] = {'fix':True,'start_val':0.0001,'limits':(0.00001,10.0),'error':0.01}
+    params_dict['e_exp_flat'] = {'fix':False,'start_val':0.00,'limits':(0.000,10.0),'error':0.01}
     params_dict['t_exp_flat'] = {'fix':True,'start_val':0.0002,'limits':(0.0000001,10.0),'error':0.01}
     #params_dict['flat_frac'] = {'fix':True,'start_val':0.51,'limits':(0.00001,10.0),'error':0.01}
     #params_dict['flat_frac'] = {'fix':False,'start_val':0.66,'limits':(0.00001,1.0),'error':0.01}
     if args.fit==20: # Additional X-ray shape
-        params_dict['gammas_k'] = {'fix':True,'start_val':0.0001,'limits':(0.0,2.0),'error':0.01}
-        params_dict['gammas_scale'] = {'fix':True,'start_val':1.0,'limits':(0.2,2.0),'error':0.01}
+        params_dict['gammas_k'] = {'fix':False,'start_val':0.0,'limits':(0.0,1000.0),'error':0.01}
+        params_dict['gammas_scale'] = {'fix':False,'start_val':1.0,'limits':(0.2,1000.0),'error':0.01}
 
     #params_dict['flat_neutrons_slope'] = {'fix':True,'start_val':0.532,'limits':(0.00001,10.0),'error':0.01}
     #params_dict['flat_neutrons_amp'] = {'fix':True,'start_val':14.0,'limits':(0.00001,10.0),'error':0.01}
