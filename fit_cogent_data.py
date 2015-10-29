@@ -3,6 +3,8 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
+import seaborn as sn
+
 import pprint
 
 from datetime import datetime,timedelta
@@ -399,13 +401,13 @@ def main():
     ax0 = fig0a.add_subplot(1,1,1)
     ax1 = fig0b.add_subplot(1,1,1)
 
-    lch.hist_err(data[0],bins=nbins[0],range=ranges[0],axes=ax0)
+    lch.hist_err(data[0],bins=nbins[0],range=ranges[0],axes=ax0,color='k',linewidth=2)
     #print data[1]
     index0 = data[1]>539.0
     index1 = data[1]<566.4
     index = index0*index1
     #print data[1][index]
-    h,xpts,ypts,xpts_err,ypts_err = lch.hist_err(data[1],bins=nbins[1],range=ranges[1],axes=ax1)
+    h,xpts,ypts,xpts_err,ypts_err = lch.hist_err(data[1],bins=nbins[1],range=ranges[1],axes=ax1,color='k',linewidth=2)
 
     # Do an acceptance correction of some t-bins by hand.
     tbwidth = (ranges[1][1]-ranges[1][0])/float(nbins[1])
@@ -526,7 +528,7 @@ def main():
         if i==2 or i==3:
             params_dict[name] = {'fix':False,'start_val':val,'error':0.01,'limits':(0,50000)}
         else:
-            params_dict[name] = {'fix':False,'start_val':val,'error':0.01,'limits':(0,50000)}
+            params_dict[name] = {'fix':True,'start_val':val,'error':0.01,'limits':(0,50000)}
         name = "ls_nexpected%d" % (i)
         params_dict[name] = {'fix':True,'start_val':val,'error':0.01,'limits':(0,50000)}
     for i,val in enumerate(decay_constants):
@@ -551,8 +553,8 @@ def main():
 
     # Expected number of neutron events.
     #num_neutrons_expected = 937.*(tot_live_days/442.) # Taken from page 18 of the CoGeNT long paper.
-    #num_neutrons_expected = 340.*(tot_live_days/442.) # Taken from page 18 of the CoGeNT long paper.
-    num_neutrons_expected = org_values_after_fiducial_cuts[1]+np.random.normal(0,75,1)[0]
+    num_neutrons_expected = 340.*(tot_live_days/442.) # Taken from page 18 of the CoGeNT long paper.
+    #num_neutrons_expected = org_values_after_fiducial_cuts[1]+np.random.normal(0,75,1)[0]
 
     # Exp 1 is the surface term
     #params_dict['k1_surf'] = {'fix':False,'start_val':-0.503,'limits':(-0.7,-0.4),'error':0.1}
@@ -569,10 +571,15 @@ def main():
     #params_dict['num_comp'] = {'fix':True,'start_val':0.0,'limits':(0.0,100000.0),'error':0.01}
     #params_dict['num_comp'] = {'fix':False,'start_val':float(org_values_after_fiducial_cuts[2])+0.000001,'limits':(0.0,100000.0),'error':0.01}
     #params_dict['num_comp'] = {'fix':False,'start_val':0.0,'limits':(0.0,1000.0),'error':0.01}
-    params_dict['e_exp_flat'] = {'fix':True,'start_val':0.00001,'limits':(0.00001,10.0),'error':0.01}
+    # This is what I did before meeting with Juan and Chris (8/13/15)
+    #params_dict['e_exp_flat'] = {'fix':True,'start_val':0.00001,'limits':(0.00001,10.0),'error':0.01}
+    params_dict['e_exp_flat'] = {'fix':False,'start_val':0.00,'limits':(0.000,10.0),'error':0.01}
     params_dict['t_exp_flat'] = {'fix':True,'start_val':0.0002,'limits':(0.0000001,10.0),'error':0.01}
     #params_dict['flat_frac'] = {'fix':True,'start_val':0.51,'limits':(0.00001,10.0),'error':0.01}
     #params_dict['flat_frac'] = {'fix':False,'start_val':0.66,'limits':(0.00001,1.0),'error':0.01}
+    if args.fit==20: # Additional X-ray shape
+        params_dict['gammas_k'] = {'fix':False,'start_val':0.0,'limits':(0.0,1000.0),'error':0.01}
+        params_dict['gammas_scale'] = {'fix':False,'start_val':1.0,'limits':(0.2,1000.0),'error':0.01}
 
     #params_dict['flat_neutrons_slope'] = {'fix':True,'start_val':0.532,'limits':(0.00001,10.0),'error':0.01}
     #params_dict['flat_neutrons_amp'] = {'fix':True,'start_val':14.0,'limits':(0.00001,10.0),'error':0.01}
@@ -601,7 +608,7 @@ def main():
     #params_dict['num_exp0'] = {'fix':False,'start_val':575.0,'limits':(0.0,10000.0),'error':0.01}
 
     # Exponential term in energy
-    if args.fit==0 or args.fit==1 or args.fit==5:
+    if args.fit==0 or args.fit==1 or args.fit==5 or args.fit==20:
         #params_dict['e_exp0'] = {'fix':False,'start_val':2.51,'limits':(0.0,10.0),'error':0.01}
         params_dict['e_exp0'] = {'fix':True,'start_val':0.005,'limits':(0.0,10.0),'error':0.01}
 
@@ -649,7 +656,7 @@ def main():
 
 
     m.migrad()
-    m.hesse()
+    #m.hesse()
 
     print "Finished fit!!\n"
 
@@ -837,7 +844,11 @@ def main():
     ############################################################################
     #'''
     # Energy
-    ypts  = pdfs.exp(expts,values['e_exp_flat'],ranges[0][0],ranges[0][1])
+    ypts = None
+    if args.fit!=20:
+        ypts  = pdfs.exp(expts,values['e_exp_flat'],ranges[0][0],ranges[0][1])
+    else:
+        ypts  = pdfs.Ge_gamma_response(expts,values['e_exp_flat'],values['gammas_k'],values['gammas_scale'],ranges[0][0],ranges[0][1],efficiency=efficiency)
     y,plot = plot_pdf(expts,ypts,bin_width=bin_widths[0],scale=values['num_comp'],fmt='m-',axes=ax0,efficiency=eff,label='Comptons: resistor and cosmogenic activations',linewidth=4)
     eytot += y
 
@@ -1004,19 +1015,20 @@ def main():
     ax0.set_xlim(ranges[0])
     #ax0.set_ylim(0.0,values['num_flat']/10)
     #ax0.set_ylim(0.0,220)
-    ax0.set_xlabel("Ionization Energy (keVee)",fontsize=12)
+    ax0.set_xlabel("Ionization Energy (keVee)",fontsize=18)
     label = "Interactions/%4.3f keVee" % (bin_widths[0])
-    ax0.set_ylabel(label,fontsize=12)
-    ax0.legend()
+    ax0.set_ylabel(label,fontsize=14)
+    ax0.legend(fontsize=14)
     #ax0.set_yscale('log')
     #ax0.set_ylim(0.1)
 
     ax1.set_xlim(ranges[1])
     #ax1.set_ylim(0.0,values['num_flat']/8)
     #ax1.set_ylim(0.0,350)
-    ax1.set_xlabel("Days since 12/4/2009",fontsize=12)
+    ax1.set_xlabel("Days since 12/4/2009",fontsize=18)
     label = "Interactions/%4.1f days" % (bin_widths[1])
-    ax1.set_ylabel(label,fontsize=12)
+    ax1.set_ylabel(label,fontsize=14)
+    ax1.legend(fontsize=14)
 
     fig0a.subplots_adjust(left=0.07, bottom=0.10, right=0.99, wspace=None, hspace=None,top=0.95)
     fig0b.subplots_adjust(left=0.07, bottom=0.12, right=0.99, wspace=None, hspace=None,top=0.85)

@@ -71,7 +71,7 @@ for b in bkg_names:
 
 #central_values = [4482, 3140, 975]
 #central_values = [4482, 862, 2287, 975]
-#central_values = [7920, 1440, 4460, 1400, 0] # Background only for FIT0001
+central_values = [7920, 1440, 4460, 1400, 0] # Background only for FIT0001
 #central_values = [7920, 1440, 4460, 1400, 385] # Adding WIMP for FIT0002, #WIMPS=385 for 0.5-4.0
 #central_values = [7920, 1440, 4460, 0, 0] # Background only test, FIT003, no l-shell
 #central_values = [0, 1440, 4460, 0, 0] # Background only test, FIT004, no l-shell, no surface
