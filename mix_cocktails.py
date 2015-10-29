@@ -60,7 +60,8 @@ if len(sys.argv)>1:
 bkg_names = ['surface','neutron','compton','lshell','lshell']
 #tag = '100k'
 #tag = '1year_10k'
-tag = '1year_100k'
+#tag = '1year_100k'
+tag = '1year_100k_energy05_32'
 #tag = '1M'
 #tag = '10k'
 infile_names = []
@@ -75,8 +76,19 @@ for b in bkg_names:
 #central_values = [7920, 1440, 4460, 0, 0] # Background only test, FIT003, no l-shell
 #central_values = [0, 1440, 4460, 0, 0] # Background only test, FIT004, no l-shell, no surface
 #central_values = [7920, 1440, 0, 0, 0] # Background only test, FIT005
-#central_values = [7920/3.5, 1440/3.5, 4460/3.5, 1400/3.5, 0] # Background only for FIT0001, CoGeNT, 1 year
-central_values = [1.53*7920/3.5, 3.13*1440/3.5, 0.62*4460/3.5, 3.12*1400/3.5, 0] # Background only for FIT0001, C4, 1 year
+
+# 1-year tests.
+#central_values = [7920/3.5, 1440/3.5, 4460/3.5, 2800/3.5, 0] # Background only for FIT0001, CoGeNT, 1 year
+central_values = [1.53*7920/3.5, 3.13*1440/3.5, 0.62*4460/3.5, 3.12*2800/3.5, 0] # Background only for FIT0001, C4, 1 year
+#central_values = [0, 0, 0, 3.12*1400/3.5, 0] # Test C4
+
+tot = 0
+for c in central_values:
+    tot += c
+    print c
+print "Total: %f" % (tot)
+
+#exit()
 
 #fittag = "FIT0001"
 #fittag = "FIT0002"

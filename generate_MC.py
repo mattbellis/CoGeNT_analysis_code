@@ -74,6 +74,7 @@ def gen_surface_events(maxpts,max_days,name_of_output_file,pars):
 
         prob = surface_events(data,pars,lo,hi,subranges=subranges,efficiency=None)
 
+        #print prob
         if max_prob_calculated<prob:
             print "Max prob to now: %f" % (prob)
             max_prob_calculated = prob
@@ -465,7 +466,7 @@ print "Generating data!!!!!"
 
 #tag = "bulk_samples_1M"
 #tag = "bulk_samples_100k"
-tag = "bulk_samples_1year_100k"
+tag = "bulk_samples_1year_100k_energy05_32"
 #tag = "bulk_samples_1M"
 nevents = 100000
 
