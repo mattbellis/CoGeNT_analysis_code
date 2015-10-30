@@ -58,6 +58,8 @@ def main():
             default=None, help='Mass of a spike allowed to modulate.')
     parser.add_argument('--tag', dest='tag', type=str,\
             default='bkg_only', help='Tag to append to output files and figures.')
+    parser.add_argument('--parameters', dest='parameters', type=str,\
+            default='parameters.py', help='File from which to read the parameters for fitting.')
     parser.add_argument('--turn-off-eff', dest='turn_off_eff', action='store_true',\
             default=False, help='Turn off the efficiency.')
     parser.add_argument('--contours', dest='contours', action='store_true',\
@@ -110,7 +112,16 @@ def main():
     ############################################################################
     # Declare the ranges.
     ############################################################################
+
+    # Read in the parameters from the file passed in on the commandline
+    parameters_filename = args.parameters.rstrip('.py')
+    print "Parameters_filename: %s" % (parameters_filename)
+    parameters_file = __import__(parameters_filename)
+    #parameters = getattr(parameters_file,'parameters')
+
     ranges,subranges,nbins = parameters.fitting_parameters(args.fit)
+
+
     
     bin_widths = np.ones(len(ranges))
     for i,n,r in zip(xrange(len(nbins)),nbins,ranges):
