@@ -145,6 +145,11 @@ def main():
 
     tag = "risetime_determination_%s" % (args.dataset)
 
+
+    outfilename = "risetime_parameters_%s.dat" % (tag)
+    outfile = open(outfilename,'w')
+    outfile.write("def risetime_parameters():\n\n")
+
     '''
     if args.help:
         parser.print_help()
@@ -576,7 +581,9 @@ def main():
                 variable = "fast_sigma_rel_k"
             elif (k==2):
                 variable = "fast_num_rel_k"
-            print "%s = [%f,%f,%f]" % (variable,z[0],z[1],z[2])
+            output = "\t%s = [%f,%f,%f]\n" % (variable,z[0],z[1],z[2])
+            print output
+            outfile.write(output)
             #print "zcov: ",zcov
             '''
             if zcov is not None:
@@ -589,6 +596,8 @@ def main():
         fvals2.subplots_adjust(left=0.10, right=0.98,bottom=0.15,wspace=0.25,hspace=0.25)
         name = 'Plots/rt_summary_%s_1.png' % (tag)
         plt.savefig(name)
+
+        outfile.write("\n")
 
         ########################################################################
         # Try to fit the individual distributions.
@@ -648,7 +657,9 @@ def main():
                     variable = "fast_num0_k"
                 #print "Data points: %d %d [%f,%f,%f]" % (k,ik,z[0],z[1],z[2])
                 if (ik==0):
-                    print "%s = [%f,%f,%f]" % (variable,z[0],z[1],z[2])
+                    output = "\t%s = [%f,%f,%f]\n" % (variable,z[0],z[1],z[2])
+                    outfile.write(output)
+                    print output
                 #print "Data points: %d %d [%f,%f,%f]" % (k,ik,np.sqrt(zcov[0][0]),np.sqrt(zcov[1][1]),np.sqrt(zcov[2][2]))
                 yfitpts[nindex] = expfunc(z,xp)
                 #print zcov
@@ -688,6 +699,8 @@ def main():
         #'''
 
     #print "Sum ypts[5]: ",sum(ypts[5])
+
+    outfile.write("\n\treturn fast_mean_rel_k,fast_sigma_rel_k,fast_num_rel_k,fast_mean0_k,fast_sigma0_k,fast_num0_k\n")
 
     if not args.batch:
         plt.show()
