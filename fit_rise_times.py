@@ -126,29 +126,18 @@ def main():
             default=0, help='Which fit to perform (0,1,2)')
     parser.add_argument('--verbose', dest='verbose', action='store_true',\
             default=False, help='Verbose output')
-    parser.add_argument('--dataset', dest='dataset', type=str,\
-            default='nicole', help='Dataset to use in fitting. Nicoles simulated (nicole) or Juans pulser (juan)')
+    parser.add_argument('--sigma_n', dest='sigma_n', type=float,\
+            default=None, help='Value of sigma_n (cross section of DM-nucleon interaction).')
+    parser.add_argument('--turn-off-eff', dest='turn_off_eff', action='store_true',\
+            default=False, help='Turn off the efficiency.')
+    parser.add_argument('--contours', dest='contours', action='store_true',\
+            default=False, help='Calculate and plot the contours.')
     parser.add_argument('--batch', dest='batch', action='store_true',\
             default=False, help='Run in batch mode (exit on completion).')
 
     args = parser.parse_args()
 
     ############################################################################
-
-    #tag = 'pulser_onelognormal'
-    #tag = 'pulser'
-    #tag = 'pulser_zoomed_in'
-    #tag = 'pulser_simulated_Nicole'
-    #tag = 'pulser_simulated_Nicole_zoomed_in'
-    #tag = 'pulser_simulated_Nicole_onelognormal'
-    #tag = 'pulser_simulated_Nicole_no_fit'
-
-    tag = "risetime_determination_%s" % (args.dataset)
-
-
-    outfilename = "risetime_parameters_%s.py" % (tag)
-    outfile = open(outfilename,'w')
-    outfile.write("def risetime_parameters():\n\n")
 
     '''
     if args.help:
@@ -159,13 +148,9 @@ def main():
     ############################################################################
     # Read in the data
     ############################################################################
-    
-    infile_name = 'data/pulser_data_325ns.dat' # SIMULATED DATA FROM NICOLE
-    if args.dataset=='nicole':
-        infile_name = 'data/pulser_data_325ns.dat' # SIMULATED DATA FROM NICOLE
-    elif args.dataset=='juan':
-        infile_name = 'data/pulser_data.dat' # FROM JUAN, 8/2/13, manually scanned pulser runs.
-
+    #infile_name = 'data/LE.txt'
+    infile_name = 'data/HE.txt'
+    #infile_name = 'data/pulser_data.dat'
     tdays,energies,rise_times = get_3yr_cogent_data(infile_name,first_event=first_event,calibration=0)
     print tdays
     print energies
@@ -175,8 +160,13 @@ def main():
     if args.verbose:
         print_data(energies,tdays,rise_times)
 
+    #data = [energies.copy(),tdays.copy()]
+    #print "data before range cuts: ",len(data[0]),len(data[1])
+
+    # 3yr data
     data = [energies.copy(),tdays.copy(),rise_times.copy()]
     print "data before range cuts: ",len(data[0]),len(data[1]),len(data[2])
+    #exit()
 
 
     ############################################################################
@@ -199,7 +189,6 @@ def main():
 
     nevents = float(len(data[0]))
 
-    '''
     plt.figure()
     plt.plot(energies,rise_times,'o',markersize=1.5)
     plt.yscale('log')
@@ -209,7 +198,6 @@ def main():
     plt.plot(tdays,rise_times,'o',markersize=1.5)
     plt.yscale('log')
     plt.ylim(0.1,10)
-    '''
 
     ############################################################################
     # Plot the data
@@ -218,19 +206,11 @@ def main():
     # Look at the rise-time information.
     ############################################################################
 
-    # Will use this later when trying to figure out the energy dependence of 
-    # the log-normal parameters.
-    # define our (line) fitting function
-    expfunc = lambda p, x: p[1]*np.exp(-p[0]*x) + p[2]
-    errfunc = lambda p, x, y, err: (y - expfunc(p, x)) / err
-
-    ############################################################################
-    # Starting values for fits. 
-    ############################################################################
     # For the data (two lognormals)
     #starting_params = [-0.6,0.6,0.2*nevents,  0.1,0.8,0.8*nevents]
     # For the pulser fast rise times (two lognormals)
     starting_params = [-0.6,0.5,0.6*nevents,  0.5,0.8,0.4*nevents]
+
 
     fit_parameters = []
     fit_errors = []
@@ -242,17 +222,18 @@ def main():
     ehi = 1.0
     eoffset = 0.5
 
-    ewidth = 0.15
-    estep = 0.15
+    ewidth = 0.20
+    estep = 0.20
 
     #ewidth = 0.200
     #estep = 0.050
 
     expts = []
 
+    #for i in range(32,-1,-1):
     figcount = 0
-    for i in range(0,24):
-        
+    for i in range(0,16):
+        #j = 32-i
         j = i
         if j%6==0:
             figrt = plt.figure(figsize=(12,6),dpi=100)
@@ -277,8 +258,8 @@ def main():
             lch.hist_err(data_to_fit,bins=nbins[2],range=ranges[2],axes=axrt[j])
             plt.ylim(0)
             plt.xlim(ranges[2][0],ranges[2][1])
-            name = "Energy: %0.2f-%0.2f (keVee)" % (elo,ehi)
-            plt.text(0.20,0.75,name,transform=axrt[j].transAxes)
+            name = "%0.2f-%0.2f" % (elo,ehi)
+            plt.text(0.75,0.75,name,transform=axrt[j].transAxes)
             print "=======-------- E BIN ----------==========="
             print name
 
@@ -335,25 +316,14 @@ def main():
         params_dict['slow_logn_mean'] = {'fix':False,'start_val':starting_params[3],'limits':(-2,2),'error':0.01}
         params_dict['slow_logn_sigma'] = {'fix':False,'start_val':starting_params[4],'limits':(0.05,30),'error':0.01}
         params_dict['slow_num'] = {'fix':False,'start_val':starting_params[5],'limits':(0.0,1.5*nevents),'error':0.01}
-        # To try one lognormal
-        #params_dict['slow_logn_mean'] = {'fix':True,'start_val':starting_params[3],'limits':(-2,2),'error':0.01}
-        #params_dict['slow_logn_sigma'] = {'fix':True,'start_val':starting_params[4],'limits':(0.05,30),'error':0.01}
-        #params_dict['slow_num'] = {'fix':True,'start_val':0.1,'limits':(0.0,1.5*nevents),'error':0.01}
 
-        # Above some value, lock down the second log normal, as the distribution is pretty well 
-        # fit with just one log-normal. 
-        elomax = 2.8
-        if args.dataset=='nicole':
-            elomax = 2.8
-        elif args.dataset=='juan':
-            elomax = 2.2
-
-        if elo>=elomax:
+        # Above some value, lock this down.
+        if elo>=2.2:
             params_dict['slow_logn_mean'] = {'fix':True,'start_val':0.0,'limits':(-2,2),'error':0.01}
             params_dict['slow_logn_sigma'] = {'fix':True,'start_val':1.0,'limits':(0.05,30),'error':0.01}
             params_dict['slow_num'] = {'fix':True,'start_val':1,'limits':(0.0,1.5*nevents),'error':0.01}
 
-        '''
+        #'''
         if i==0:
             None
             # From Nicole's simulation.
@@ -361,7 +331,7 @@ def main():
             # From Juan
             #params_dict['fast_logn_mean'] = {'fix':True,'start_val':-0.60,'limits':(-2,2),'error':0.01}
             #params_dict['slow_logn_sigma'] = {'fix':True,'start_val':0.50,'limits':(0.05,30),'error':0.01}
-        '''
+        #'''
 
         # Try fixing the slow sigma
         #params_dict['slow_logn_sigma'] = {'fix':True,'start_val':0.52,'limits':(-2,2),'error':0.01}
@@ -385,7 +355,7 @@ def main():
 
             # For maximum likelihood method.
             kwd['errordef'] = 0.5
-            kwd['print_level'] = 0
+            kwd['print_level'] = 1
             #print kwd
 
             m = minuit.Minuit(f,**kwd)
@@ -412,25 +382,20 @@ def main():
             tot_ypts = np.zeros(len(xpts))
 
             ypts  = pdfs.lognormal(xpts,values['fast_logn_mean'],values['fast_logn_sigma'],ranges[2][0],ranges[2][1])
-            y,plot = plot_pdf(xpts,ypts,bin_width=bin_widths[2],scale=values['fast_num'],fmt='r--',linewidth=2,axes=axrt[j])
+            y,plot = plot_pdf(xpts,ypts,bin_width=bin_widths[2],scale=values['fast_num'],fmt='r-',linewidth=2,axes=axrt[j])
             tot_ypts += y
 
             ypts  = pdfs.lognormal(xpts,values['slow_logn_mean'],values['slow_logn_sigma'],ranges[2][0],ranges[2][1])
-            y,plot = plot_pdf(xpts,ypts,bin_width=bin_widths[2],scale=values['slow_num'],fmt='r:',linewidth=2,axes=axrt[j])
+            y,plot = plot_pdf(xpts,ypts,bin_width=bin_widths[2],scale=values['slow_num'],fmt='b-',linewidth=2,axes=axrt[j])
             tot_ypts += y
 
-            axrt[j].plot(xpts,tot_ypts,'r',linewidth=2)
-
+            axrt[j].plot(xpts,tot_ypts,'m',linewidth=3)
             axrt[j].set_ylabel(r'Events')
             axrt[j].set_xlabel(r'Rise time ($\mu$s)')
-            axrt[j].set_xlim(0,5.0)
-
-            '''
             name = "Plots/rt_slice_%d.png" % (figcount)
             if j%6==5:
                 plt.savefig(name)
                 figcount += 1
-            '''
 
             #'''
             if math.isnan(values['fast_logn_mean']) == False:
@@ -446,10 +411,6 @@ def main():
 
             expts.append((ehi+elo)/2.0)
 
-        if j%6==5:
-            name = "Plots/rt_slice_%s_%d.png" % (tag,j/6)
-            plt.savefig(name)
-
     print fit_parameters
     print nevs
     
@@ -463,26 +424,61 @@ def main():
         #for i,fp,fe,n in zip(xrange(len(nevs)),fit_parameters,fit_errors,nevs):
         for i,fp,fe,n in zip(xrange(len(nevs)),fit_parameters,fit_mnerrors,nevs):
             print "----------"
-            #ypts[0].append(fp['fast_logn_mean'])
-            #ypts[1].append(fp['fast_logn_sigma'])
-            #ypts[2].append(fp['fast_num'])
-            #ypts[3].append(fp['slow_logn_mean'])
-            #ypts[4].append(fp['slow_logn_sigma'])
-            #ypts[5].append(fp['slow_num'])
+            ypts[0].append(fp['fast_logn_mean'])
+            ypts[1].append(fp['fast_logn_sigma'])
+            ypts[2].append(fp['fast_num'])
+            ypts[3].append(fp['slow_logn_mean'])
+            ypts[4].append(fp['slow_logn_sigma'])
+            ypts[5].append(fp['slow_num'])
 
+            #yerr[0].append(fe['fast_logn_mean'])
+            #yerr[1].append(fe['fast_logn_sigma'])
+            #yerr[2].append(fe['fast_num'])
+            #yerr[3].append(fe['slow_logn_mean'])
+            #yerr[4].append(fe['slow_logn_sigma'])
+            #yerr[5].append(fe['slow_num'])
+            
             pars = ['fast_logn_mean','fast_logn_sigma','fast_num',\
                     'slow_logn_mean','slow_logn_sigma','slow_num']
 
             for i,p in enumerate(pars):
                 if fe.has_key(p):
-                    ypts[i].append(fp[p])
                     yerrlo[i].append(abs(fe[p]['lower']))
                     yerrhi[i].append(abs(fe[p]['upper']))
                 else:
-                    ypts[i].append(0.0)
                     yerrlo[i].append(0.0)
                     yerrhi[i].append(0.0)
 
+
+            '''
+            if fe.has_key('fast_logn_mean'):
+                yerrlo[0].append(abs(fe['fast_logn_mean']['lower']))
+            else:
+                yerrlo[0].append(0.0)
+            if fe.has_key('slow_logn_sigma'):
+                yerrlo[4].append(abs(fe['slow_logn_sigma']['lower']))
+            else:
+                yerrlo[4].append(0.0)
+            yerrlo[1].append(abs(fe['fast_logn_sigma']['lower']))
+            yerrlo[2].append(abs(fe['fast_num']['lower']))
+            yerrlo[3].append(abs(fe['slow_logn_mean']['lower']))
+            #yerrlo[4].append(abs(fe['slow_logn_sigma']['lower']))
+            yerrlo[5].append(abs(fe['slow_num']['lower']))
+
+            if fe.has_key('fast_logn_mean'):
+                yerrhi[0].append(fe['fast_logn_mean']['upper'])
+            else:
+                yerrhi[0].append(0.0)
+            if fe.has_key('slow_logn_sigma'):
+                yerrhi[4].append(abs(fe['slow_logn_sigma']['upper']))
+            else:
+                yerrhi[4].append(0.0)
+            yerrhi[1].append(fe['fast_logn_sigma']['upper'])
+            yerrhi[2].append(fe['fast_num']['upper'])
+            yerrhi[3].append(fe['slow_logn_mean']['upper'])
+            #yerrhi[4].append(fe['slow_logn_sigma']['upper'])
+            yerrhi[5].append(fe['slow_num']['upper'])
+            '''
 
             npts.append(n)
 
@@ -492,184 +488,69 @@ def main():
             yerrhi[i] = np.array(yerrhi[i])
 
         colors = ['r','b']
-        labels = ['narrow','wide']
+        labels = ['fast','slow']
 
-        ########################################################################
-        # Use all or some of the points in the fit.
-        ########################################################################
-        index = np.arange(1,16)
-        if args.dataset=='nicole':
-            index = np.arange(1,16)
-        elif args.dataset=='juan':
-            index = np.arange(0,9)
-
-        
-        #xp = np.linspace(min(expts),max(expts),100)
-        xp = np.linspace(min(expts),expts[17],100)
-        if args.dataset=='nicole':
-            xp = np.linspace(min(expts),expts[17],100)
-        elif args.dataset=='juan':
-            xp = np.linspace(min(expts),expts[8],100)
-
+        xp = np.linspace(min(expts),max(expts),100)
         expts = np.array(expts)
 
-        fvals2 = plt.figure(figsize=(13,4),dpi=100)
-
-        yfitpts = []
-
-        for k in range(0,3):
-            # Some of the broad rise times are set to 0.
-            #index0s = ypts[3+k]!=0
-            #index0s = np.ones(len(ypts[3+k])).astype(bool)
-            index0s = np.ones(16).astype(bool)
-
-            fvals2.add_subplot(1,3,k+1)
-
-            tempypts = ypts[0+k]-ypts[3+k]
-            # Fractional error
-            tempyerrlo = np.sqrt((yerrlo[0+k])**2 + (yerrlo[3+k])**2)
-            tempyerrhi = np.sqrt((yerrhi[0+k])**2 + (yerrhi[3+k])**2)
-            if k>1:
-                tempypts = ypts[0+k][index0s]/ypts[3+k][index0s]
-                tempyerrlo = np.sqrt((yerrlo[0+k][index0s]/ypts[3+k][index0s])**2 + (yerrlo[3+k][index0s]*(ypts[0+k][index0s]/(ypts[3+k][index0s]**2)))**2)
-                tempyerrhi = np.sqrt((yerrhi[0+k][index0s]/ypts[3+k][index0s])**2 + (yerrhi[3+k][index0s]*(ypts[0+k][index0s]/(ypts[3+k][index0s]**2)))**2)
-
-            plt.errorbar(expts[index0s],tempypts[index0s],xerr=0.01,yerr=[tempyerrlo[index0s],tempyerrhi[index0s]],\
-                    fmt='o',ecolor='k',mec='k',mfc='m',label='Ratio')
-
-            if k==0:
-                plt.ylabel(r'$\Delta \mu$')
-            elif k==1:
-                plt.ylabel(r'$\Delta \sigma$')
-            elif k==2:
-                plt.ylabel(r'# wide/# narrow')
-
-            plt.xlim(0.5,3.5)
-            plt.xlabel('Energy (keVee)')
-
-
-            ########################################################################
-            # Fit to exponentials.
-            ########################################################################
-            # Choose appropriate starting values, depending on the dataset.
-            pinit = [1,1,1]
-            if args.dataset=='nicole':
-                if k==0:
-                    pinit = [1.0, 1.0, -1.2]
-                elif k==1:
-                    #pinit = [1.0, -1.0, -0.5]
-                    pinit = [-3.0,0.0015,-0.4]
-                elif k==2:
-                    pinit = [-2.0, 1.0, 2.0]
-            elif args.dataset=='juan':
-                if k==0:
-                    pinit = [1.0, 1.0, -1.2]
-                elif k==1:
-                    #pinit = [1.0, -1.0, -0.5]
-                    pinit = [-3.0,0.0015,-0.4]
-                elif k==2:
-                    pinit = [-2.0, 1.0, 2.0]
-            
-            out = leastsq(errfunc, pinit, args=(expts[index], tempypts[index], (tempyerrlo[index]+tempyerrhi[index])/2.0), full_output=1)
-            z = out[0]
-            zcov = out[1]
-            #print "Differences and ratios: %d [%f,%f,%f]" % (k,z[0],z[1],z[2])
-            variable = None
-            if (k==0):
-                variable = "fast_mean_rel_k"
-            if (k==1):
-                variable = "fast_sigma_rel_k"
-            elif (k==2):
-                variable = "fast_num_rel_k"
-            output = "\t%s = [%f,%f,%f]\n" % (variable,z[0],z[1],z[2])
-            print output
-            outfile.write(output)
-            #print "zcov: ",zcov
-            '''
-            if zcov is not None:
-                print "Differences and ratios: %d [%f,%f,%f]" % (k,np.sqrt(zcov[0][0]),np.sqrt(zcov[1][1]),np.sqrt(zcov[2][2]))
-            '''
-            yfitpts = expfunc(z,xp)
-            #print zcov
-            plt.plot(xp,yfitpts,'-',color='m')
-
-        fvals2.subplots_adjust(left=0.10, right=0.98,bottom=0.15,wspace=0.25,hspace=0.25)
-        name = 'Plots/rt_summary_%s_1.png' % (tag)
-        plt.savefig(name)
-
-        outfile.write("\n")
-
-        ########################################################################
-        # Try to fit the individual distributions.
-        ########################################################################
+        fvals = plt.figure(figsize=(13,8),dpi=100)
         yfitpts = []
         for i in range(0,6):
             yfitpts.append(np.zeros(len(xp)))
 
-        fvals = plt.figure(figsize=(13,4),dpi=100)
         for k in range(0,3):
-            fvals.add_subplot(1,3,k+1)
+            fvals.add_subplot(2,3,k+1)
             for ik in range(0,2):
                 nindex = k+3*ik
-                #print "HERERERERE"
-                #print ypts[nindex]
-                #print ypts[nindex][ypts[nindex]!=0]
-                print len(yerrlo[nindex][ypts[nindex]!=0])
-                print len(yerrhi[nindex][ypts[nindex]!=0])
-                plt.errorbar(expts[ypts[nindex]!=0],ypts[nindex][ypts[nindex]!=0],xerr=0.01,yerr=[yerrlo[nindex][ypts[nindex]!=0],yerrhi[nindex][ypts[nindex]!=0]],\
+                plt.errorbar(expts,ypts[nindex],xerr=0.01,yerr=[yerrlo[nindex],yerrhi[nindex]],\
                         fmt='o',ecolor='k',mec='k',mfc=colors[ik],label=labels[ik])
+                #plt.errorbar(expts,ypts[3],xerr=0.01,yerr=[yerrlo[3],yerrhi[3]],fmt='o',ecolor='k',mec='k',mfc='b',label='slow')
 
-                #'''
                 # Use part of the data
                 #index0 = np.arange(0,3)
                 #index1 = np.arange(7,len(expts))
                 #index = np.append(index0,index1)
 
                 # Use all or some of the points
-                index = np.arange(1,16)
-                if args.dataset=='nicole':
-                    index = np.arange(1,15)
-                elif args.dataset=='juan':
-                    index = np.arange(0,7)
+                #index = np.arange(0,len(expts))
+                index = np.arange(0,6)
+                if ik>0:
+                    index = np.arange(0,6)
+                #print index
 
                 ########################################################################
                 # Fit to exponentials.
                 ########################################################################
+                '''
+                def expfunc(x, a, b, c):
+                    return a*np.exp(-b*x) + c
+                '''
+                # define our (line) fitting function
+                expfunc = lambda p, x: p[1]*np.exp(-p[0]*x) + p[2]
+                errfunc = lambda p, x, y, err: (y - expfunc(p, x)) / err
+
+                #z,zcov = curve_fit(expfunc,expts[index],ypts[nindex][index],p0=[3,-1,2])
                 pinit = [1,1,1]
-                if ik==0 and k==0:
+                if ik==0 and i==1:
                     pinit = [1.0, 1.0, -1.2]
-                elif ik==0 and k==1:
+                elif ik==0 and i==1:
                     pinit = [4.0, 2.0, 0.0]
-                elif ik==0 and k==2:
-                    pinit = [2.0, 2000.0, 300.0]
                 elif ik==1:
                     pinit = [3.0, 1.5, 0.5]
-                
-                out = leastsq(errfunc, pinit, args=(expts[index], ypts[nindex][index], (yerrlo[nindex][index]+yerrhi[nindex][index])/2.0), full_output=1)
+                #print "FITING THESE POINTS........"
+                #print expts[index], ypts[nindex][index]
+                #print yerrlo[nindex]
+                #print yerrlo[nindex][index]
+                out = leastsq(errfunc, pinit, args=(expts[index], ypts[nindex][index], yerrlo[nindex][index]), full_output=1)
                 z = out[0]
                 zcov = out[1]
-                variable = None
-                if (k==0):
-                    variable = "fast_mean0_k"
-                if (k==1):
-                    variable = "fast_sigma0_k"
-                elif (k==2):
-                    variable = "fast_num0_k"
-                #print "Data points: %d %d [%f,%f,%f]" % (k,ik,z[0],z[1],z[2])
-                if (ik==0):
-                    output = "\t%s = [%f,%f,%f]\n" % (variable,z[0],z[1],z[2])
-                    outfile.write(output)
-                    print output
-                #print "Data points: %d %d [%f,%f,%f]" % (k,ik,np.sqrt(zcov[0][0]),np.sqrt(zcov[1][1]),np.sqrt(zcov[2][2]))
+                print "%d %d [%f,%f,%f]" % (k,ik,z[0],z[1],z[2])
                 yfitpts[nindex] = expfunc(z,xp)
                 #print zcov
                 plt.plot(xp,yfitpts[nindex],'-',color=colors[ik])
-                #'''
 
-            if k==0:
+            if k<2:
                 plt.ylim(-1.5,1.5)
-            elif k==1:
-                plt.ylim(0,1.5)
             plt.xlabel('Energy (keVee)')
             if k==0:
                 plt.ylabel(r'Lognormal $\mu$')
@@ -679,28 +560,68 @@ def main():
                 plt.ylabel(r'Number of events')
             plt.legend()
 
-        #fval
+            #fval
+            fvals.add_subplot(2,3,4)
+            plt.plot(xp,yfitpts[3]/yfitpts[0],'-',color=colors[ik])
+
+            fvals.add_subplot(2,3,5)
+            plt.plot(xp,yfitpts[4]/yfitpts[1],'-',color=colors[ik])
+        #z = np.polyfit(expts[index],ypts[0][index],2)
+        #print "[%f,%f,%f]" % (z[2],z[1],z[0])
+        #p = np.poly1d(z)
+        #plt.plot(xp,p(xp),'-')
+
+        #z = np.polyfit(expts[index],ypts[3][index],2)
+        #print "[%f,%f,%f]" % (z[2],z[1],z[0])
+        #p = np.poly1d(z)
+        #plt.plot(xp,p(xp),'-')
+
+
         '''
-        fvals.add_subplot(2,3,4)
-        plt.plot(xp,yfitpts[3]-yfitpts[0],'-',color='m')
+        fvals.add_subplot(1,3,2)
+        plt.errorbar(expts,ypts[1],xerr=0.01,yerr=[yerrlo[1],yerrhi[1]],fmt='o',ecolor='k',mec='k',mfc='r',label='fast')
+        plt.errorbar(expts,ypts[4],xerr=0.01,yerr=[yerrlo[4],yerrhi[4]],fmt='o',ecolor='k',mec='k',mfc='b',label='slow')
+        plt.ylim(0.0,1.0)
+        plt.xlabel('Energy (keVee)')
+        plt.ylabel(r'Lognormal $\sigma$')
+        plt.legend()
 
-        fvals.add_subplot(2,3,5)
-        plt.plot(xp,yfitpts[4]-yfitpts[1],'-',color='m')
+        z = np.polyfit(expts[index],ypts[1][index],2)
+        print "[%f,%f,%f]" % (z[2],z[1],z[0])
+        p = np.poly1d(z)
+        plt.plot(xp,p(xp),'-')
 
-        fvals.add_subplot(2,3,6)
-        plt.plot(xp,yfitpts[5]/yfitpts[2],'-',color='m')
+        z = np.polyfit(expts[index],ypts[4][index],2)
+        print "[%f,%f,%f]" % (z[2],z[1],z[0])
+        p = np.poly1d(z)
+        plt.plot(xp,p(xp),'-')
+
+        fvals.add_subplot(1,3,3)
+        plt.errorbar(expts,ypts[2],xerr=0.01,yerr=[yerrlo[2],yerrhi[2]],fmt='o',ecolor='k',mec='k',mfc='r',label='fast')
+        plt.errorbar(expts,ypts[5],xerr=0.01,yerr=[yerrlo[5],yerrhi[5]],fmt='o',ecolor='k',mec='k',mfc='b',label='slow')
+        #plt.ylim(0.0,1.4)
+        plt.xlabel('Energy (keVee)')
+        plt.ylabel(r'% of events in bin')
+        plt.legend()
+
+        z = np.polyfit(expts[index],ypts[2][index],2)
+        print "[%f,%f,%f]" % (z[2],z[1],z[0])
+        p = np.poly1d(z)
+        plt.plot(xp,p(xp),'-')
+
+        z = np.polyfit(expts[index],ypts[5][index],2)
+        print "[%f,%f,%f]" % (z[2],z[1],z[0])
+        p = np.poly1d(z)
+        plt.plot(xp,p(xp),'-')
         '''
 
-        fvals.subplots_adjust(left=0.10, right=0.98,bottom=0.15,wspace=0.25,hspace=0.25)
-        name = 'Plots/rt_summary_%s_0.png' % (tag)
-        plt.savefig(name)
+        fvals.subplots_adjust(left=0.08, right=0.98,bottom=0.15,wspace=0.25)
+        plt.savefig('Plots/rt_summary.png')
+
 
         np.savetxt('rt_parameters.txt',[expts,ypts[0],ypts[1],ypts[2],ypts[3],ypts[4],ypts[5],npts])
-        #'''
 
-    #print "Sum ypts[5]: ",sum(ypts[5])
-
-    outfile.write("\n\treturn fast_mean_rel_k,fast_sigma_rel_k,fast_num_rel_k,fast_mean0_k,fast_sigma0_k,fast_num0_k\n")
+    print "Sum ypts[5]: ",sum(ypts[5])
 
     if not args.batch:
         plt.show()
