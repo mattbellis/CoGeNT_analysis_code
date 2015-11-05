@@ -238,7 +238,7 @@ def main():
 
     #tag = 'data_constrained_with_pulser_mean20_sigma20_slowsigfloat'
     #tag = 'data_constrained_with_pulser'
-    tag = 'data_constrained_with_simulated_Nicole'
+    #tag = 'data_constrained_with_simulated_Nicole'
 
     ############################################################################
 
@@ -250,6 +250,7 @@ def main():
 
     # Read in the parameters from the file passed in on the commandline
     rt_parameters_filename = args.rt_parameters.rstrip('.py')
+    tag = rt_parameters_filename
     print "Rise-time parameters_filename: %s" % (rt_parameters_filename)
     rt_parameters_file = __import__(rt_parameters_filename)
     risetime_parameters = getattr(rt_parameters_file,'risetime_parameters')
@@ -712,6 +713,11 @@ def main():
         ########################################################################
         # Try to fit the individual distributions.
         ########################################################################
+
+        # To hold the means and widths for the fast and slow rise-time distributions.
+        means = []
+        sigmas = []
+
         yfitpts = []
         for i in range(0,6):
             yfitpts.append(np.zeros(len(xp)))
@@ -770,6 +776,7 @@ def main():
                         z = out[0]
                         zcov = out[1]
                         print "Data points: %d %d [%f,%f]" % (k,ik,z[0],z[1])
+                        sigmas.append([z[0],z[1]])
                         '''
                         if zcov is not None:
                             print "Data points: %d %d [%f,%f]" % (k,ik,np.sqrt(zcov[0][0]),np.sqrt(zcov[1][1]))
@@ -783,6 +790,11 @@ def main():
                         z = out[0]
                         zcov = out[1]
                         print "Data points: %d %d [%f,%f,%f]" % (k,ik,z[0],z[1],z[2])
+                        if k==1 and ik==0:
+                            sigmas.append([z[0],z[1],z[2]])
+                        elif k==0:
+                            means.append([z[0],z[1],z[2]])
+
                         '''
                         if zcov is not None:
                             print "Data points: %d %d [%f,%f,%f]" % (k,ik,np.sqrt(zcov[0][0]),np.sqrt(zcov[1][1]),np.sqrt(zcov[2][2]))
@@ -822,9 +834,39 @@ def main():
         plt.savefig(name)
 
         np.savetxt('rt_parameters.txt',[expts,ypts[0],ypts[1],ypts[2],ypts[3],ypts[4],ypts[5],npts])
+
         #'''
 
     #print "Sum ypts[5]: ",sum(ypts[5])
+    print means
+    print sigmas
+    print fast_mean_rel_k,fast_sigma_rel_k,fast_num_rel_k
+
+    outfilename = "risetime_parameters_from_data_%s.py" % (tag)
+    outfile = open(outfilename,'w')
+    outfile.write("def risetime_parameters():\n\n")
+
+    output = "\n\t%s = [%f,%f,%f]\n" % ("fast_mean_rel_k",fast_mean_rel_k[0],fast_mean_rel_k[1],fast_mean_rel_k[2])
+    outfile.write(output)
+    output = "\t%s = [%f,%f,%f]\n" % ("fast_sigma_rel_k",fast_sigma_rel_k[0],fast_sigma_rel_k[1],fast_sigma_rel_k[2])
+    outfile.write(output)
+    output = "\t%s = [%f,%f,%f]\n" % ("fast_num_rel_k",fast_num_rel_k[0],fast_num_rel_k[1],fast_num_rel_k[2])
+    outfile.write(output)
+    output = "\n\t%s = [%f,%f,%f]\n" % ("mu0",means[0][0],means[0][1],means[0][2])
+    outfile.write(output)
+    output = "\t%s = [%f,%f,%f]\n" % ("sigma0",sigmas[0][0],sigmas[0][1],sigmas[0][2])
+    outfile.write(output)
+    output = "\n\t%s = [%f,%f,%f]\n" % ("mu1",means[1][0],means[1][1],means[1][2])
+    outfile.write(output)
+    output = "\t%s = [%f,%f] # This has only two parameters.\n" % ("sigma1",sigmas[1][0],sigmas[1][1])
+    outfile.write(output)
+    output = "\n\treturn fast_mean_rel_k,fast_sigma_rel_k,fast_num_rel_k,mu0,sigma0,mu1,sigma1\n"
+    outfile.write(output)
+
+        
+
+
+
 
     if not args.batch:
         plt.show()

@@ -26,12 +26,25 @@ ranges[2][1] = 5.0
 ################################################################################
 # Fast
 ################################################################################
-fast_mean_rel_k = [0.431998,-1.525604,-0.024960]
-fast_sigma_rel_k = [-0.014644,5.745791,-6.168695]
-fast_num_rel_k = [-0.261322,5.553102,-5.9144]
 
-mu0 = [0.374145,0.628990,-1.369876]
-sigma0 = [1.383249,0.495044,0.263360]
+# Read in the rise-time parameters from the file passed in on the commandline
+#rt_parameters_filename = 'risetime_parameters_from_data_data_constrained_with_simulated_Nicole.py'
+rt_parameters_filename = 'risetime_parameters_from_data_risetime_parameters_risetime_determination_juan.py'
+
+rt_parameters_filename = rt_parameters_filename.rstrip('.py')
+print "Rise-time parameters_filename: %s" % (rt_parameters_filename)
+rt_parameters_file = __import__(rt_parameters_filename)
+risetime_parameters = getattr(rt_parameters_file,'risetime_parameters')
+
+fast_mean_rel_k,fast_sigma_rel_k,fast_num_rel_k,mu0,sigma0,mu,sigma = risetime_parameters()
+
+
+#fast_mean_rel_k = [0.431998,-1.525604,-0.024960]
+#fast_sigma_rel_k = [-0.014644,5.745791,-6.168695]
+#fast_num_rel_k = [-0.261322,5.553102,-5.9144]
+
+#mu0 = [0.374145,0.628990,-1.369876]
+#sigma0 = [1.383249,0.495044,0.263360]
 
 for j,y in enumerate(Y):
     for i,x in enumerate(X):
@@ -52,8 +65,6 @@ for j,y in enumerate(Y):
 X,Y = np.meshgrid(X, Y)
 print X
 print Y
-
-
 
 # Plot the functions.
 print len(X)

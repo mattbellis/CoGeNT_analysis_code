@@ -13,7 +13,7 @@ import scipy.integrate as integrate
 from scipy import interpolate
 
 
-import parameters 
+#import parameters 
 from cogent_utilities import *
 from cogent_pdfs import *
 from fitting_utilities import *
@@ -60,6 +60,8 @@ def main():
             default='bkg_only', help='Tag to append to output files and figures.')
     parser.add_argument('--parameters', dest='parameters', type=str,\
             default='parameters.py', help='File from which to read the parameters for fitting.')
+    parser.add_argument('--rt-parameters', dest='rt_parameters', type=str,\
+            default='risetime_parameters_from_data_data_constrained_with_simulated_Nicole.py', help='File from which to read the rise_time_parameters for fitting.')
     parser.add_argument('--turn-off-eff', dest='turn_off_eff', action='store_true',\
             default=False, help='Turn off the efficiency.')
     parser.add_argument('--contours', dest='contours', action='store_true',\
@@ -120,12 +122,18 @@ def main():
     #parameters = getattr(parameters_file,'parameters')
 
     ranges,subranges,nbins = parameters.fitting_parameters(args.fit)
-
-
     
     bin_widths = np.ones(len(ranges))
     for i,n,r in zip(xrange(len(nbins)),nbins,ranges):
         bin_widths[i] = (r[1]-r[0])/n
+
+    # Read in the rise-time parameters from the file passed in on the commandline
+    rt_parameters_filename = args.rt_parameters.rstrip('.py')
+    print "Rise-time parameters_filename: %s" % (rt_parameters_filename)
+    rt_parameters_file = __import__(rt_parameters_filename)
+    risetime_parameters = getattr(rt_parameters_file,'risetime_parameters')
+
+    fast_mean_rel_k,fast_sigma_rel_k,fast_num_rel_k,mu0,sigma0,mu,sigma = risetime_parameters() 
 
     ############################################################################
     # Read in the data
@@ -285,13 +293,15 @@ def main():
     #mu0 =  [0.896497,0.709907,-1.208970]
     #sigma0 = [2.480080,1.215221,0.266656]
 
+    ########### THIS IS WHAT I WAS USING
     # Using Nicole's simulated stuff
-    fast_mean_rel_k = [0.431998,-1.525604,-0.024960]
-    fast_sigma_rel_k = [-0.014644,5.745791,-6.168695]
-    fast_num_rel_k = [-0.261322,5.553102,-5.9144]
+    #fast_mean_rel_k = [0.431998,-1.525604,-0.024960]
+    #fast_sigma_rel_k = [-0.014644,5.745791,-6.168695]
+    #fast_num_rel_k = [-0.261322,5.553102,-5.9144]
 
-    mu0 = [0.374145,0.628990,-1.369876]
-    sigma0 = [1.383249,0.495044,0.263360]
+    ########### THIS IS WHAT I WAS USING
+    #mu0 = [0.374145,0.628990,-1.369876]
+    #sigma0 = [1.383249,0.495044,0.263360]
 
     rt_fast = rise_time_prob_fast_exp_dist(data[2],data[0],mu0,sigma0,fast_mean_rel_k,fast_sigma_rel_k,fast_num_rel_k,ranges[2][0],ranges[2][1])
 
@@ -306,9 +316,11 @@ def main():
     #mu = [0.768572,0.588991,0.343744]
     #sigma = [0.566326,-0.031958]
 
+
+    ########### THIS IS WHAT I WAS USING
     # Using Nicole's simulated stuff
-    mu = [0.269108,0.747275,0.068146]
-    sigma = [0.531530,-0.020523]
+    #mu = [0.269108,0.747275,0.068146]
+    #sigma = [0.531530,-0.020523]
 
 
 
