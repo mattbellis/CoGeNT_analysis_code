@@ -3,6 +3,8 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
+import seaborn as sn
+
 import pprint
 
 from datetime import datetime,timedelta
@@ -11,7 +13,7 @@ import scipy.integrate as integrate
 from scipy import interpolate
 
 
-import parameters 
+#import parameters 
 from cogent_utilities import *
 from cogent_pdfs import *
 from fitting_utilities import *
@@ -60,6 +62,10 @@ def main():
             default=None, help='Mass of a spike allowed to modulate.')
     parser.add_argument('--tag', dest='tag', type=str,\
             default='bkg_only', help='Tag to append to output files and figures.')
+    parser.add_argument('--parameters', dest='parameters', type=str,\
+            default='parameters.py', help='File from which to read the parameters for fitting.')
+    parser.add_argument('--rt-parameters', dest='rt_parameters', type=str,\
+            default='risetime_parameters_from_data_data_constrained_with_simulated_Nicole.py', help='File from which to read the rise_time_parameters for fitting.')
     parser.add_argument('--turn-off-eff', dest='turn_off_eff', action='store_true',\
             default=False, help='Turn off the efficiency.')
     parser.add_argument('--contours', dest='contours', action='store_true',\
@@ -112,11 +118,26 @@ def main():
     ############################################################################
     # Declare the ranges.
     ############################################################################
+
+    # Read in the parameters from the file passed in on the commandline
+    parameters_filename = args.parameters.rstrip('.py')
+    print "Parameters_filename: %s" % (parameters_filename)
+    parameters_file = __import__(parameters_filename)
+    #parameters = getattr(parameters_file,'parameters')
+
     ranges,subranges,nbins = parameters.fitting_parameters(args.fit)
     
     bin_widths = np.ones(len(ranges))
     for i,n,r in zip(xrange(len(nbins)),nbins,ranges):
         bin_widths[i] = (r[1]-r[0])/n
+
+    # Read in the rise-time parameters from the file passed in on the commandline
+    rt_parameters_filename = args.rt_parameters.rstrip('.py')
+    print "Rise-time parameters_filename: %s" % (rt_parameters_filename)
+    rt_parameters_file = __import__(rt_parameters_filename)
+    risetime_parameters = getattr(rt_parameters_file,'risetime_parameters')
+
+    fast_mean_rel_k,fast_sigma_rel_k,fast_num_rel_k,mu0,sigma0,mu,sigma = risetime_parameters() 
 
     ############################################################################
     # Read in the data
@@ -276,13 +297,15 @@ def main():
     #mu0 =  [0.896497,0.709907,-1.208970]
     #sigma0 = [2.480080,1.215221,0.266656]
 
+    ########### THIS IS WHAT I WAS USING
     # Using Nicole's simulated stuff
-    fast_mean_rel_k = [0.431998,-1.525604,-0.024960]
-    fast_sigma_rel_k = [-0.014644,5.745791,-6.168695]
-    fast_num_rel_k = [-0.261322,5.553102,-5.9144]
+    #fast_mean_rel_k = [0.431998,-1.525604,-0.024960]
+    #fast_sigma_rel_k = [-0.014644,5.745791,-6.168695]
+    #fast_num_rel_k = [-0.261322,5.553102,-5.9144]
 
-    mu0 = [0.374145,0.628990,-1.369876]
-    sigma0 = [1.383249,0.495044,0.263360]
+    ########### THIS IS WHAT I WAS USING
+    #mu0 = [0.374145,0.628990,-1.369876]
+    #sigma0 = [1.383249,0.495044,0.263360]
 
     rt_fast = rise_time_prob_fast_exp_dist(data[2],data[0],mu0,sigma0,fast_mean_rel_k,fast_sigma_rel_k,fast_num_rel_k,ranges[2][0],ranges[2][1])
 
@@ -297,9 +320,11 @@ def main():
     #mu = [0.768572,0.588991,0.343744]
     #sigma = [0.566326,-0.031958]
 
+
+    ########### THIS IS WHAT I WAS USING
     # Using Nicole's simulated stuff
-    mu = [0.269108,0.747275,0.068146]
-    sigma = [0.531530,-0.020523]
+    #mu = [0.269108,0.747275,0.068146]
+    #sigma = [0.531530,-0.020523]
 
 
 
@@ -403,13 +428,13 @@ def main():
     ax0 = fig0a.add_subplot(1,1,1)
     ax1 = fig0b.add_subplot(1,1,1)
 
-    lch.hist_err(data[0],bins=nbins[0],range=ranges[0],axes=ax0)
+    lch.hist_err(data[0],bins=nbins[0],range=ranges[0],axes=ax0,color='k',linewidth=2)
     #print data[1]
     index0 = data[1]>539.0
     index1 = data[1]<566.4
     index = index0*index1
     #print data[1][index]
-    h,xpts,ypts,xpts_err,ypts_err = lch.hist_err(data[1],bins=nbins[1],range=ranges[1],axes=ax1)
+    h,xpts,ypts,xpts_err,ypts_err = lch.hist_err(data[1],bins=nbins[1],range=ranges[1],axes=ax1,color='k',linewidth=2)
 
     # Do an acceptance correction of some t-bins by hand.
     tbwidth = (ranges[1][1]-ranges[1][0])/float(nbins[1])
@@ -530,7 +555,7 @@ def main():
         if i==2 or i==3:
             params_dict[name] = {'fix':False,'start_val':val,'error':0.01,'limits':(0,50000)}
         else:
-            params_dict[name] = {'fix':False,'start_val':val,'error':0.01,'limits':(0,50000)}
+            params_dict[name] = {'fix':True,'start_val':val,'error':0.01,'limits':(0,50000)}
         name = "ls_nexpected%d" % (i)
         params_dict[name] = {'fix':True,'start_val':val,'error':0.01,'limits':(0,50000)}
     for i,val in enumerate(decay_constants):
@@ -573,10 +598,15 @@ def main():
     #params_dict['num_comp'] = {'fix':True,'start_val':0.0,'limits':(0.0,100000.0),'error':0.01}
     #params_dict['num_comp'] = {'fix':False,'start_val':float(org_values_after_fiducial_cuts[2])+0.000001,'limits':(0.0,100000.0),'error':0.01}
     #params_dict['num_comp'] = {'fix':False,'start_val':0.0,'limits':(0.0,1000.0),'error':0.01}
-    params_dict['e_exp_flat'] = {'fix':True,'start_val':0.00001,'limits':(0.00001,10.0),'error':0.01}
+    # This is what I did before meeting with Juan and Chris (8/13/15)
+    #params_dict['e_exp_flat'] = {'fix':True,'start_val':0.00001,'limits':(0.00001,10.0),'error':0.01}
+    params_dict['e_exp_flat'] = {'fix':False,'start_val':0.00,'limits':(0.000,10.0),'error':0.01}
     params_dict['t_exp_flat'] = {'fix':True,'start_val':0.0002,'limits':(0.0000001,10.0),'error':0.01}
     #params_dict['flat_frac'] = {'fix':True,'start_val':0.51,'limits':(0.00001,10.0),'error':0.01}
     #params_dict['flat_frac'] = {'fix':False,'start_val':0.66,'limits':(0.00001,1.0),'error':0.01}
+    if args.fit==20: # Additional X-ray shape
+        params_dict['gammas_k'] = {'fix':False,'start_val':0.0,'limits':(0.0,1000.0),'error':0.01}
+        params_dict['gammas_scale'] = {'fix':False,'start_val':1.0,'limits':(0.2,1000.0),'error':0.01}
 
     #params_dict['flat_neutrons_slope'] = {'fix':True,'start_val':0.532,'limits':(0.00001,10.0),'error':0.01}
     #params_dict['flat_neutrons_amp'] = {'fix':True,'start_val':14.0,'limits':(0.00001,10.0),'error':0.01}
@@ -605,7 +635,7 @@ def main():
     #params_dict['num_exp0'] = {'fix':False,'start_val':575.0,'limits':(0.0,10000.0),'error':0.01}
 
     # Exponential term in energy
-    if args.fit==0 or args.fit==1 or args.fit==5:
+    if args.fit==0 or args.fit==1 or args.fit==5 or args.fit==20:
         #params_dict['e_exp0'] = {'fix':False,'start_val':2.51,'limits':(0.0,10.0),'error':0.01}
         params_dict['e_exp0'] = {'fix':True,'start_val':0.005,'limits':(0.0,10.0),'error':0.01}
 
@@ -653,7 +683,7 @@ def main():
 
 
     m.migrad()
-    m.hesse()
+    #m.hesse()
 
     print "Finished fit!!\n"
 
@@ -841,7 +871,11 @@ def main():
     ############################################################################
     #'''
     # Energy
-    ypts  = pdfs.exp(expts,values['e_exp_flat'],ranges[0][0],ranges[0][1])
+    ypts = None
+    if args.fit!=20:
+        ypts  = pdfs.exp(expts,values['e_exp_flat'],ranges[0][0],ranges[0][1])
+    else:
+        ypts  = pdfs.Ge_gamma_response(expts,values['e_exp_flat'],values['gammas_k'],values['gammas_scale'],ranges[0][0],ranges[0][1],efficiency=efficiency)
     y,plot = plot_pdf(expts,ypts,bin_width=bin_widths[0],scale=values['num_comp'],fmt='m-',axes=ax0,efficiency=eff,label='Comptons: resistor and cosmogenic activations',linewidth=4)
     eytot += y
 
@@ -1008,19 +1042,20 @@ def main():
     ax0.set_xlim(ranges[0])
     #ax0.set_ylim(0.0,values['num_flat']/10)
     #ax0.set_ylim(0.0,220)
-    ax0.set_xlabel("Ionization Energy (keVee)",fontsize=12)
+    ax0.set_xlabel("Ionization Energy (keVee)",fontsize=18)
     label = "Interactions/%4.3f keVee" % (bin_widths[0])
-    ax0.set_ylabel(label,fontsize=12)
-    ax0.legend()
+    ax0.set_ylabel(label,fontsize=14)
+    ax0.legend(fontsize=14)
     #ax0.set_yscale('log')
     #ax0.set_ylim(0.1)
 
     ax1.set_xlim(ranges[1])
     #ax1.set_ylim(0.0,values['num_flat']/8)
     #ax1.set_ylim(0.0,350)
-    ax1.set_xlabel("Days since 12/4/2009",fontsize=12)
+    ax1.set_xlabel("Days since 12/4/2009",fontsize=18)
     label = "Interactions/%4.1f days" % (bin_widths[1])
-    ax1.set_ylabel(label,fontsize=12)
+    ax1.set_ylabel(label,fontsize=14)
+    ax1.legend(fontsize=14)
 
     fig0a.subplots_adjust(left=0.07, bottom=0.10, right=0.99, wspace=None, hspace=None,top=0.95)
     fig0b.subplots_adjust(left=0.07, bottom=0.12, right=0.99, wspace=None, hspace=None,top=0.85)
