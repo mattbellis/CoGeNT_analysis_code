@@ -1064,6 +1064,9 @@ def main():
     #tag = "WIMP_M=10_sigma_n=52e-42"
     tag = args.tag
 
+    if wimp_model is not None:
+        tag += "_wimp_model_%s" % (wimp_model)
+
     if args.rt_parameters.find('nicole')>=0:
         tag += "_nicole_rt_params"
     elif args.rt_parameters.find('juan')>=0:
