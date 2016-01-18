@@ -19,6 +19,10 @@ from lichen.plotting_utilities import *
 from plotting_utilities import plot_wimp_er
 from plotting_utilities import plot_wimp_day
 
+# This is just for the Siena HPC cluster
+import sys
+sys.path.append("/home/mbellis/python/lib/python/")
+sys.path.append("/home/mbellis/python/lib64/python/")
 import lichen.lichen as lch
 
 import iminuit as minuit
@@ -551,8 +555,8 @@ def main():
 
     # Expected number of neutron events.
     #num_neutrons_expected = 937.*(tot_live_days/442.) # Taken from page 18 of the CoGeNT long paper.
-    #num_neutrons_expected = 340.*(tot_live_days/442.) # Taken from page 18 of the CoGeNT long paper.
-    num_neutrons_expected = org_values_after_fiducial_cuts[1]+np.random.normal(0,75,1)[0]
+    num_neutrons_expected = 340.*(tot_live_days/442.) # Taken from page 18 of the CoGeNT long paper.
+    #num_neutrons_expected = org_values_after_fiducial_cuts[1]+np.random.normal(0,75,1)[0]
 
     # Exp 1 is the surface term
     #params_dict['k1_surf'] = {'fix':False,'start_val':-0.503,'limits':(-0.7,-0.4),'error':0.1}
@@ -1024,9 +1028,9 @@ def main():
     #tag = "background_only"
     #tag = "WIMP_M=10_sigma_n=52e-42"
     tag = args.tag
-    name = "Plots/cogent_fit_energy_%s.png" % (tag)
+    name = "./Plots/cogent_fit_energy_%s.png" % (tag)
     fig0a.savefig(name)
-    name = "Plots/cogent_fit_time_%s.png" % (tag)
+    name = "./Plots/cogent_fit_time_%s.png" % (tag)
     fig0b.savefig(name)
     #############################################################################
     # What is the peak_wimp_date?
@@ -1083,7 +1087,7 @@ def main():
     else:
         print "%-15s %15.7f %5.2f %5.2e" % ('final lh/mDM/sigma_n',final_lh,0.0,0.0)
 
-    name = "fit_results/results_%s.txt" % (tag)
+    name = "./fit_results/results_%s.txt" % (tag)
     out_results = open(name,'w')
     #pprint.pprint(values)
     #s = pprint.pformat(values)

@@ -6,6 +6,10 @@ import scipy.integrate as integrate
 
 import time
 
+# This is just for the Siena HPC cluster
+import sys
+sys.path.append("/home/mbellis/python/lib/python/")
+sys.path.append("/home/mbellis/python/lib64/python/")
 #import minuit
 import iminuit as minuit
 from cogent_pdfs import *

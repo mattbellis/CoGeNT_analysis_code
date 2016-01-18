@@ -6,6 +6,10 @@ import csv
 import numpy as np
 from cogent_utilities import *
 from cogent_pdfs import surface_events,flat_events,compton_events,neutron_events
+# This is just for the Siena HPC cluster
+import sys
+sys.path.append("/home/mbellis/python/lib/python/")
+sys.path.append("/home/mbellis/python/lib64/python/")
 import lichen.pdfs as pdfs
 import lichen.lichen as lch
 

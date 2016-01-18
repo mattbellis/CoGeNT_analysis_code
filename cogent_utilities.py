@@ -8,6 +8,10 @@ from scipy import integrate
 
 from scipy.interpolate import interp1d
 
+# This is just for the Siena HPC cluster
+import sys
+sys.path.append("/home/mbellis/python/lib/python/")
+sys.path.append("/home/mbellis/python/lib64/python/")
 import lichen.pdfs as pdfs
 
 #import minuit

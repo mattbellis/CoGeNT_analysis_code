@@ -13,6 +13,10 @@ import parameters
 import chris_kelso_code as dmm
 #import chris_kelso_code_cython as dmm
 
+# This is just for the Siena HPC cluster
+import sys
+sys.path.append("/home/mbellis/python/lib/python/")
+sys.path.append("/home/mbellis/python/lib64/python/")
 import lichen.pdfs as pdfs
 
 tc_SHM = dmm.tc(np.zeros(3))
