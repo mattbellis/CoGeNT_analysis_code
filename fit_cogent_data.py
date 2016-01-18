@@ -3,7 +3,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
-import seaborn as sn
+#import seaborn as sn
 
 import pprint
 
@@ -65,7 +65,7 @@ def main():
     parser.add_argument('--parameters', dest='parameters', type=str,\
             default='parameters.py', help='File from which to read the parameters for fitting.')
     parser.add_argument('--rt-parameters', dest='rt_parameters', type=str,\
-            default='risetime_parameters_from_data_data_constrained_with_simulated_Nicole.py', help='File from which to read the rise_time_parameters for fitting.')
+            default='risetime_parameters_from_data_risetime_parameters_risetime_determination_nicole.py', help='File from which to read the rise_time_parameters for fitting.')
     parser.add_argument('--turn-off-eff', dest='turn_off_eff', action='store_true',\
             default=False, help='Turn off the efficiency.')
     parser.add_argument('--contours', dest='contours', action='store_true',\
@@ -1063,6 +1063,17 @@ def main():
     #tag = "background_only"
     #tag = "WIMP_M=10_sigma_n=52e-42"
     tag = args.tag
+
+    if args.rt_parameters.find('nicole')>=0:
+        tag += "_nicole_rt_params"
+    elif args.rt_parameters.find('juan')>=0:
+        tag += "_juan_rt_params"
+
+    if args.mDM is not None:
+        tag += "_mDM_%.3f" % (args.mDM)
+    if args.sigma_n is not None:
+        tag += "_sigma_n_%.1e" % (args.sigma_n)
+
     name = "./Plots/cogent_fit_energy_%s.png" % (tag)
     fig0a.savefig(name)
     name = "./Plots/cogent_fit_time_%s.png" % (tag)
