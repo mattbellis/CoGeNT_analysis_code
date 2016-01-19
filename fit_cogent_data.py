@@ -1138,9 +1138,32 @@ def main():
 
     name = "./fit_results/results_%s.txt" % (tag)
     out_results = open(name,'w')
+
+    # Add some extra info to the fit results file.
+    values_initial['org_surface'] = org_values_after_fiducial_cuts[0]
+    values_initial['org_neutron'] = org_values_after_fiducial_cuts[1]
+    values_initial['org_compton'] = org_values_after_fiducial_cuts[2]
+    values_initial['org_lshell'] = org_values_after_fiducial_cuts[3]
+    values_initial['org_wimps'] = org_values_after_fiducial_cuts[4]
+
+    values['ndata'] = ndata
+    values['ndata_fit'] = nevents_from_fit
+    values['poisson'] = pois(nevents_from_fit,ndata)
+    values['max_poisson'] = pois(ndata,ndata)
+    values['lh_sans_poisson'] = final_lh+pois(nevents_from_fit,ndata)
+    values['final_lh'] = final_lh
+    
     #pprint.pprint(values)
     #s = pprint.pformat(values)
-    out_results.write(str(values))
+
+    totresults = {}
+    totresults["final_values"] = values
+    totresults["errors"] = errors
+    totresults["initial_values"] = values_initial
+    #out_results.write(str(values))
+    #out_results.write(str(errors))
+    #out_results.write(str(values_initial))
+    out_results.write(str(totresults))
     #out_results.write(s)
     out_results.close()
 

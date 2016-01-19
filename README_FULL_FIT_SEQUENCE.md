@@ -16,3 +16,13 @@ python fit_cogent_data.py --rt-parameters risetime_parameters_from_data_risetime
 
 # Can also compare to Juans data.
 python fit_cogent_data.py --rt-parameters risetime_parameters_from_data_risetime_parameters_risetime_determination_juan.py --batch
+
+
+
+# On the Siena cluster edit
+
+    build_batch_file_CoGeNT_fits.py
+
+# and then run 
+
+    python build_batch_file_CoGeNT_fits.py
