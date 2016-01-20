@@ -37,7 +37,7 @@ plt.yscale('log')
 plt.subplot(1,2,2)
 plt.plot(xsec,lh-min(lh)+0.01,'o')
 plt.ylabel(r'$\Delta \mathcal{L}$',fontsize=24)
-plt.xlabel(r'$\sigma$_N (barns)',fontsize=24)
+plt.xlabel(r'$\sigma_N$ (barns)',fontsize=24)
 plt.xscale('log')
 plt.yscale('log')
 
