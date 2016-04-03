@@ -51,7 +51,7 @@ if sys.argv[2]=="0":
 
 elif sys.argv[2]=="1":
     # Neutron events
-    tag = "neutron"
+    tag = r"$n$ and $\alpha$"
     label = "%s events" % (tag)
     fmt = 'c-'
     Epdf  =  pdfs.exp(E,pars['flat_neutrons_slope'],elo,ehi)
@@ -91,8 +91,9 @@ elif sys.argv[2]=="3":
 
     Epdf = np.zeros(len(E))
     tpdf = np.zeros(len(t))
-    figE = plt.figure("figE",figsize=(6,4))
-    figt = plt.figure("figt",figsize=(6,4))
+    #figE = plt.figure("figE",figsize=(6,4))
+    #figt = plt.figure("figt",figsize=(6,4))
+    fig = plt.figure("fig",figsize=(6,8))
     for n,m,s,dc in zip(numls,means,sigmas,decay_constants):
         print n
         Epdf_temp = n*pdfs.gauss(E,m,s,elo,ehi)
@@ -102,18 +103,25 @@ elif sys.argv[2]=="3":
         Epdf += Epdf_temp
         tpdf += tpdf_temp
 
-        plt.figure("figE")
+        #plt.figure("figE")
+        plt.figure("fig")
+        plt.subplot(2,1,1)
         plt.plot(E,Epdf_temp,'r--',linewidth=2)
-        plt.figure("figt")
+        #plt.figure("figt")
+        plt.subplot(2,1,2)
         plt.plot(t,tpdf_temp,'r--',linewidth=2)
         Eylim[0] = 0;Eylim[1] = 3500
         tylim[0] = 0.001;tylim[1] = 5.0
 
 
 if sys.argv[2]!="3":
-    plt.figure(figsize=(6,4))
+    #plt.figure(figsize=(6,4))
+    fig = plt.figure(figsize=(6,8))
+    plt.subplot(2,1,1)
 else:
-    plt.figure("figE")
+    #plt.figure("figE")
+    plt.figure("fig")
+    plt.subplot(2,1,1)
 plt.plot(E,Epdf,fmt,linewidth=4,label=label)
 plt.xlabel(r'Energy (keVee)',fontsize=18)
 plt.ylabel('PDF (arbitrary units)',fontsize=18)
@@ -130,14 +138,21 @@ if sys.argv[2]=="3":
     plt.ylim(1,5000)
 else:
     plt.legend(fontsize=18,loc='upper right')
+plt.gca().get_yaxis().set_ticks([])
 plt.tight_layout()
-name = "Plots/pdf_%s_E.png" % (tag)
+#name = "Plots/pdf_%s_E.png" % (tag)
+name = "Plots/pdf_%s_both.png" % (tag)
 plt.savefig(name)
 
 if sys.argv[2]!="3":
-    plt.figure(figsize=(6,4))
+    #plt.figure(figsize=(6,4))
+    #plt.figure(figsize=(6,8))
+    #plt.figure("fig")
+    plt.subplot(2,1,2)
 else:
-    plt.figure("figt")
+    #plt.figure("figt")
+    plt.figure("fig")
+    plt.subplot(2,1,2)
     plt.yscale('log')
 plt.plot(t,tpdf,fmt,linewidth=4,label=label)
 plt.xlabel(r'Days since 12/3/2009',fontsize=18)
@@ -147,8 +162,10 @@ plt.ylim(tylim[0],tylim[1])
 plt.xticks(fontsize=14)
 plt.yticks(fontsize=14)
 plt.legend(fontsize=18)
+plt.gca().get_yaxis().set_ticks([])
 plt.tight_layout()
-name = "Plots/pdf_%s_t.png" % (tag)
+#name = "Plots/pdf_%s_t.png" % (tag)
+name = "Plots/pdf_%s_both.png" % (tag)
 plt.savefig(name)
 
 
