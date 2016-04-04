@@ -175,6 +175,7 @@ plt.savefig(name)
 print xulbymass,ulbymass
 plt.figure()
 plt.plot(xulbymass,ulbymass,'o-')
+plt.yscale('log')
 
 
 
