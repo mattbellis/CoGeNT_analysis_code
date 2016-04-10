@@ -228,7 +228,6 @@ print 'sigma: ',sigma
 
 print erange
 print tag
-
 print minlh,mass[lh==minlh],xsec[lh==minlh]
 
 
