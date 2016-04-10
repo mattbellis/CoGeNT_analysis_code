@@ -14,13 +14,13 @@ def calc90ul(x,diff):
 
     tot_area = trapz(y,x=x)
 
-    print "tot_area: ",tot_area
+    #print "tot_area: ",tot_area
     
     partial_area = None
     ul = -1
     for i in range(0,len(diff)):
         partial_area = trapz(y[i:],x=x[i:])
-        print "\tpartial area: ",partial_area
+        #print "\tpartial area: ",partial_area
         if partial_area<0.90*tot_area:
             ul = x[i]
             return ul
@@ -36,13 +36,24 @@ filenames = sys.argv[1:]
 
 tag = "default"
 bkglh = 7817.210756300921
+erange = "default"
 
 if filenames[0].find('nicole')>=0:
     tag = "scans_nicole"
-    bkglh = 7799.163552624375
+    if filenames[0].find('erange_0.50')>=0:
+        bkglh = 7799.163552624375
+        erange = "0.50-3.2"
+    elif filenames[0].find('erange_0.55')>=0:
+        bkglh = 7526.225683365021 # 0.55-3.2
+        erange = "0.55-3.2"
 elif filenames[0].find('juan')>=0:
     tag = "scans_juan"
-    bkglh = 7817.210756300921
+    if filenames[0].find('erange_0.50')>=0:
+        bkglh = 7817.210756300921
+        erange = "0.50-3.2"
+    elif filenames[0].find('erange_0.55')>=0:
+        bkglh = 7543.610469393319 # 0.55-3.2
+        erange = "0.55-3.2"
 
 mass = []
 xsec = []
@@ -68,6 +79,7 @@ lh = np.array(lh)
 xsec = np.array(xsec)
 mass = np.array(mass)
 
+print lh
 minlh = min(lh)
 
 '''
@@ -112,6 +124,7 @@ for i,x in enumerate(massvals):
 for a in scanxseclh:
     print a,xsecvals[scanxseclh==a],massvals[scanmasslh==a]
 
+orgbkglh = bkglh
 bkglh -= min(lh)
 
 massdiff = scanmasslh-min(lh)
@@ -175,7 +188,48 @@ plt.savefig(name)
 print xulbymass,ulbymass
 plt.figure()
 plt.plot(xulbymass,ulbymass,'o-')
+plt.yscale('log')
 
+filename = "upper_limits_%s_%s.dat" % (erange,tag)
+outfile = open(filename,'w+')
+for a,b in zip(xulbymass,ulbymass):
+    output = "%f %e\n" % (a,b)
+    outfile.write(output)
+outfile.close()
+
+################################################################################
+# What is the significance?
+################################################################################
+
+import scipy.stats as stats
+
+lh0 = orgbkglh
+lh1 = minlh
+
+delta_ndof = 2
+
+D = 2*np.abs(lh0 - lh1)
+
+sig = stats.chisqprob(D,delta_ndof)
+
+# page 91 http://www.slac.stanford.edu/BFROOT/www/Statistics/Report/report.pdf
+# I think this is D
+
+#print "\n\n"
+#print "D:   %f" % (D)
+print "noWIMP/withWIMP/diff/D/sig: %f %f %f %f %f" % (lh0,lh1,(lh1-lh0),D,sig)
+
+
+print orgbkglh
+print minlh
+print orgbkglh-minlh
+sigma = np.sqrt(2*(orgbkglh-minlh))
+print 'sigma: ',sigma
+
+print erange
+print tag
+
+print minlh,mass[lh==minlh],xsec[lh==minlh]
 
 
 
