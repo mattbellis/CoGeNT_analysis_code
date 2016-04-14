@@ -5,6 +5,10 @@ from scipy.integrate import trapz
 
 import sys
 
+
+# If batch
+plt.switch_backend('Agg')
+
 ################################################################################
 def calc90ul(x,diff):
 
@@ -174,7 +178,7 @@ plt.plot(xsec,lh-min(lh)+0.01,'o',alpha=0.2,markersize=10,label='All scans')
 plt.plot(xsecvals,xsecdiff+0.01,'o',markersize=15,label=r'Best $\Delta \mathcal{L}$')
 plt.plot([min(xsecvals),max(xsecvals)],[bkglh,bkglh],'k--',label='Background only')
 plt.ylabel(r'$\Delta \mathcal{L}$',fontsize=36)
-plt.xlabel(r'$\sigma_N$ (barns)',fontsize=24)
+plt.xlabel(r'$\sigma_N$ (cm$^2$)',fontsize=24)
 plt.xscale('log')
 plt.yscale('log')
 plt.legend(loc='upper left',fontsize=18)
@@ -232,5 +236,5 @@ print minlh,mass[lh==minlh],xsec[lh==minlh]
 
 
 
-plt.show()
+#plt.show()
 
