@@ -32,7 +32,7 @@ plt.yscale('log')
 
 plt.xticks(fontsize=18)
 plt.yticks(fontsize=18)
-plt.ylabel(r'WIMP-nucleon $\sigma$ [barns]',fontsize=24)
+plt.ylabel(r'WIMP-nucleon $\sigma$ [cm$^2$]',fontsize=24)
 plt.xlabel(r'WIMP mass [GeV/c$^2$]',fontsize=24)
 plt.legend(loc='upper right',fontsize=18)
 plt.tight_layout()
