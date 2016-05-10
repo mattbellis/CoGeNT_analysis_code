@@ -59,6 +59,11 @@ elif filenames[0].find('juan')>=0:
         bkglh = 7543.610469393319 # 0.55-3.2
         erange = "0.55-3.2"
 
+if filenames[0].find('stream')>=0:
+    tag = "%s_stream" % (tag)
+
+tag = "%s_%s" % (tag,erange)
+
 mass = []
 xsec = []
 lh = []
@@ -194,7 +199,7 @@ plt.figure()
 plt.plot(xulbymass,ulbymass,'o-')
 plt.yscale('log')
 
-filename = "upper_limits_%s_%s.dat" % (erange,tag)
+filename = "upper_limits_%s.dat" % (tag)
 outfile = open(filename,'w+')
 for a,b in zip(xulbymass,ulbymass):
     output = "%f %e\n" % (a,b)
