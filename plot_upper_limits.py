@@ -3,10 +3,16 @@ import seaborn as sn
 
 import numpy as np
 
-filenames = ['upper_limits_0.50-3.2_scans_juan.dat',
-             'upper_limits_0.55-3.2_scans_juan.dat',
-            'upper_limits_0.50-3.2_scans_nicole.dat',
-            'upper_limits_0.55-3.2_scans_nicole.dat'
+#filenames = ['upper_limits_0.50-3.2_scans_juan.dat',
+             #'upper_limits_0.55-3.2_scans_juan.dat',
+            #'upper_limits_0.50-3.2_scans_nicole.dat',
+            #'upper_limits_0.55-3.2_scans_nicole.dat'
+        #]
+
+filenames = ['upper_limits_scans_juan_stream_0.50-3.2.dat',
+             'upper_limits_scans_juan_stream_0.55-3.2.dat',
+             'upper_limits_scans_nicole_stream_0.50-3.2.dat',
+             'upper_limits_scans_nicole_stream_0.55-3.2.dat'
         ]
 
 labels = [r'Surf. events param. #1 (E$_{\rm low}$=0.50 keVee)',
