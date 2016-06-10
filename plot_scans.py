@@ -2,12 +2,13 @@ import numpy as np
 import matplotlib.pylab as plt
 import seaborn as sn
 from scipy.integrate import trapz
+from os import listdir
 
 import sys
 
 
 # If batch
-plt.switch_backend('Agg')
+#plt.switch_backend('Agg')
 
 ################################################################################
 def calc90ul(x,diff):
@@ -36,7 +37,26 @@ def calc90ul(x,diff):
 
 ################################################################################
 
-filenames = sys.argv[1:]
+#filenames = sys.argv[1:]
+directory = sys.argv[1]
+
+tags = sys.argv[2:]
+
+all_filenames = listdir(directory)
+filenames = []
+for f in all_filenames:
+    good_file = True
+    for t in tags:
+        if f.find(t)<0:
+            good_file = False
+            break;
+
+    if good_file:
+        name = "%s/%s" % (directory,f)
+        filenames.append(name)
+
+print filenames
+#exit()
 
 tag = "default"
 bkglh = 7817.210756300921
@@ -241,5 +261,5 @@ print minlh,mass[lh==minlh],xsec[lh==minlh]
 
 
 
-#plt.show()
+plt.show()
 
