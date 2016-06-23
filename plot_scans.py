@@ -8,7 +8,7 @@ import sys
 
 
 # If batch
-#plt.switch_backend('Agg')
+plt.switch_backend('Agg')
 
 ################################################################################
 def calc90ul(x,diff):

@@ -4,6 +4,7 @@ import seaborn as sn
 import numpy as np
 
 #'''
+vel_dist = 'shm'
 filenames = ['upper_limits_scans_juan_0.50-3.2.dat',
              'upper_limits_scans_juan_0.55-3.2.dat',
             'upper_limits_scans_nicole_0.50-3.2.dat',
@@ -12,6 +13,7 @@ filenames = ['upper_limits_scans_juan_0.50-3.2.dat',
 #'''
 
 '''
+vel_dist = 'stream'
 filenames = ['upper_limits_scans_juan_stream_0.50-3.2.dat',
              'upper_limits_scans_juan_stream_0.55-3.2.dat',
              'upper_limits_scans_nicole_stream_0.50-3.2.dat',
@@ -52,8 +54,9 @@ plt.tight_layout()
 plt.ylim(1e-43,1e-37)
 plt.xlim(4,20)
 
-#plt.savefig('stream_upper_limits.png')
-plt.savefig('shm_upper_limits.png')
+name = "%s_upper_limits.png" % (vel_dist)
+plt.savefig(name)
+#plt.savefig('shm_upper_limits.png')
 
 plt.show()
 
