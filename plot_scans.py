@@ -42,6 +42,13 @@ directory = sys.argv[1]
 
 tags = sys.argv[2:]
 
+output_tag = ""
+for t in tags:
+    output_tag = "%s_%s" % (output_tag,t.replace('.',''))
+
+print output_tag
+#exit()
+
 all_filenames = listdir(directory)
 filenames = []
 for f in all_filenames:
@@ -209,7 +216,7 @@ plt.yscale('log')
 plt.legend(loc='upper left',fontsize=18)
 plt.tight_layout()
 
-name = "Plots/scan_results_%s.png" % (tag)
+name = "Plots/scan_results%s.png" % (output_tag)
 plt.savefig(name)
 
 
@@ -225,6 +232,8 @@ for a,b in zip(xulbymass,ulbymass):
     output = "%f %e\n" % (a,b)
     outfile.write(output)
 outfile.close()
+
+print "# of scan points: %d" % (len(filenames))
 
 ################################################################################
 # What is the significance?
@@ -261,5 +270,5 @@ print minlh,mass[lh==minlh],xsec[lh==minlh]
 
 
 
-plt.show()
 
+#plt.show()
