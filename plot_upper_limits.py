@@ -3,20 +3,34 @@ import seaborn as sn
 
 import numpy as np
 
-filenames = ['upper_limits_0.50-3.2_scans_juan.dat',
-             'upper_limits_0.55-3.2_scans_juan.dat',
-            'upper_limits_0.50-3.2_scans_nicole.dat',
-            'upper_limits_0.55-3.2_scans_nicole.dat'
+#'''
+vel_dist = 'shm'
+filenames = ['upper_limits_scans_juan_0.50-3.2.dat',
+             'upper_limits_scans_juan_0.55-3.2.dat',
+            'upper_limits_scans_nicole_0.50-3.2.dat',
+            'upper_limits_scans_nicole_0.55-3.2.dat'
         ]
+#'''
 
-labels = [r'Surf. events param. #1 (E$_{\rm low}$=0.50 keVee)',
-          r'Surf. events param. #1 (E$_{\rm low}$=0.55 keVee)',
-          r'Surf. events param. #2 (E$_{\rm low}$=0.50 keVee)',
-          r'Surf. events param. #2 (E$_{\rm low}$=0.55 keVee)']
+'''
+vel_dist = 'stream'
+filenames = ['upper_limits_scans_juan_stream_0.50-3.2.dat',
+             'upper_limits_scans_juan_stream_0.55-3.2.dat',
+             'upper_limits_scans_nicole_stream_0.50-3.2.dat',
+             'upper_limits_scans_nicole_stream_0.55-3.2.dat'
+        ]
+'''
+
+labels = [r'Surf. events param. PULSER (E$_{\rm low}$=0.50 keVee)',
+          r'Surf. events param. PULSER (E$_{\rm low}$=0.55 keVee)',
+          r'Surf. events param. NOISE-ADDED (E$_{\rm low}$=0.50 keVee)',
+          r'Surf. events param. NOISE-ADDED (E$_{\rm low}$=0.55 keVee)']
 
 files = []
 
-fig = plt.figure(figsize=(10,5))
+formats = ['-','-','--','--']
+
+fig = plt.figure(figsize=(10,8))
 for i,fn in enumerate(filenames):
     #files.append(open(fn))
 
@@ -25,7 +39,7 @@ for i,fn in enumerate(filenames):
     #x = x.astype(float)
     #y = y.astype(float)
 
-    plt.plot(x,y,'-',label=labels[i],linewidth=4,alpha=0.80)
+    plt.plot(x,y,formats[i],label=labels[i],linewidth=4,alpha=0.80)
 
 
 plt.yscale('log')
@@ -37,7 +51,12 @@ plt.xlabel(r'WIMP mass [GeV/c$^2$]',fontsize=24)
 plt.legend(loc='upper right',fontsize=18)
 plt.tight_layout()
 
-plt.savefig('upper_limits.png')
+plt.ylim(1e-43,1e-37)
+plt.xlim(4,20)
+
+name = "%s_upper_limits.png" % (vel_dist)
+plt.savefig(name)
+#plt.savefig('shm_upper_limits.png')
 
 plt.show()
 

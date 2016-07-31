@@ -776,29 +776,6 @@ def main():
 
     '''
 
-    # Plot wimp term
-    if args.fit==2 or args.fit==3 or args.fit==4 or args.fit==6:
-
-        if num_wimps is None:
-            num_wimps = 0.0
-            for sr in subranges[1]:
-                num_wimps += integrate.dblquad(wimp,ranges[0][0],ranges[0][1],lambda x:sr[0],lambda x:sr[1],args=(AGe,values['mDM'],values['sigma_n'],efficiency,wimp_model),epsabs=dblqtol)[0]*(0.333)
-
-        #func = lambda x: plot_wimp_er(x,AGe,values['mDM'],values['sigma_n'],time_range=[1,459],model=wimp_model)
-        func = lambda x: plot_wimp_er(x,AGe,values['mDM'],values['sigma_n'],time_range=ranges[1],model=wimp_model)
-        srypts,plot,srxpts = plot_pdf_from_lambda(func,bin_width=bin_widths[0],scale=num_wimps,fmt='k-',linewidth=3,axes=ax0,subranges=[[ranges[0][0],ranges[0][1]]],efficiency=efficiency,label='WIMP')
-        eytot += srypts[0]
-
-        func = lambda x: plot_wimp_day(x,AGe,values['mDM'],values['sigma_n'],e_range=[ranges[0][0],ranges[0][1]],model=wimp_model)
-        sr_typts,plot,sr_txpts = plot_pdf_from_lambda(func,bin_width=bin_widths[1],scale=num_wimps,fmt='k-',linewidth=3,axes=ax1,subranges=subranges[1])
-        tot_sr_typts = [tot + y for tot,y in zip(tot_sr_typts,sr_typts)]
-        for srty,srtx in zip(sr_typts,sr_txpts):
-            if max(srty)>peak_wimp_val:
-                peak_wimp_val = max(srty)
-                peak_wimp_date = srtx[srty.tolist().index(max(srty))]
-
-        
-
     ############################################################################
     # Second exponential
     # Surface events
@@ -936,6 +913,31 @@ def main():
         for x,y,lsh,flat in zip(sr_txpts,tot_sr_typts,lshell_toty,flat_tpts):
             ax1.plot(x,lsh,'r-',linewidth=4)
             #ax1.plot(x,flat,'m-',linewidth=2)
+
+    ############################################################################
+    # Plot wimp term
+    ############################################################################
+    if args.fit==2 or args.fit==3 or args.fit==4 or args.fit==6:
+
+        if num_wimps is None:
+            num_wimps = 0.0
+            for sr in subranges[1]:
+                num_wimps += integrate.dblquad(wimp,ranges[0][0],ranges[0][1],lambda x:sr[0],lambda x:sr[1],args=(AGe,values['mDM'],values['sigma_n'],efficiency,wimp_model),epsabs=dblqtol)[0]*(0.333)
+
+        #func = lambda x: plot_wimp_er(x,AGe,values['mDM'],values['sigma_n'],time_range=[1,459],model=wimp_model)
+        func = lambda x: plot_wimp_er(x,AGe,values['mDM'],values['sigma_n'],time_range=ranges[1],model=wimp_model)
+        srypts,plot,srxpts = plot_pdf_from_lambda(func,bin_width=bin_widths[0],scale=num_wimps,fmt='k-',linewidth=3,axes=ax0,subranges=[[ranges[0][0],ranges[0][1]]],efficiency=efficiency,label='WIMP')
+        eytot += srypts[0]
+
+        func = lambda x: plot_wimp_day(x,AGe,values['mDM'],values['sigma_n'],e_range=[ranges[0][0],ranges[0][1]],model=wimp_model)
+        sr_typts,plot,sr_txpts = plot_pdf_from_lambda(func,bin_width=bin_widths[1],scale=num_wimps,fmt='k-',linewidth=3,axes=ax1,subranges=subranges[1])
+        tot_sr_typts = [tot + y for tot,y in zip(tot_sr_typts,sr_typts)]
+        for srty,srtx in zip(sr_typts,sr_txpts):
+            if max(srty)>peak_wimp_val:
+                peak_wimp_val = max(srty)
+                peak_wimp_date = srtx[srty.tolist().index(max(srty))]
+
+        
 
     #'''
     ############################################################################

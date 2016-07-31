@@ -2,8 +2,13 @@ import numpy as np
 import matplotlib.pylab as plt
 import seaborn as sn
 from scipy.integrate import trapz
+from os import listdir
 
 import sys
+
+
+# If batch
+plt.switch_backend('Agg')
 
 ################################################################################
 def calc90ul(x,diff):
@@ -32,7 +37,33 @@ def calc90ul(x,diff):
 
 ################################################################################
 
-filenames = sys.argv[1:]
+#filenames = sys.argv[1:]
+directory = sys.argv[1]
+
+tags = sys.argv[2:]
+
+output_tag = ""
+for t in tags:
+    output_tag = "%s_%s" % (output_tag,t.replace('.',''))
+
+print output_tag
+#exit()
+
+all_filenames = listdir(directory)
+filenames = []
+for f in all_filenames:
+    good_file = True
+    for t in tags:
+        if f.find(t)<0:
+            good_file = False
+            break;
+
+    if good_file:
+        name = "%s/%s" % (directory,f)
+        filenames.append(name)
+
+print filenames
+#exit()
 
 tag = "default"
 bkglh = 7817.210756300921
@@ -54,6 +85,11 @@ elif filenames[0].find('juan')>=0:
     elif filenames[0].find('erange_0.55')>=0:
         bkglh = 7543.610469393319 # 0.55-3.2
         erange = "0.55-3.2"
+
+if filenames[0].find('stream')>=0:
+    tag = "%s_stream" % (tag)
+
+tag = "%s_%s" % (tag,erange)
 
 mass = []
 xsec = []
@@ -174,13 +210,13 @@ plt.plot(xsec,lh-min(lh)+0.01,'o',alpha=0.2,markersize=10,label='All scans')
 plt.plot(xsecvals,xsecdiff+0.01,'o',markersize=15,label=r'Best $\Delta \mathcal{L}$')
 plt.plot([min(xsecvals),max(xsecvals)],[bkglh,bkglh],'k--',label='Background only')
 plt.ylabel(r'$\Delta \mathcal{L}$',fontsize=36)
-plt.xlabel(r'$\sigma_N$ (barns)',fontsize=24)
+plt.xlabel(r'$\sigma_N$ (cm$^2$)',fontsize=24)
 plt.xscale('log')
 plt.yscale('log')
 plt.legend(loc='upper left',fontsize=18)
 plt.tight_layout()
 
-name = "Plots/scan_results_%s.png" % (tag)
+name = "Plots/scan_results%s.png" % (output_tag)
 plt.savefig(name)
 
 
@@ -190,12 +226,14 @@ plt.figure()
 plt.plot(xulbymass,ulbymass,'o-')
 plt.yscale('log')
 
-filename = "upper_limits_%s_%s.dat" % (erange,tag)
+filename = "upper_limits_%s.dat" % (tag)
 outfile = open(filename,'w+')
 for a,b in zip(xulbymass,ulbymass):
     output = "%f %e\n" % (a,b)
     outfile.write(output)
 outfile.close()
+
+print "# of scan points: %d" % (len(filenames))
 
 ################################################################################
 # What is the significance?
@@ -232,5 +270,5 @@ print minlh,mass[lh==minlh],xsec[lh==minlh]
 
 
 
-plt.show()
 
+#plt.show()
