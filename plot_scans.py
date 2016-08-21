@@ -8,7 +8,7 @@ import sys
 
 
 # If batch
-plt.switch_backend('Agg')
+#plt.switch_backend('Agg')
 
 ################################################################################
 def calc90ul(x,diff):
@@ -96,7 +96,7 @@ xsec = []
 lh = []
 
 for fn in filenames:
-    print fn
+    #print fn
     f = open(fn)
     x = f.readline()
     #print "----"
@@ -271,4 +271,4 @@ print minlh,mass[lh==minlh],xsec[lh==minlh]
 
 
 
-#plt.show()
+plt.show()
