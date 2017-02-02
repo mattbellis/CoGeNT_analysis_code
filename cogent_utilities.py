@@ -135,7 +135,9 @@ def get_3yr_cogent_data(infile_name,first_event=0.0,calibration=0):
     infile = open(infile_name)
     content = np.array(infile.read().split()).astype('float')
 
-    ndata = len(content)/3
+    # Have to cast this as int for Python3.
+    # Python 3 does away with integer division issues!
+    ndata = int(len(content)/3)
 
     # Get time
     index = np.arange(0,ndata*3,3)

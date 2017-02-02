@@ -5,6 +5,25 @@ from scipy.integrate import trapz
 
 import sys
 
+################################################################################
+def find_closest(x,val=5.0):
+
+    closest = -999
+    closest_index = -1
+    min_diff = 1e7
+    for i,a in enumerate(x):
+
+        diff = abs(a-val)
+        if diff<min_diff:
+            min_diff = diff
+            closest = a
+            closest_index = i
+
+    return closest,closest_index
+
+    
+################################################################################
+
 filenames = sys.argv[1:]
 
 mass = []
@@ -51,6 +70,7 @@ sigma2xsec = []
 # Sig = 3
 # 9 = 2*Dll
 
+'''
 for m,x,l in zip(mass,xsec,lh):
     if l-minlh>1.8 and l-minlh<2.2:
         sigma1mass.append(m)
@@ -64,8 +84,37 @@ for m,x,l in zip(mass,xsec,lh):
     if minlh-l>4.2 and minlh-l<4.8:
         sigma2mass.append(m)
         sigma2xsec.append(x)
+'''
+
+for m in massvals:
+
+    index = mass==m
+
+    temp_xsec = xsec[index]
+
+    c,ci = find_closest(lh[index]-minlh,2.0)
+    #print c,ci
+
+    if abs(c-2.0)<0.2:
+
+        sigma1mass.append(m)
+        sigma1xsec.append(temp_xsec[ci])
+
+    c,ci = find_closest(lh[index]-minlh,4.5)
+
+    if abs(c-4.5)<0.2:
+
+        sigma2mass.append(m)
+        sigma2xsec.append(temp_xsec[ci])
+
+    
+
+
+
+
 
 print xsecvals
+print massvals
 
 ################################################################################
 # Get the best values (lowest LH)
@@ -78,8 +127,8 @@ bestxsec = xsec[lh==minlh]
 plt.figure(figsize=(15,7))
 plt.subplot(1,1,1)
 plt.gca().tick_params(axis='both', which='major', labelsize=18)
-plt.plot(sigma2mass,sigma2xsec,'o',alpha=1.0,markersize=5)
-plt.plot(sigma1mass,sigma1xsec,'o',alpha=1.0,markersize=5)
+plt.plot(sigma2mass,sigma2xsec,'o-',alpha=1.0,markersize=5)
+plt.plot(sigma1mass,sigma1xsec,'o-',alpha=1.0,markersize=5)
 plt.plot(bestmass,bestxsec,'o',alpha=1.0,markersize=10)
 plt.xlabel(r'Mass (GeV/c$^2$)',fontsize=24)
 plt.ylabel(r'$\sigma_N$ (cm$^2$)',fontsize=24)
