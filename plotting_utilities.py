@@ -15,8 +15,8 @@ import chris_kelso_code as dmm
 def plot_wimp_er(x,AGe,mDM,sigma_n,time_range=[1,365],model='shm'):
 
     if not (model=='shm' or model=='stream' or model=='debris'):
-        print "Not correct model for plotting WIMP PDF!"
-        print "Model: ",model
+        print ("Not correct model for plotting WIMP PDF!")
+        print ("Model: ",model)
         exit(-1)
 
     # For debris flow. (340 m/s)
@@ -51,8 +51,8 @@ def plot_wimp_er(x,AGe,mDM,sigma_n,time_range=[1,365],model='shm'):
 def plot_wimp_day(org_day,AGe,mDM,sigma_n,e_range=[0.5,3.2],model='shm',vSag=300,v0Sag=100,vDeb1=340):
 
     if not (model=='shm' or model=='stream' or model=='debris'):
-        print "Not correct model for plotting WIMP PDF!"
-        print "Model: ",model
+        print ("Not correct model for plotting WIMP PDF!")
+        print ("Model: ",model)
         exit(-1)
 
     # For debris flow. (340 m/s)

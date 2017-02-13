@@ -132,24 +132,31 @@ def get_cogent_data(infile_name,first_event=0.0,calibration=0):
 ################################################################################
 def get_3yr_cogent_data(infile_name,first_event=0.0,calibration=0):
 
-    infile = open(infile_name)
-    content = np.array(infile.read().split()).astype('float')
+    #infile = open(infile_name)
+    #content = np.array(infile.read().split()).astype('float')
+    content = np.loadtxt(infile_name,unpack=True,dtype=float)
 
     # Have to cast this as int for Python3.
     # Python 3 does away with integer division issues!
-    ndata = int(len(content)/3)
+    #ndata = int(len(content)/3)
 
     # Get time
-    index = np.arange(0,ndata*3,3)
+    #index = np.arange(0,ndata*3,3)
 
-    tseconds = content[index]
+    #tseconds = content[index]
+    #tdays = (tseconds-first_event)/(24.0*3600.0) + 1.0
+    #if calibration==999: # Monte Carlo
+        #tdays = tseconds
+
+    tseconds = content[0]
     tdays = (tseconds-first_event)/(24.0*3600.0) + 1.0
     if calibration==999: # Monte Carlo
         tdays = tseconds
-
     # Get energy
-    energies = content[index+1]
-    rise_time = np.abs(content[index+2])
+    #energies = content[index+1]
+    #rise_time = np.abs(content[index+2])
+    energies = content[1]
+    rise_time = np.abs(content[2])
 
     return tdays,energies,rise_time
 
@@ -187,7 +194,7 @@ def cut_events_outside_range(data,ranges):
     '''
 
     #print data
-    for i in xrange(len(data)):
+    for i in range(len(data)):
         #print len(data[i][index==True])
         #print len(data[i])
         #print len(index)
@@ -213,7 +220,7 @@ def cut_events_outside_subrange(data,subrange,data_index=0):
         #print data[1][data[1]>107.0]
 
     #print index[index!=1]
-    for i in xrange(len(data)):
+    for i in range(len(data)):
         #print data[i][index!=True]
         data[i] = data[i][index==True]
 
@@ -239,7 +246,7 @@ def rise_time_prob(rise_time,energy,mu_k,sigma_k,xlo,xhi):
 
     #ret = (1.0/(x*sigma*np.sqrt(2*np.pi)))*np.exp(-((np.log(x)-mu)**2)/(2*sigma*sigma))
     ret = np.zeros(len(rise_time))
-    for i in xrange(len(ret)):
+    for i in range(len(ret)):
         #print rise_time[i],allmu[i],allsigma[i]
         ret[i] = pdfs.lognormal(rise_time[i],allmu[i],allsigma[i],xlo,xhi)
         #print "\t",ret[i]
@@ -279,7 +286,7 @@ def rise_time_prob_fast_exp_dist(rise_time,energy,mu0,sigma0,murel,sigmarel,numr
 
     if type(rise_time)==np.ndarray:
         ret = np.zeros(len(rise_time))
-        for i in xrange(len(ret)):
+        for i in range(len(ret)):
             ##print rise_time[i],allmu[i],allsigma[i]
             pdf0 = pdfs.lognormal(rise_time[i],fast_mean0[i],fast_sigma0[i],xlo,xhi)
             pdf1 = pdfs.lognormal(rise_time[i],fast_mean1[i],fast_sigma1[i],xlo,xhi)
@@ -315,7 +322,7 @@ def rise_time_prob_exp_progression(rise_time,energy,mu_k,sigma_k,xlo,xhi):
     #ret = (1.0/(x*sigma*np.sqrt(2*np.pi)))*np.exp(-((np.log(x)-mu)**2)/(2*sigma*sigma))
     if type(rise_time)==np.ndarray:
         ret = np.zeros(len(rise_time))
-        for i in xrange(len(ret)):
+        for i in range(len(ret)):
             #print rise_time[i],allmu[i],allsigma[i]
             ret[i] = pdfs.lognormal(rise_time[i],allmu[i],allsigma[i],xlo,xhi)
             #print "\t",ret[i]

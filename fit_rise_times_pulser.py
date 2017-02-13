@@ -24,6 +24,11 @@ import argparse
 
 import math
 
+
+import os
+if os.path.isdir('./Plots') == False:
+    os.makedirs('./Plots')
+
 pi = np.pi
 first_event = 2750361.2
 start_date = datetime(2009, 12, 3, 0, 0, 0, 0) #
@@ -167,16 +172,16 @@ def main():
         infile_name = 'data/pulser_data.dat' # FROM JUAN, 8/2/13, manually scanned pulser runs.
 
     tdays,energies,rise_times = get_3yr_cogent_data(infile_name,first_event=first_event,calibration=0)
-    print tdays
-    print energies
-    print rise_times
+    print (tdays)
+    print (energies)
+    print (rise_times)
 
-    print energies
+    print (energies)
     if args.verbose:
         print_data(energies,tdays,rise_times)
 
     data = [energies.copy(),tdays.copy(),rise_times.copy()]
-    print "data before range cuts: ",len(data[0]),len(data[1]),len(data[2])
+    print ("data before range cuts: ",len(data[0]),len(data[1]),len(data[2]))
 
 
     ############################################################################
@@ -185,7 +190,7 @@ def main():
     ranges,subranges,nbins = parameters.fitting_parameters(args.fit)
     
     bin_widths = np.ones(len(ranges))
-    for i,n,r in zip(xrange(len(nbins)),nbins,ranges):
+    for i,n,r in zip(range(len(nbins)),nbins,ranges):
         bin_widths[i] = (r[1]-r[0])/n
 
     # Cut events out that fall outside the range.
@@ -195,7 +200,7 @@ def main():
     if args.verbose:
         print_data(energies,tdays)
 
-    print "data after  range cuts: ",len(data[0]),len(data[1])
+    print ("data after  range cuts: ",len(data[0]),len(data[1]))
 
     nevents = float(len(data[0]))
 
@@ -269,7 +274,7 @@ def main():
             ehi = elo + ewidth
             index0 = data[0]>=elo
             index1 = data[0]< ehi
-            print elo,ehi
+            print (elo,ehi)
             index = index0*index1
             data_to_fit = data[2][index]
 
@@ -279,11 +284,11 @@ def main():
             plt.xlim(ranges[2][0],ranges[2][1])
             name = "Energy: %0.2f-%0.2f (keVee)" % (elo,ehi)
             plt.text(0.20,0.75,name,transform=axrt[j].transAxes)
-            print "=======-------- E BIN ----------==========="
-            print name
+            print ("=======-------- E BIN ----------===========")
+            print (name)
 
         nevents = len(data_to_fit)
-        print "Nevents for this fit: ",nevents
+        print ("Nevents for this fit: ",nevents)
         #starting_params = [-0.6,0.6,0.2*nevents,  0.6,0.55,0.8*nevents]
         # For pulser fits
         #starting_params = [-0.1,0.8,0.2*nevents,  0.6,0.55,0.8*nevents]
@@ -396,13 +401,13 @@ def main():
             #m.hesse()
             m.minos()
 
-            print "Finished fit!!\n"
+            print ("Finished fit!!\n")
 
             values = m.values # Dictionary
             errors = m.errors # Dictionary
             mnerrors = m.get_merrors()
-            print "MNERRORS: "
-            print mnerrors
+            print ("MNERRORS: ")
+            print (mnerrors)
             fit_parameters.append(values)
             fit_errors.append(errors)
             fit_mnerrors.append(mnerrors)
@@ -450,8 +455,8 @@ def main():
             name = "Plots/rt_slice_%s_%d.png" % (tag,j/6)
             plt.savefig(name)
 
-    print fit_parameters
-    print nevs
+    print (fit_parameters)
+    print (nevs)
     
     ypts = [[],[],[],[],[],[]]
     yerr = [[],[],[],[],[],[]]
@@ -460,9 +465,9 @@ def main():
     npts = []
 
     if len(expts)>0:
-        #for i,fp,fe,n in zip(xrange(len(nevs)),fit_parameters,fit_errors,nevs):
-        for i,fp,fe,n in zip(xrange(len(nevs)),fit_parameters,fit_mnerrors,nevs):
-            print "----------"
+        #for i,fp,fe,n in zip(range(len(nevs)),fit_parameters,fit_errors,nevs):
+        for i,fp,fe,n in zip(range(len(nevs)),fit_parameters,fit_mnerrors,nevs):
+            print ("----------")
             #ypts[0].append(fp['fast_logn_mean'])
             #ypts[1].append(fp['fast_logn_sigma'])
             #ypts[2].append(fp['fast_num'])
@@ -474,7 +479,8 @@ def main():
                     'slow_logn_mean','slow_logn_sigma','slow_num']
 
             for i,p in enumerate(pars):
-                if fe.has_key(p):
+                if p in fe:
+                #if fe.has_key(p):
                     ypts[i].append(fp[p])
                     yerrlo[i].append(abs(fe[p]['lower']))
                     yerrhi[i].append(abs(fe[p]['upper']))
@@ -486,7 +492,7 @@ def main():
 
             npts.append(n)
 
-        for i in xrange(len(ypts)):
+        for i in range(len(ypts)):
             ypts[i] = np.array(ypts[i])
             yerrlo[i] = np.array(yerrlo[i])
             yerrhi[i] = np.array(yerrhi[i])
@@ -582,7 +588,7 @@ def main():
             elif (k==2):
                 variable = "fast_num_rel_k"
             output = "\t%s = [%f,%f,%f]\n" % (variable,z[0],z[1],z[2])
-            print output
+            print (output)
             outfile.write(output)
             #print "zcov: ",zcov
             '''
@@ -614,8 +620,8 @@ def main():
                 #print "HERERERERE"
                 #print ypts[nindex]
                 #print ypts[nindex][ypts[nindex]!=0]
-                print len(yerrlo[nindex][ypts[nindex]!=0])
-                print len(yerrhi[nindex][ypts[nindex]!=0])
+                print (len(yerrlo[nindex][ypts[nindex]!=0]))
+                print (len(yerrhi[nindex][ypts[nindex]!=0]))
                 plt.errorbar(expts[ypts[nindex]!=0],ypts[nindex][ypts[nindex]!=0],xerr=0.01,yerr=[yerrlo[nindex][ypts[nindex]!=0],yerrhi[nindex][ypts[nindex]!=0]],\
                         fmt='o',ecolor='k',mec='k',mfc=colors[ik],label=labels[ik])
 
@@ -659,7 +665,7 @@ def main():
                 if (ik==0):
                     output = "\t%s = [%f,%f,%f]\n" % (variable,z[0],z[1],z[2])
                     outfile.write(output)
-                    print output
+                    print (output)
                 #print "Data points: %d %d [%f,%f,%f]" % (k,ik,np.sqrt(zcov[0][0]),np.sqrt(zcov[1][1]),np.sqrt(zcov[2][2]))
                 yfitpts[nindex] = expfunc(z,xp)
                 #print zcov
