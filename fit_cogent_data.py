@@ -126,19 +126,19 @@ def main():
 
     # Read in the parameters from the file passed in on the commandline
     parameters_filename = args.parameters.rstrip('.py')
-    print ("Parameters_filename: %s" % (parameters_filename))
+    print(("Parameters_filename: %s" % (parameters_filename)))
     parameters_file = __import__(parameters_filename)
     #parameters = getattr(parameters_file,'parameters')
 
     ranges,subranges,nbins = parameters.fitting_parameters(args.fit)
     
     bin_widths = np.ones(len(ranges))
-    for i,n,r in zip(range(len(nbins)),nbins,ranges):
+    for i,n,r in zip(list(range(len(nbins))),nbins,ranges):
         bin_widths[i] = (r[1]-r[0])/n
 
     # Read in the rise-time parameters from the file passed in on the commandline
     rt_parameters_filename = args.rt_parameters.rstrip('.py')
-    print ("Rise-time parameters_filename: %s" % (rt_parameters_filename))
+    print(("Rise-time parameters_filename: %s" % (rt_parameters_filename)))
     rt_parameters_file = __import__(rt_parameters_filename)
     risetime_parameters = getattr(rt_parameters_file,'risetime_parameters')
 
@@ -166,7 +166,7 @@ def main():
         org_values[2] = int(vals[13+label_offset])
         org_values[3] = int(vals[17+label_offset])
         org_values[4] = int(vals[21+label_offset])
-        print ("INPUT FILE: %s" % (infile_name))
+        print(("INPUT FILE: %s" % (infile_name)))
     else:
         tdays,energies,rise_time = get_3yr_cogent_data(infile_name,first_event=first_event,calibration=0)
 
@@ -201,7 +201,7 @@ def main():
     # 3yr data
     #data = [energies.copy(),tdays.copy(),rise_time.copy()]
     data = [energies.copy(),tdays.copy(),rise_time.copy()]
-    print ("data before range cuts: ",len(data[0]),len(data[1]),len(data[2]))
+    print(("data before range cuts: ",len(data[0]),len(data[1]),len(data[2])))
     #exit()
 
     ################# MONTE CARLO ##############################################
@@ -211,7 +211,7 @@ def main():
         start = 0
         for i in range(0,len(org_values)):
             stop = org_values[i]+start
-            print (start,stop)
+            print((start,stop))
             temp_data.append([energies[start:stop].copy(),tdays[start:stop].copy(),rise_time[start:stop].copy()])
             start = stop
 
@@ -224,15 +224,15 @@ def main():
     #print data[2][data[2]<0]
 
     print ("Len data")
-    print (len(data[0]))
+    print((len(data[0])))
 
     data = cut_events_outside_range(data,ranges)
     print ("Len data after range cuts....")
-    print (len(data[0]))
+    print((len(data[0])))
 
     data = cut_events_outside_subrange(data,subranges[1],data_index=1)
     print ("Len data after subrange cuts....")
-    print (len(data[0]))
+    print((len(data[0])))
 
     ################# MONTE CARLO ##############################################
     org_values_after_fiducial_cuts = []
@@ -240,27 +240,27 @@ def main():
         print ("MONTE CARLO cuts.....")
         for d in temp_data:
             print ("Len d before range cuts....")
-            print (len(d[0]))
+            print((len(d[0])))
             d = cut_events_outside_range(d,ranges)
             print ("Len d after range cuts....")
-            print (len(d[0]))
+            print((len(d[0])))
 
             d = cut_events_outside_subrange(d,subranges[1],data_index=1)
             print ("Len d after subrange cuts....")
-            print (len(d[0]))
+            print((len(d[0])))
             org_values_after_fiducial_cuts.append(len(d[0]))
     else:
         org_values_after_fiducial_cuts = [0.,0.,0.,0.,0.]
 
 
     print (org_values_after_fiducial_cuts)
-    print (sum(org_values_after_fiducial_cuts))
+    print((sum(org_values_after_fiducial_cuts)))
     #exit()
 
     if args.verbose:
         print_data(energies,tdays)
 
-    print ("data after  range cuts: ",len(data[0]),len(data[1]),len(data[2]))
+    print(("data after  range cuts: ",len(data[0]),len(data[1]),len(data[2])))
 
     nevents = float(len(data[0]))
 
@@ -530,7 +530,7 @@ def main():
     #num_decays_in_dataset *= 0.87 # Might need this to take care of efficiency.
 
     tot_lshells = num_decays_in_dataset.sum()
-    print ("Total number of lshells in dataset: ",tot_lshells)
+    print(("Total number of lshells in dataset: ",tot_lshells))
 
     ############################################################################
     # Fit
@@ -718,7 +718,7 @@ def main():
     #m.print_param()
     #m.print_initial_param()
 
-    print ("nentries: ",len(data[0]))
+    print(("nentries: ",len(data[0])))
 
     '''
     names = []
@@ -1016,7 +1016,7 @@ def main():
         x.append(date)
     date = start_date + timedelta(days=(i+1)*days)
     x.append(date)
-    y = range(len(x)) # many thanks to Kyss Tao for setting me straight here
+    y = list(range(len(x))) # many thanks to Kyss Tao for setting me straight here
     #print x
     #print y
     ax1_2.plot(x,y,alpha=0)
@@ -1093,7 +1093,7 @@ def main():
     #############################################################################
     peak = start_date + timedelta(days=peak_wimp_date)
     print ("\nPeak WIMP signal occurs on:\n")
-    print (peak.strftime("%D"))
+    print((peak.strftime("%D")))
 
     #print "Likelihood: %f\n" % (final_lh)
 
@@ -1105,43 +1105,43 @@ def main():
     for v in values:
         if v.find('num')>=0 or v.find('ncalc')>=0:
             nevents_from_fit += values[v]
-            print ("%-15s %9.4f" % (v,values[v]))
+            print(("%-15s %9.4f" % (v,values[v])))
         if v.find('ls_ncalc')>=0:
             nlshell += values[v]
 
     if num_wimps is None:
         num_wimps = 0.0
-    print ("%-15s %9.4f" % ('num_wimps',num_wimps))
+    print(("%-15s %9.4f" % ('num_wimps',num_wimps)))
     nevents_from_fit += num_wimps
-    print ("\nnevents_from_fit: %f" % (nevents_from_fit))
+    print(("\nnevents_from_fit: %f" % (nevents_from_fit)))
 
     print ("\n")
     # Not fixed
     for v,iv,e in zip(values,values_initial,errors):
         if not m.is_fixed(v):
-            print ("%-15s %9.4f +/- %9.4f     %9.4f" % (v,values[v],errors[v],values_initial[v]))
+            print(("%-15s %9.4f +/- %9.4f     %9.4f" % (v,values[v],errors[v],values_initial[v])))
 
-    print ("%-15s %9.4f +/- %9.4f     %9.4f" % ('# l-shell',nlshell,0.0,0.0))
+    print(("%-15s %9.4f +/- %9.4f     %9.4f" % ('# l-shell',nlshell,0.0,0.0)))
     ndata = len(data[0])
 
     print ("\n")
-    print ("%-15s %15.0f" % ('org_surface',org_values_after_fiducial_cuts[0]))
-    print ("%-15s %15.0f" % ('org_neutron',org_values_after_fiducial_cuts[1]))
-    print ("%-15s %15.0f" % ('org_compton',org_values_after_fiducial_cuts[2]))
-    print ("%-15s %15.0f" % ('org_lshell',org_values_after_fiducial_cuts[3]))
-    print ("%-15s %15.0f" % ('org_wimps',org_values_after_fiducial_cuts[4]))
+    print(("%-15s %15.0f" % ('org_surface',org_values_after_fiducial_cuts[0])))
+    print(("%-15s %15.0f" % ('org_neutron',org_values_after_fiducial_cuts[1])))
+    print(("%-15s %15.0f" % ('org_compton',org_values_after_fiducial_cuts[2])))
+    print(("%-15s %15.0f" % ('org_lshell',org_values_after_fiducial_cuts[3])))
+    print(("%-15s %15.0f" % ('org_wimps',org_values_after_fiducial_cuts[4])))
     print ("\n")
-    print ("%-15s %15.7f" % ('ndata',ndata))
-    print ("%-15s %15.7f" % ('ndata fit',nevents_from_fit))
-    print ("%-15s %15.7f" % ('poisson',pois(nevents_from_fit,ndata)))
-    print ("%-15s %15.7f" % ('max poisson',pois(ndata,ndata)))
-    print ("%-15s %15.7f" % ('lh sans poisson',final_lh+pois(nevents_from_fit,ndata)))
-    print ("%-15s %15.7f" % ('final lh',final_lh))
+    print(("%-15s %15.7f" % ('ndata',ndata)))
+    print(("%-15s %15.7f" % ('ndata fit',nevents_from_fit)))
+    print(("%-15s %15.7f" % ('poisson',pois(nevents_from_fit,ndata))))
+    print(("%-15s %15.7f" % ('max poisson',pois(ndata,ndata))))
+    print(("%-15s %15.7f" % ('lh sans poisson',final_lh+pois(nevents_from_fit,ndata))))
+    print(("%-15s %15.7f" % ('final lh',final_lh)))
     print ("\n")
     if args.fit==2 or args.fit==3 or args.fit==4:
-        print ("%-15s %15.7f %5.2f %5.2e %5.2f %5.2f" % ('final lh/mDM/sigma_n',final_lh,values['mDM'],values['sigma_n'],org_values_after_fiducial_cuts[4],num_wimps))
+        print(("%-15s %15.7f %5.2f %5.2e %5.2f %5.2f" % ('final lh/mDM/sigma_n',final_lh,values['mDM'],values['sigma_n'],org_values_after_fiducial_cuts[4],num_wimps)))
     else:
-        print ("%-15s %15.7f %5.2f %5.2e" % ('final lh/mDM/sigma_n',final_lh,0.0,0.0))
+        print(("%-15s %15.7f %5.2f %5.2e" % ('final lh/mDM/sigma_n',final_lh,0.0,0.0)))
 
     name = "./fit_results/results_%s.txt" % (tag)
     out_results = open(name,'w')

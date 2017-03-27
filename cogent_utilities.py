@@ -27,6 +27,19 @@ start_date = datetime(2009, 12, 3, 0, 0, 0, 0) #
 # Convert seconds to days
 ################################################################################
 def sec2days(seconds):
+    """ Converts seconds to days.
+
+    Utility function that takes in a time interval in seconds and returns 
+    the time interval in number of days.
+
+    Args:
+        seconds: Number of seconds passed
+
+    Returns:
+        days: The number of days (float) that has passed. This can be a fraction
+        of a day.
+
+    """
     days = (seconds-first_event)/(24.0*3600.0) + 1.0
     return days
 

@@ -42,7 +42,7 @@ def write_output_file(energy,time_stamps,rise_times,file_name):
     #zip(energy,time_stamps,rise_times)
     with open(file_name,'w') as f:
         writer = csv.writer(f, delimiter='\t')
-        writer.writerows(zip(time_stamps,energy,rise_times))
+        writer.writerows(list(zip(time_stamps,energy,rise_times)))
         f.close()
 
 ################################################################################
@@ -60,7 +60,7 @@ def gen_surface_events(maxpts,max_days,name_of_output_file,pars):
     max_prob_calculated = -999
     max_prob = 0.00035
     #max_prob = 0.7
-    print "Max prob currently is: %f" % (max_prob)
+    print(("Max prob currently is: %f" % (max_prob)))
     energies = []
     days = []
     rise_times = []
@@ -76,11 +76,12 @@ def gen_surface_events(maxpts,max_days,name_of_output_file,pars):
 
         data = [e,t,0,0,rt_slow]
 
-        prob = surface_events(data,pars,lo,hi,subranges=subranges,efficiency=None)
+        #print(pars['final_values'])
+        prob = surface_events(data,pars['final_values'],lo,hi,subranges=subranges,efficiency=None)
 
         #print prob
         if max_prob_calculated<prob:
-            print "Max prob to now: %f" % (prob)
+            print(("Max prob to now: %f" % (prob)))
             max_prob_calculated = prob
             max_prob = prob
 
@@ -97,7 +98,7 @@ def gen_surface_events(maxpts,max_days,name_of_output_file,pars):
             rise_times.append(rt[0])
             npts += 1
             if npts%1000==0:
-                print npts
+                print(npts)
 
 
     write_output_file(energies,days,rise_times,name_of_output_file)
@@ -118,7 +119,7 @@ def gen_shm_events(maxpts,max_days,mDM,sigma_n,name_of_output_file,pars):
     ehi = hi[0]
 
     max_prob = 3.7
-    print "Max prob currently is: %f" % (max_prob)
+    print(("Max prob currently is: %f" % (max_prob)))
     energies = []
     days = []
     rise_times = []
@@ -143,7 +144,7 @@ def gen_shm_events(maxpts,max_days,mDM,sigma_n,name_of_output_file,pars):
         #prob = compton_events(data,pars,lo,hi,subranges=subranges,efficiency=None)
 
         if max_prob_calculated<prob:
-            print "Max prob to now: %f" % (prob)
+            print(("Max prob to now: %f" % (prob)))
             max_prob_calculated = prob
             max_prob = prob
 
@@ -160,7 +161,7 @@ def gen_shm_events(maxpts,max_days,mDM,sigma_n,name_of_output_file,pars):
             rise_times.append(rt[0])
             npts += 1
             if npts%1000==0:
-                print npts
+                print(npts)
 
 
     write_output_file(energies,days,rise_times,name_of_output_file)
@@ -181,7 +182,7 @@ def gen_compton_events(maxpts,max_days,name_of_output_file,pars):
 
     #max_prob = 3.3
     max_prob = 0.00155
-    print "Max prob currently is: %f" % (max_prob)
+    print(("Max prob currently is: %f" % (max_prob)))
     energies = []
     days = []
     rise_times = []
@@ -198,10 +199,10 @@ def gen_compton_events(maxpts,max_days,name_of_output_file,pars):
 
         data = [e,t,0,rt_fast,0]
 
-        prob = compton_events(data,pars,lo,hi,subranges=subranges,efficiency=None)
+        prob = compton_events(data,pars['final_values'],lo,hi,subranges=subranges,efficiency=None)
 
         if max_prob_calculated<prob:
-            print "Max prob to now: %f" % (prob)
+            print(("Max prob to now: %f" % (prob)))
             max_prob_calculated = prob
             max_prob = prob
 
@@ -218,7 +219,7 @@ def gen_compton_events(maxpts,max_days,name_of_output_file,pars):
             rise_times.append(rt[0])
             npts += 1
             if npts%1000==0:
-                print npts
+                print(npts)
 
 
     write_output_file(energies,days,rise_times,name_of_output_file)
@@ -240,7 +241,7 @@ def gen_neutron_events(maxpts,max_days,name_of_output_file,pars):
     max_prob = 0.00096
     #max_prob = 0.0012
     #max_prob = 3.3
-    print "Max prob currently is: %f" % (max_prob)
+    print(("Max prob currently is: %f" % (max_prob)))
     energies = []
     days = []
     rise_times = []
@@ -257,10 +258,10 @@ def gen_neutron_events(maxpts,max_days,name_of_output_file,pars):
 
         data = [e,t,0,rt_fast,0]
 
-        prob = neutron_events(data,pars,lo,hi,subranges=subranges,efficiency=None)
+        prob = neutron_events(data,pars['final_values'],lo,hi,subranges=subranges,efficiency=None)
 
         if max_prob_calculated<prob:
-            print "Max prob to now: %f" % (prob)
+            print(("Max prob to now: %f" % (prob)))
             max_prob_calculated = prob
             max_prob = prob
 
@@ -277,7 +278,7 @@ def gen_neutron_events(maxpts,max_days,name_of_output_file,pars):
             rise_times.append(rt[0])
             npts += 1
             if npts%1000==0:
-                print npts
+                print(npts)
 
 
     write_output_file(energies,days,rise_times,name_of_output_file)
@@ -297,7 +298,7 @@ def gen_flat_events(maxpts,max_days,name_of_output_file,pars):
     ehi = hi[0]
 
     max_prob = 4.533
-    print "Max prob currently is: %f" % (max_prob)
+    print(("Max prob currently is: %f" % (max_prob)))
     energies = []
     days = []
     rise_times = []
@@ -314,10 +315,10 @@ def gen_flat_events(maxpts,max_days,name_of_output_file,pars):
 
         data = [e,t,0,rt_fast,0]
 
-        prob = flat_events(data,pars,lo,hi,subranges=subranges,efficiency=None)
+        prob = flat_events(data,pars['final_values'],lo,hi,subranges=subranges,efficiency=None)
 
         if max_prob_calculated<prob:
-            print "Max prob to now: %f" % (prob)
+            print(("Max prob to now: %f" % (prob)))
             max_prob_calculated = prob
             max_prob = prob
 
@@ -334,7 +335,7 @@ def gen_flat_events(maxpts,max_days,name_of_output_file,pars):
             rise_times.append(rt[0])
             npts += 1
             if npts%1000==0:
-                print npts
+                print(npts)
 
 
     write_output_file(energies,days,rise_times,name_of_output_file)
@@ -346,8 +347,8 @@ def gen_flat_events(maxpts,max_days,name_of_output_file,pars):
 def gen_cosmogenic_events(maxpts,max_days,name_of_output_file,pars):
 
     ranges,subranges,nbins = parameters.fitting_parameters(0)
-    print ranges
-    print subranges
+    print(ranges)
+    print(subranges)
 
     lo = [ranges[0][0],ranges[1][0]]
     hi = [ranges[0][1],ranges[1][1]]
@@ -364,21 +365,21 @@ def gen_cosmogenic_events(maxpts,max_days,name_of_output_file,pars):
 
     npts_to_generate = 10000
 
-    for i in xrange(11):
+    for i in range(11):
         name = "ls_mean%d" % (i)
-        means.append(pars[name])
+        means.append(pars['final_values'][name])
         name = "ls_sigma%d" % (i)
-        sigmas.append(pars[name])
+        sigmas.append(pars['final_values'][name])
         name = "ls_ncalc%d" % (i)
-        #numls.append(pars[name]/num_tot) # Normalized this # to number of events.
-        numls.append(pars[name])
-        num_tot += pars[name]
+        #numls.append(pars['final_values'][name]/num_tot) # Normalized this # to number of events.
+        numls.append(pars['final_values'][name])
+        num_tot += pars['final_values'][name]
         name = "ls_dc%d" % (i)
-        decay_constants.append(pars[name])
+        decay_constants.append(pars['final_values'][name])
 
     #max_prob = 26.0
     max_prob = 26.0
-    print "Max prob currently is: %f" % (max_prob)
+    print(("Max prob currently is: %f" % (max_prob)))
     energies = np.zeros(maxpts)
     days = np.zeros(maxpts)
     rise_times = np.zeros(maxpts)
@@ -411,12 +412,12 @@ def gen_cosmogenic_events(maxpts,max_days,name_of_output_file,pars):
         #print "MAX:"
         #print max(prob)
         if max(prob)>max_prob_calculated:
-            print "Max prob to now: %f" % max(prob)
+            print(("Max prob to now: %f" % max(prob)))
             max_prob_calculated = max(prob)
             max_prob = max(prob)
 
         if len(prob[prob>max_prob])>0:
-            print max_prob,prob[prob>max_prob]
+            print((max_prob,prob[prob>max_prob]))
 
         probtest = max_prob*np.random.random(npts_to_generate) # This is to see whether or not we keep x!
 
@@ -442,7 +443,7 @@ def gen_cosmogenic_events(maxpts,max_days,name_of_output_file,pars):
             
             npts += npts_good
 
-            print npts
+            print(npts)
             #if npts%1000==0:
             #print npts
 
@@ -465,12 +466,13 @@ if len(sys.argv)>2:
     which_sample_to_generate = int(sys.argv[2])
 
 
-print "Generating data!!!!!"
+print("Generating data!!!!!")
 #print datetime.datetime.now()
 
 nevents = 1000
 #ndays = 1238
-ndays = 365
+#ndays = 365
+ndays = 5*365
 
 #tag = "bulk_samples_1M"
 #tag = "bulk_samples_100k"
@@ -485,55 +487,55 @@ dtot = np.array([])
 rtot = np.array([])
 
 if which_sample_to_generate==0 or which_sample_to_generate is None:
-    print "Generating surface......"
-    print datetime.datetime.now()
+    print("Generating surface......")
+    print((datetime.datetime.now()))
     name = "MC_files/mc_surface_%s.dat" % (tag)
     energies,days,rise_times = gen_surface_events(nevents,ndays,name,results)
     etot = np.append(etot,energies)
     dtot = np.append(dtot,days)
     rtot = np.append(rtot,rise_times)
-    print datetime.datetime.now()
+    print((datetime.datetime.now()))
 
 elif which_sample_to_generate==1 or which_sample_to_generate is None:
-    print "Generating neutron......"
-    print datetime.datetime.now()
+    print("Generating neutron......")
+    print((datetime.datetime.now()))
     name = "MC_files/mc_neutron_%s.dat" % (tag)
     energies,days,rise_times = gen_neutron_events(nevents,ndays,name,results)
     etot = np.append(etot,energies)
     dtot = np.append(dtot,days)
     rtot = np.append(rtot,rise_times)
-    print datetime.datetime.now()
+    print((datetime.datetime.now()))
 
 elif which_sample_to_generate==2 or which_sample_to_generate is None:
-    print "Generating compton......"
-    print datetime.datetime.now()
+    print("Generating compton......")
+    print((datetime.datetime.now()))
     name = "MC_files/mc_compton_%s.dat" % (tag)
     energies,days,rise_times = gen_compton_events(nevents,ndays,name,results)
     etot = np.append(etot,energies)
     dtot = np.append(dtot,days)
     rtot = np.append(rtot,rise_times)
-    print datetime.datetime.now()
+    print((datetime.datetime.now()))
 
 
 elif which_sample_to_generate==3 or which_sample_to_generate is None:
-    print "Generating l-shell......"
-    print datetime.datetime.now()
+    print("Generating l-shell......")
+    print((datetime.datetime.now()))
     name = "MC_files/mc_lshell_%s.dat" % (tag)
     energies,days,rise_times = gen_cosmogenic_events(nevents,ndays,name,results)
     etot = np.append(etot,energies)
     dtot = np.append(dtot,days)
     rtot = np.append(rtot,rise_times)
-    print datetime.datetime.now()
+    print((datetime.datetime.now()))
 
 elif which_sample_to_generate==4 or which_sample_to_generate is None:
-    print "Generating SHM WIMPs....."
-    print datetime.datetime.now()
+    print("Generating SHM WIMPs.....")
+    print((datetime.datetime.now()))
     name = "MC_files/mc_shm_wimps_%s.dat" % (tag)
     energies,days,rise_times = gen_shm_events(nevents,ndays,10,7e-41,name,results)
     etot = np.append(etot,energies)
     dtot = np.append(dtot,days)
     rtot = np.append(rtot,rise_times)
-    print datetime.datetime.now()
+    print((datetime.datetime.now()))
 
 '''
 nbins = 50
