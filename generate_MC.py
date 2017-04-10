@@ -469,7 +469,7 @@ if len(sys.argv)>2:
 print("Generating data!!!!!")
 #print datetime.datetime.now()
 
-nevents = 1000
+nevents = 1000000
 #ndays = 1238
 #ndays = 365
 ndays = 5*365
