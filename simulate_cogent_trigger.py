@@ -9,7 +9,7 @@ def write_output_file(time_stamps,energy,rise_times,file_name):
     #zip(energy,time_stamps,rise_times)
     with open(file_name,'w') as f:
         writer = csv.writer(f, delimiter='\t')
-        writer.writerows(zip(time_stamps,energy,rise_times))
+        writer.writerows(list(zip(time_stamps,energy,rise_times)))
         f.close()
 
 
@@ -25,11 +25,11 @@ threshold = 0.345
 sigmoid_sigma = 0.241
 max_val = 0.86786
 
-print len(data[0])
+print(len(data[0]))
 
 data = cogent_efficiency(data,threshold,sigmoid_sigma,max_val)
 
-print len(data[0])
+print(len(data[0]))
 
 testname = "efficiency_applied.dat"
 write_output_file(data[0],data[1],data[2],testname)

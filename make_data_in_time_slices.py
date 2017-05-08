@@ -62,8 +62,8 @@ for i in range(0,nslices):
     daylo = i
     dayhi = ndays + i
 
-    print daylo
-    print dayhi
+    print(daylo)
+    print(dayhi)
 
     if sys.argv[2]=="0":
         index = org_days>daylo

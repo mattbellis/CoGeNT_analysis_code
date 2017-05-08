@@ -27,19 +27,14 @@ start_date = datetime(2009, 12, 3, 0, 0, 0, 0) #
 # Convert seconds to days
 ################################################################################
 def sec2days(seconds):
-    """ Converts seconds to days.
+    """ 
+    Converts seconds to days.
 
     Utility function that takes in a time interval in seconds and returns 
-    the time interval in number of days.
-
-    Args:
-        seconds: Number of seconds passed
-
-    Returns:
-        days: The number of days (float) that has passed. This can be a fraction
-        of a day.
+    the time interval in number of days (as a float).
 
     """
+    
     days = (seconds-first_event)/(24.0*3600.0) + 1.0
     return days
 
@@ -47,6 +42,14 @@ def sec2days(seconds):
 # Sigmoid function.
 ################################################################################
 def sigmoid(x,thresh,sigma,max_val):
+    """
+    A standard sigmoid (s-shaped) function.
+
+    First input is the dependent variable and the next 3 are the parameters
+    of a sigmoid.
+
+    https://en.wikipedia.org/wiki/Sigmoid_function
+    """
 
     ret = max_val / (1.0 + np.exp(-(x-thresh)/(thresh*sigma)))
 

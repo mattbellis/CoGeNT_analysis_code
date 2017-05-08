@@ -22,7 +22,7 @@ pars = eval(results_file.readline())
 
 elo = ranges[0][0]
 ehi = ranges[0][1]
-print elo,ehi
+print(elo,ehi)
 tlo = ranges[1][0]
 thi = 1238
 
@@ -78,7 +78,7 @@ elif sys.argv[2]=="3":
     sigmas = []
     numls = []
     decay_constants = []
-    for i in xrange(11):
+    for i in range(11):
         name = "ls_mean%d" % (i)
         means.append(pars[name])
         name = "ls_sigma%d" % (i)
@@ -95,7 +95,7 @@ elif sys.argv[2]=="3":
     #figt = plt.figure("figt",figsize=(6,4))
     fig = plt.figure("fig",figsize=(6,8))
     for n,m,s,dc in zip(numls,means,sigmas,decay_constants):
-        print n
+        print(n)
         Epdf_temp = n*pdfs.gauss(E,m,s,elo,ehi)
         #print E,Epdf_temp
         tpdf_temp = n*pdfs.exp(t,-dc,tlo,thi)
