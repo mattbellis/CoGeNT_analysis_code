@@ -61,7 +61,8 @@ bkg_names = ['surface','neutron','compton','lshell','lshell']
 #tag = '100k'
 #tag = '1year_10k'
 #tag = '1year_100k'
-tag = '1year_100k_energy05_32'
+#tag = '1year_100k_energy05_32'
+tag = '1825days_1000000events'
 #tag = '1M'
 #tag = '10k'
 infile_names = []
@@ -95,7 +96,8 @@ print("Total: %f" % (tot))
 #fittag = "FIT0003"
 #fittag = "FIT0004"
 #fittag = "FIT0001_1year_CoGeNT_bkg_only"
-fittag = "FIT0001_1year_C4_bkg_only"
+#fittag = "FIT0001_1year_C4_bkg_only"
+fittag = "AMANDA"
 
 ranges,subranges,nbins = parameters.fitting_parameters(0)
 
@@ -114,6 +116,8 @@ bkgs = []
 nentries = []
 # Read in the data.
 for name in infile_names:
+
+    print(name)
 
     infile = open(name)
     bkg = np.loadtxt(infile)
