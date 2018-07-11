@@ -9,8 +9,8 @@ from scipy.interpolate import interp1d
 
 # This is just for the Siena HPC cluster
 import sys
-sys.path.append("/home/mbellis/python/lib/python/")
-sys.path.append("/home/mbellis/python/lib64/python/")
+#sys.path.append("/home/mbellis/python/lib/python/")
+#sys.path.append("/home/mbellis/python/lib64/python/")
 import lichen.pdfs as pdfs
 
 #import minuit
@@ -138,7 +138,7 @@ def get_3yr_cogent_data(infile_name,first_event=0.0,calibration=0):
     ndata = len(content)/3
 
     # Get time
-    index = np.arange(0,ndata*3,3)
+    index = np.arange(0,ndata*3,3).astype(int)
 
     tseconds = content[index]
     tdays = (tseconds-first_event)/(24.0*3600.0) + 1.0
