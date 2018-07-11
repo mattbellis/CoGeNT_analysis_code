@@ -10,6 +10,12 @@ from cogent_utilities import sec2days
 import sys
 import seaborn as sn
 
+#from pympler.tracker import SummaryTracker
+#tracker = SummaryTracker()
+from mem_top import mem_top
+
+mem_top()
+
 
 vals = np.loadtxt(sys.argv[1])
 
@@ -24,6 +30,7 @@ enbins = 70
 ewidth = (ehi-elo)/enbins
 
 dlo = 0.0
+#dhi = 35.
 dhi = 1240.
 dnbins = 62
 dwidth = (dhi-dlo)/dnbins
@@ -55,8 +62,8 @@ for i in range(0,nslices):
     daylo = i
     dayhi = ndays + i
 
-    print daylo
-    print dayhi
+    print(daylo)
+    print(dayhi)
 
     if sys.argv[2]=="0":
         index = org_days>daylo
@@ -98,10 +105,9 @@ for i in range(0,nslices):
 
     #print days
 
-
     if sys.argv[2]=="0" or sys.argv[2]=="2":
         ################################################################################
-        plt.figure(figsize=(8,4))
+        fig = plt.figure(figsize=(8,4))
         ret,xpts,ypts,xpts_err,ypts_err = lch.hist_err(energies,bins=enbins,linewidth=2,range=(elo,ehi))
         name = "# interactions/ %0.2f keVee" % (ewidth)
         plt.ylabel(name,fontsize=14)
@@ -114,9 +120,11 @@ for i in range(0,nslices):
         plt.tight_layout()
         name = "animation_plots/cogent_data_energy_%s_%04d.png" % (tag,i)
         plt.savefig(name)
+        del ret,xpts,ypts,xpts_err,ypts_err 
+        
 
         ################################################################################
-        plt.figure(figsize=(8,4))
+        fig = plt.figure(figsize=(8,4))
         ret,xpts,ypts,xpts_err,ypts_err = lch.hist_err(days,bins=dnbins,linewidth=2,range=(dlo,dhi))
         name = "# interactions/%d days" % (dwidth)
         plt.ylabel(name,fontsize=14)
@@ -136,9 +144,11 @@ for i in range(0,nslices):
         plt.tight_layout()
         name = "animation_plots/cogent_data_time_%s_%04d.png" % (tag,i)
         plt.savefig(name)
+        del ret,xpts,ypts,xpts_err,ypts_err 
+        
 
         ################################################################################
-        plt.figure(figsize=(8,4))
+        fig = plt.figure(figsize=(8,4))
         ret,xpts,ypts,xpts_err,ypts_err = lch.hist_err(risetimes,bins=rnbins,linewidth=2,range=(rlo,rhi))
         name = r"# interactions/ %0.2f $\mu$s" % (rwidth)
         plt.ylabel(name,fontsize=14)
@@ -152,6 +162,8 @@ for i in range(0,nslices):
         plt.tight_layout()
         name = "animation_plots/cogent_data_risetime_%s_%04d.png" % (tag,i)
         plt.savefig(name)
+        del ret,xpts,ypts,xpts_err,ypts_err 
+        plt.close('all')
 
     elif sys.argv[2]=="1":
         ################################################################################
@@ -176,4 +188,4 @@ for i in range(0,nslices):
 
 #plt.show()
 
-
+#tracker.print_diff()

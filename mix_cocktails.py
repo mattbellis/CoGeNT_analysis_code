@@ -13,7 +13,7 @@ def write_output_file(time_stamps,energy,rise_times,file_name):
     #zip(energy,time_stamps,rise_times)
     with open(file_name,'w') as f:
         writer = csv.writer(f, delimiter='\t')
-        writer.writerows(zip(time_stamps,energy,rise_times))
+        writer.writerows(list(zip(time_stamps,energy,rise_times)))
         f.close()
 
 
@@ -61,7 +61,8 @@ bkg_names = ['surface','neutron','compton','lshell','lshell']
 #tag = '100k'
 #tag = '1year_10k'
 #tag = '1year_100k'
-tag = '1year_100k_energy05_32'
+#tag = '1year_100k_energy05_32'
+tag = '1825days_1000000events'
 #tag = '1M'
 #tag = '10k'
 infile_names = []
@@ -85,8 +86,8 @@ central_values = [1.53*7920/3.5, 3.13*1440/3.5, 0.62*4460/3.5, 3.12*2800/3.5, 0]
 tot = 0
 for c in central_values:
     tot += c
-    print c
-print "Total: %f" % (tot)
+    print(c)
+print("Total: %f" % (tot))
 
 #exit()
 
@@ -95,7 +96,8 @@ print "Total: %f" % (tot)
 #fittag = "FIT0003"
 #fittag = "FIT0004"
 #fittag = "FIT0001_1year_CoGeNT_bkg_only"
-fittag = "FIT0001_1year_C4_bkg_only"
+#fittag = "FIT0001_1year_C4_bkg_only"
+fittag = "AMANDA"
 
 ranges,subranges,nbins = parameters.fitting_parameters(0)
 
@@ -115,6 +117,8 @@ nentries = []
 # Read in the data.
 for name in infile_names:
 
+    print(name)
+
     infile = open(name)
     bkg = np.loadtxt(infile)
     nentries.append(len(bkg))
@@ -127,7 +131,7 @@ for n in nentries:
     index = np.arange(0,n,1)
     indices.append(index)
 
-for i in xrange(0,nsamples):
+for i in range(0,nsamples):
     tot_bkgs = np.array([])
     num_to_grab = []
     testname = "MC_files/sample_%s" % (fittag)
@@ -175,7 +179,7 @@ for i in xrange(0,nsamples):
 
     #testname = "MC_files/sample_surf_%d_%d_neutrons_%d_%d_comptons_lshell_%d_%d_%04d.dat" % (central_values[0],num_to_grab[0],central_values[1],num_to_grab[1],central_values[2],num_to_grab[2],i)
     testname += "_from_%s_samples_%03d.dat" % (tag,i)
-    print testname
+    print(testname)
     #print tot_bkgs.shape
     #print len(tot_bkgs)
     index = np.arange(0,len(tot_bkgs),3)

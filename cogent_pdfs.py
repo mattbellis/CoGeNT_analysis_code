@@ -115,8 +115,8 @@ def sigmoid(x,thresh,sigma,max_val):
 def wimp(org_day,x,AGe,mDM,sigma_n,efficiency=None,model='shm',vDeb1=340,vSag=220,v0Sag=25,num_wimps=None):
 
     if not (model=='shm' or model=='stream' or model=='debris'):
-        print "Not correct model for plotting WIMP PDF!"
-        print "Model: ",model
+        print ("Not correct model for plotting WIMP PDF!")
+        print ("Model: ",model)
         exit(-1)
 
     # For debris flow. (340 m/s)
@@ -452,7 +452,7 @@ def fitfunc(data,p,parnames,params_dict):
     numls = []
     decay_constants = []
 
-    for i in xrange(11):
+    for i in range(11):
         name = "ls_mean%d" % (i)
         means.append(p[pn.index(name)])
         name = "ls_sigma%d" % (i)
@@ -521,7 +521,7 @@ def fitfunc(data,p,parnames,params_dict):
             pdf = wimp(y,x,AGe,mDM,sigma_n,efficiency=efficiency,model=wimp_model) #/(1.0*num_tot)
             for d0,d1,t in zip(data[0],data[1],pdf):
                 if t<0:
-                    print "t is less than 0: ",d0,d1,t, np.log(t)
+                    print ("t is less than 0: ",d0,d1,t, np.log(t))
             pdf /= num_wimps
 
         else:
