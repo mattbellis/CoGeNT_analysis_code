@@ -37,238 +37,240 @@ def calc90ul(x,diff):
 
 ################################################################################
 
-#filenames = sys.argv[1:]
-directory = sys.argv[1]
+def plot_scans():
 
-tags = sys.argv[2:]
+    #filenames = sys.argv[1:]
+    directory = sys.argv[1]
 
-output_tag = ""
-for t in tags:
-    output_tag = "%s_%s" % (output_tag,t.replace('.',''))
+    tags = sys.argv[2:]
 
-print(output_tag)
-#exit()
-
-all_filenames = listdir(directory)
-filenames = []
-for f in all_filenames:
-    good_file = True
+    output_tag = ""
     for t in tags:
-        if f.find(t)<0:
-            good_file = False
-            break;
+        output_tag = "%s_%s" % (output_tag,t.replace('.',''))
 
-    if good_file:
-        name = "%s/%s" % (directory,f)
-        filenames.append(name)
+    print(output_tag)
+    #exit()
 
-print(filenames)
-#exit()
+    all_filenames = listdir(directory)
+    filenames = []
+    for f in all_filenames:
+        good_file = True
+        for t in tags:
+            if f.find(t)<0:
+                good_file = False
+                break;
 
-tag = "default"
-bkglh = 7817.210756300921
-erange = "default"
+        if good_file:
+            name = "%s/%s" % (directory,f)
+            filenames.append(name)
 
-if filenames[0].find('nicole')>=0:
-    tag = "scans_nicole"
-    if filenames[0].find('erange_0.50')>=0:
-        bkglh = 7799.163552624375
-        erange = "0.50-3.2"
-    elif filenames[0].find('erange_0.55')>=0:
-        bkglh = 7526.225683365021 # 0.55-3.2
-        erange = "0.55-3.2"
-elif filenames[0].find('juan')>=0:
-    tag = "scans_juan"
-    if filenames[0].find('erange_0.50')>=0:
-        bkglh = 7817.210756300921
-        erange = "0.50-3.2"
-    elif filenames[0].find('erange_0.55')>=0:
-        bkglh = 7543.610469393319 # 0.55-3.2
-        erange = "0.55-3.2"
+    print(filenames)
+    #exit()
 
-if filenames[0].find('stream')>=0:
-    tag = "%s_stream" % (tag)
+    tag = "default"
+    bkglh = 7817.210756300921
+    erange = "default"
 
-tag = "%s_%s" % (tag,erange)
+    if filenames[0].find('nicole')>=0:
+        tag = "scans_nicole"
+        if filenames[0].find('erange_0.50')>=0:
+            bkglh = 7799.163552624375
+            erange = "0.50-3.2"
+        elif filenames[0].find('erange_0.55')>=0:
+            bkglh = 7526.225683365021 # 0.55-3.2
+            erange = "0.55-3.2"
+    elif filenames[0].find('juan')>=0:
+        tag = "scans_juan"
+        if filenames[0].find('erange_0.50')>=0:
+            bkglh = 7817.210756300921
+            erange = "0.50-3.2"
+        elif filenames[0].find('erange_0.55')>=0:
+            bkglh = 7543.610469393319 # 0.55-3.2
+            erange = "0.55-3.2"
 
-mass = []
-xsec = []
-lh = []
+    if filenames[0].find('stream')>=0:
+        tag = "%s_stream" % (tag)
 
-for fn in filenames:
-    #print fn
-    f = open(fn)
-    x = f.readline()
-    #print "----"
-    #print x
-    if x.find('nan')<0: # No nans
-        totresults = eval(x)
-        #print totresults
-        a,b,c = totresults['final_values']['mDM'], totresults['final_values']['sigma_n'], totresults['final_values']['final_lh']
-    
-        if a==a and b==b and c==c:
-            mass.append(a)
-            xsec.append(b)
-            lh.append(c)
+    tag = "%s_%s" % (tag,erange)
 
-lh = np.array(lh)
-xsec = np.array(xsec)
-mass = np.array(mass)
+    mass = []
+    xsec = []
+    lh = []
 
-print(lh)
-minlh = min(lh)
+    for fn in filenames:
+        #print fn
+        f = open(fn)
+        x = f.readline()
+        #print "----"
+        #print x
+        if x.find('nan')<0: # No nans
+            totresults = eval(x)
+            #print totresults
+            a,b,c = totresults['final_values']['mDM'], totresults['final_values']['sigma_n'], totresults['final_values']['final_lh']
+        
+            if a==a and b==b and c==c:
+                mass.append(a)
+                xsec.append(b)
+                lh.append(c)
 
-'''
-plt.figure(figsize=(15,7))
-plt.subplot(1,2,1)
-plt.gca().tick_params(axis='both', which='major', labelsize=18)
-plt.plot(mass,lh-min(lh)+0.01,'o')
-plt.ylabel(r'$\Delta \mathcal{L}$',fontsize=36)
-plt.xlabel(r'Mass (GeV/c$^2$)',fontsize=24)
-plt.yscale('log')
+    lh = np.array(lh)
+    xsec = np.array(xsec)
+    mass = np.array(mass)
 
-plt.subplot(1,2,2)
-plt.gca().tick_params(axis='both', which='major', labelsize=18)
-plt.plot(xsec,lh-min(lh)+0.01,'o')
-plt.ylabel(r'$\Delta \mathcal{L}$',fontsize=36)
-plt.xlabel(r'$\sigma_N$ (barns)',fontsize=24)
-plt.xscale('log')
-plt.yscale('log')
-plt.tight_layout()
-'''
+    print(lh)
+    minlh = min(lh)
 
+    '''
+    plt.figure(figsize=(15,7))
+    plt.subplot(1,2,1)
+    plt.gca().tick_params(axis='both', which='major', labelsize=18)
+    plt.plot(mass,lh-min(lh)+0.01,'o')
+    plt.ylabel(r'$\Delta \mathcal{L}$',fontsize=36)
+    plt.xlabel(r'Mass (GeV/c$^2$)',fontsize=24)
+    plt.yscale('log')
 
-xsecvals = np.unique(xsec)
-massvals = np.unique(mass)
-
-print(xsecvals)
-
-################################################################################
-# Get the best values (lowest LH)
-scanxseclh = np.zeros(len(xsecvals))
-for i,x in enumerate(xsecvals):
-    y = lh[xsec==x]
-    scanxseclh[i] = min(y)
+    plt.subplot(1,2,2)
+    plt.gca().tick_params(axis='both', which='major', labelsize=18)
+    plt.plot(xsec,lh-min(lh)+0.01,'o')
+    plt.ylabel(r'$\Delta \mathcal{L}$',fontsize=36)
+    plt.xlabel(r'$\sigma_N$ (barns)',fontsize=24)
+    plt.xscale('log')
+    plt.yscale('log')
+    plt.tight_layout()
+    '''
 
 
-scanmasslh = np.zeros(len(massvals))
-for i,x in enumerate(massvals):
-    y = lh[mass==x]
-    scanmasslh[i] = min(y)
+    xsecvals = np.unique(xsec)
+    massvals = np.unique(mass)
+
+    print(xsecvals)
+
+    ################################################################################
+    # Get the best values (lowest LH)
+    scanxseclh = np.zeros(len(xsecvals))
+    for i,x in enumerate(xsecvals):
+        y = lh[xsec==x]
+        scanxseclh[i] = min(y)
 
 
-for a in scanxseclh:
-    print(a,xsecvals[scanxseclh==a],massvals[scanmasslh==a])
-
-orgbkglh = bkglh
-bkglh -= min(lh)
-
-massdiff = scanmasslh-min(lh)
-xsecdiff = scanxseclh-min(lh)
-################################################################################
-
-################################################################################
-# Get the ULs
-ulbymass = np.zeros(len(massvals))
-xulbymass = np.zeros(len(massvals))
-print("MASSVALS")
-print(massvals)
-sortedmassvals = np.sort(massvals)
-for i,x in enumerate(sortedmassvals):
-    l = lh[mass==x]
-    y = xsec[mass==x]
-
-    l -= minlh
-
-    l = l[y.argsort()]
-    y.sort()
-    #print l,y
-    ul = calc90ul(y,l)
-    print(x,ul)
-
-    ulbymass[i] = ul
-    xulbymass[i] = x
+    scanmasslh = np.zeros(len(massvals))
+    for i,x in enumerate(massvals):
+        y = lh[mass==x]
+        scanmasslh[i] = min(y)
 
 
-################################################################################
+    for a in scanxseclh:
+        print(a,xsecvals[scanxseclh==a],massvals[scanmasslh==a])
 
-# Only plot the minima
-plt.figure(figsize=(15,7))
-plt.subplot(1,2,1)
-plt.gca().tick_params(axis='both', which='major', labelsize=18)
-plt.plot(mass,lh-min(lh)+0.01,'o',alpha=0.2,markersize=10,label='All scans')
-plt.plot(massvals,massdiff+0.01,'o',markersize=15,label=r'Best $\Delta \mathcal{L}$')
-plt.plot([min(massvals),max(massvals)],[bkglh,bkglh],'k--',label='Background only')
-plt.ylabel(r'$\Delta \mathcal{L}$',fontsize=36)
-plt.xlabel(r'Mass (GeV/c$^2$)',fontsize=24)
-plt.yscale('log')
-plt.legend(loc='lower right',fontsize=18)
+    orgbkglh = bkglh
+    bkglh -= min(lh)
 
-plt.subplot(1,2,2)
-plt.gca().tick_params(axis='both', which='major', labelsize=18)
-plt.plot(xsec,lh-min(lh)+0.01,'o',alpha=0.2,markersize=10,label='All scans')
-plt.plot(xsecvals,xsecdiff+0.01,'o',markersize=15,label=r'Best $\Delta \mathcal{L}$')
-plt.plot([min(xsecvals),max(xsecvals)],[bkglh,bkglh],'k--',label='Background only')
-plt.ylabel(r'$\Delta \mathcal{L}$',fontsize=36)
-plt.xlabel(r'$\sigma_N$ (cm$^2$)',fontsize=24)
-plt.xscale('log')
-plt.yscale('log')
-plt.legend(loc='upper left',fontsize=18)
-plt.tight_layout()
+    massdiff = scanmasslh-min(lh)
+    xsecdiff = scanxseclh-min(lh)
+    ################################################################################
 
-name = "Plots/scan_results%s.png" % (output_tag)
-plt.savefig(name)
+    ################################################################################
+    # Get the ULs
+    ulbymass = np.zeros(len(massvals))
+    xulbymass = np.zeros(len(massvals))
+    print("MASSVALS")
+    print(massvals)
+    sortedmassvals = np.sort(massvals)
+    for i,x in enumerate(sortedmassvals):
+        l = lh[mass==x]
+        y = xsec[mass==x]
 
+        l -= minlh
 
+        l = l[y.argsort()]
+        y.sort()
+        #print l,y
+        ul = calc90ul(y,l)
+        print(x,ul)
 
-print(xulbymass,ulbymass)
-plt.figure()
-plt.plot(xulbymass,ulbymass,'o-')
-plt.yscale('log')
-
-filename = "upper_limits_%s.dat" % (tag)
-outfile = open(filename,'w+')
-for a,b in zip(xulbymass,ulbymass):
-    output = "%f %e\n" % (a,b)
-    outfile.write(output)
-outfile.close()
-
-print("# of scan points: %d" % (len(filenames)))
-
-################################################################################
-# What is the significance?
-################################################################################
-
-import scipy.stats as stats
-
-lh0 = orgbkglh
-lh1 = minlh
-
-delta_ndof = 2
-
-D = 2*np.abs(lh0 - lh1)
-
-sig = stats.chisqprob(D,delta_ndof)
-
-# page 91 http://www.slac.stanford.edu/BFROOT/www/Statistics/Report/report.pdf
-# I think this is D
-
-#print "\n\n"
-#print "D:   %f" % (D)
-print("noWIMP/withWIMP/diff/D/sig: %f %f %f %f %f" % (lh0,lh1,(lh1-lh0),D,sig))
+        ulbymass[i] = ul
+        xulbymass[i] = x
 
 
-print(orgbkglh)
-print(minlh)
-print(orgbkglh-minlh)
-sigma = np.sqrt(2*(orgbkglh-minlh))
-print('sigma: ',sigma)
+    ################################################################################
 
-print(erange)
-print(tag)
-print(minlh,mass[lh==minlh],xsec[lh==minlh])
+    # Only plot the minima
+    plt.figure(figsize=(15,7))
+    plt.subplot(1,2,1)
+    plt.gca().tick_params(axis='both', which='major', labelsize=18)
+    plt.plot(mass,lh-min(lh)+0.01,'o',alpha=0.2,markersize=10,label='All scans')
+    plt.plot(massvals,massdiff+0.01,'o',markersize=15,label=r'Best $\Delta \mathcal{L}$')
+    plt.plot([min(massvals),max(massvals)],[bkglh,bkglh],'k--',label='Background only')
+    plt.ylabel(r'$\Delta \mathcal{L}$',fontsize=36)
+    plt.xlabel(r'Mass (GeV/c$^2$)',fontsize=24)
+    plt.yscale('log')
+    plt.legend(loc='lower right',fontsize=18)
+
+    plt.subplot(1,2,2)
+    plt.gca().tick_params(axis='both', which='major', labelsize=18)
+    plt.plot(xsec,lh-min(lh)+0.01,'o',alpha=0.2,markersize=10,label='All scans')
+    plt.plot(xsecvals,xsecdiff+0.01,'o',markersize=15,label=r'Best $\Delta \mathcal{L}$')
+    plt.plot([min(xsecvals),max(xsecvals)],[bkglh,bkglh],'k--',label='Background only')
+    plt.ylabel(r'$\Delta \mathcal{L}$',fontsize=36)
+    plt.xlabel(r'$\sigma_N$ (cm$^2$)',fontsize=24)
+    plt.xscale('log')
+    plt.yscale('log')
+    plt.legend(loc='upper left',fontsize=18)
+    plt.tight_layout()
+
+    name = "Plots/scan_results%s.png" % (output_tag)
+    plt.savefig(name)
 
 
 
+    print(xulbymass,ulbymass)
+    plt.figure()
+    plt.plot(xulbymass,ulbymass,'o-')
+    plt.yscale('log')
 
-plt.show()
+    filename = "upper_limits_%s.dat" % (tag)
+    outfile = open(filename,'w+')
+    for a,b in zip(xulbymass,ulbymass):
+        output = "%f %e\n" % (a,b)
+        outfile.write(output)
+    outfile.close()
+
+    print("# of scan points: %d" % (len(filenames)))
+
+    ################################################################################
+    # What is the significance?
+    ################################################################################
+
+    import scipy.stats as stats
+
+    lh0 = orgbkglh
+    lh1 = minlh
+
+    delta_ndof = 2
+
+    D = 2*np.abs(lh0 - lh1)
+
+    sig = stats.chisqprob(D,delta_ndof)
+
+    # page 91 http://www.slac.stanford.edu/BFROOT/www/Statistics/Report/report.pdf
+    # I think this is D
+
+    #print "\n\n"
+    #print "D:   %f" % (D)
+    print("noWIMP/withWIMP/diff/D/sig: %f %f %f %f %f" % (lh0,lh1,(lh1-lh0),D,sig))
+
+
+    print(orgbkglh)
+    print(minlh)
+    print(orgbkglh-minlh)
+    sigma = np.sqrt(2*(orgbkglh-minlh))
+    print('sigma: ',sigma)
+
+    print(erange)
+    print(tag)
+    print(minlh,mass[lh==minlh],xsec[lh==minlh])
+
+    plt.show()
+
+if __name__=="__main__":
+    plot_scans()
