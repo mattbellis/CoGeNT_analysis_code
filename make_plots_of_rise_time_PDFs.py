@@ -32,7 +32,7 @@ ranges[2][1] = 5.0
 rt_parameters_filename = 'risetime_parameters_from_data_risetime_parameters_risetime_determination_juan.py'
 
 rt_parameters_filename = rt_parameters_filename.rstrip('.py')
-print "Rise-time parameters_filename: %s" % (rt_parameters_filename)
+print("Rise-time parameters_filename: %s" % (rt_parameters_filename))
 rt_parameters_file = __import__(rt_parameters_filename)
 risetime_parameters = getattr(rt_parameters_file,'risetime_parameters')
 
@@ -63,13 +63,13 @@ for j,y in enumerate(Y):
 ################################################################################
 
 X,Y = np.meshgrid(X, Y)
-print X
-print Y
+print(X)
+print(Y)
 
 # Plot the functions.
-print len(X)
-print len(Y)
-print len(Zf)
+print(len(X))
+print(len(Y))
+print(len(Zf))
 figf = plt.figure(figsize=(8,4))
 axf = figf.gca(projection='3d')
 surff = axf.plot_wireframe(X, Y, Zf, rstride=1, cstride=1, linewidth=0.6, color='red')

@@ -181,7 +181,7 @@ def main():
         print_data(energies,tdays,rise_times)
 
     data = [energies.copy(),tdays.copy(),rise_times.copy()]
-    print ("data before range cuts: ",len(data[0]),len(data[1]),len(data[2]))
+    print(("data before range cuts: ",len(data[0]),len(data[1]),len(data[2])))
 
 
     ############################################################################
@@ -190,7 +190,7 @@ def main():
     ranges,subranges,nbins = parameters.fitting_parameters(args.fit)
     
     bin_widths = np.ones(len(ranges))
-    for i,n,r in zip(range(len(nbins)),nbins,ranges):
+    for i,n,r in zip(list(range(len(nbins))),nbins,ranges):
         bin_widths[i] = (r[1]-r[0])/n
 
     # Cut events out that fall outside the range.
@@ -200,7 +200,7 @@ def main():
     if args.verbose:
         print_data(energies,tdays)
 
-    print ("data after  range cuts: ",len(data[0]),len(data[1]))
+    print(("data after  range cuts: ",len(data[0]),len(data[1])))
 
     nevents = float(len(data[0]))
 
@@ -274,7 +274,7 @@ def main():
             ehi = elo + ewidth
             index0 = data[0]>=elo
             index1 = data[0]< ehi
-            print (elo,ehi)
+            print((elo,ehi))
             index = index0*index1
             data_to_fit = data[2][index]
 
@@ -288,7 +288,7 @@ def main():
             print (name)
 
         nevents = len(data_to_fit)
-        print ("Nevents for this fit: ",nevents)
+        print(("Nevents for this fit: ",nevents))
         #starting_params = [-0.6,0.6,0.2*nevents,  0.6,0.55,0.8*nevents]
         # For pulser fits
         #starting_params = [-0.1,0.8,0.2*nevents,  0.6,0.55,0.8*nevents]
@@ -466,7 +466,7 @@ def main():
 
     if len(expts)>0:
         #for i,fp,fe,n in zip(range(len(nevs)),fit_parameters,fit_errors,nevs):
-        for i,fp,fe,n in zip(range(len(nevs)),fit_parameters,fit_mnerrors,nevs):
+        for i,fp,fe,n in zip(list(range(len(nevs))),fit_parameters,fit_mnerrors,nevs):
             print ("----------")
             #ypts[0].append(fp['fast_logn_mean'])
             #ypts[1].append(fp['fast_logn_sigma'])
@@ -620,8 +620,8 @@ def main():
                 #print "HERERERERE"
                 #print ypts[nindex]
                 #print ypts[nindex][ypts[nindex]!=0]
-                print (len(yerrlo[nindex][ypts[nindex]!=0]))
-                print (len(yerrhi[nindex][ypts[nindex]!=0]))
+                print((len(yerrlo[nindex][ypts[nindex]!=0])))
+                print((len(yerrhi[nindex][ypts[nindex]!=0])))
                 plt.errorbar(expts[ypts[nindex]!=0],ypts[nindex][ypts[nindex]!=0],xerr=0.01,yerr=[yerrlo[nindex][ypts[nindex]!=0],yerrhi[nindex][ypts[nindex]!=0]],\
                         fmt='o',ecolor='k',mec='k',mfc=colors[ik],label=labels[ik])
 

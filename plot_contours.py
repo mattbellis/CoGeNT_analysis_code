@@ -34,7 +34,7 @@ sigma1mass = []
 sigma1xsec = []
 
 for fn in filenames:
-    print fn
+    print(fn)
     f = open(fn)
     x = f.readline()
     #print "----"
@@ -53,7 +53,7 @@ lh = np.array(lh)
 xsec = np.array(xsec)
 mass = np.array(mass)
 
-print lh
+print(lh)
 minlh = min(lh)
 
 xsecvals = np.unique(xsec)
@@ -113,8 +113,8 @@ for m in massvals:
 
 
 
-print xsecvals
-print massvals
+print(xsecvals)
+print(massvals)
 
 ################################################################################
 # Get the best values (lowest LH)

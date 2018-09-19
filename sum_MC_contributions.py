@@ -56,18 +56,18 @@ if is_MC:
 
 # Read in the data.
 for i,name in enumerate(infile_names):
-    print "Reading in %s" % (name)
+    print("Reading in %s" % (name))
     if i<max_read_in_as_MC:
         infile = open(name)
         bkg = np.loadtxt(infile)
-        print bkg
+        print(bkg)
         nentries.append(len(bkg))
         bkgs.append(bkg)
     else:
         tdays,energies,rise_time = get_3yr_cogent_data(name,first_event=first_event,calibration=0)
         bkg = np.array([tdays,energies,rise_time])
         bkg = bkg.transpose()
-        print bkg
+        print(bkg)
         bkgs.append(bkg)
 
 # Apply efficiency and cuts to data
@@ -76,8 +76,8 @@ fig = plt.figure(figsize=(12,6))
 new_bkgs = []
 for i,(bkg,bkg_name,cv) in enumerate(zip(bkgs,bkg_names,central_values)):
 
-    print bkg_name
-    print len(bkg)
+    print(bkg_name)
+    print(len(bkg))
     # Apply the CoGeNT efficiency.
     days = bkg[:,0]
     energies = bkg[:,1]
@@ -94,9 +94,9 @@ for i,(bkg,bkg_name,cv) in enumerate(zip(bkgs,bkg_names,central_values)):
 
     # Cut out dead-time ranges.
     cut_ranges_bkg = cut_events_outside_range(new_bkg,ranges)
-    print len(cut_ranges_bkg[0])
+    print(len(cut_ranges_bkg[0]))
     cut_bkg = cut_events_outside_subrange(cut_ranges_bkg,subranges[1],data_index=1)
-    print len(cut_bkg[0])
+    print(len(cut_bkg[0]))
 
     #cut_bkg = np.array(cut_bkg)
     #cut_bkg.transpose()
@@ -105,7 +105,7 @@ for i,(bkg,bkg_name,cv) in enumerate(zip(bkgs,bkg_names,central_values)):
 
     new_bkgs.append(cut_bkg)
 
-    for j in xrange(3):
+    for j in range(3):
         plt.subplot(1,3,j+1)
         #print cv
         #print data[j][0:10]
@@ -114,10 +114,10 @@ for i,(bkg,bkg_name,cv) in enumerate(zip(bkgs,bkg_names,central_values)):
 
 plt.tight_layout()
 
-print "HERE A"
+print("HERE A")
 
 fig2 = plt.figure(figsize=(12,6))
-for j in xrange(3):
+for j in range(3):
     plt.subplot(1,3,j+1)
     data = []
     colors = []
@@ -130,7 +130,7 @@ for j in xrange(3):
             bin_width=(ranges[j][1]-ranges[j][0])/nbins[j]
             #print bin_width
             nentries = float(len(new_bkgs[k][j]))
-            print "%d nentries: %d" % (j,nentries)
+            print("%d nentries: %d" % (j,nentries))
             weights.append((central_values[k]/nentries)*np.ones(nentries))
             #weights.append(np.ones(nentries))
         #print new_bkgs[k][j]

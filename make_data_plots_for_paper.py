@@ -47,8 +47,8 @@ elif sys.argv[2]=="1" or sys.argv[2]=="2":
     index *= days<1238
     index *= energies>0.0
     index *= energies<12.0
-    print "EHER"
-    print index
+    print("EHER")
+    print(index)
     tag = "full_range"
 
     elo = 0.0
@@ -67,15 +67,15 @@ elif sys.argv[2]=="1" or sys.argv[2]=="2":
     rwidth = (rhi-rlo)/rnbins
 
 
-print days
-print energies
-print risetimes
+print(days)
+print(energies)
+print(risetimes)
 
 days = days[index]
 energies = energies[index]
 risetimes = risetimes[index]
 
-print days
+print(days)
 
 
 if sys.argv[2]=="0" or sys.argv[2]=="2":

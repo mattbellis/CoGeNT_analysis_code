@@ -48,7 +48,7 @@ for i in range(0,2):
         rt_parameters_filename = 'risetime_parameters_from_data_risetime_parameters_risetime_determination_juan.py'
 
     rt_parameters_filename = rt_parameters_filename.rstrip('.py')
-    print "Rise-time parameters_filename: %s" % (rt_parameters_filename)
+    print("Rise-time parameters_filename: %s" % (rt_parameters_filename))
     rt_parameters_file = __import__(rt_parameters_filename)
     risetime_parameters = getattr(rt_parameters_file,'risetime_parameters')
 
@@ -62,11 +62,11 @@ for i in range(0,2):
     for j,p in enumerate(params):
 
         if j<6:
-            print p
+            print(p)
             y = expfunc(p,energies)
             #print y
         else:
-            print p
+            print(p)
             y = expfunc1(p,energies)
 
         axes[0][j].plot(energies,y,color=cols[i])

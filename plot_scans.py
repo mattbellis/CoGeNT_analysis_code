@@ -46,7 +46,7 @@ output_tag = ""
 for t in tags:
     output_tag = "%s_%s" % (output_tag,t.replace('.',''))
 
-print output_tag
+print(output_tag)
 #exit()
 
 all_filenames = listdir(directory)
@@ -62,7 +62,7 @@ for f in all_filenames:
         name = "%s/%s" % (directory,f)
         filenames.append(name)
 
-print filenames
+print(filenames)
 #exit()
 
 tag = "default"
@@ -115,7 +115,7 @@ lh = np.array(lh)
 xsec = np.array(xsec)
 mass = np.array(mass)
 
-print lh
+print(lh)
 minlh = min(lh)
 
 '''
@@ -141,7 +141,7 @@ plt.tight_layout()
 xsecvals = np.unique(xsec)
 massvals = np.unique(mass)
 
-print xsecvals
+print(xsecvals)
 
 ################################################################################
 # Get the best values (lowest LH)
@@ -158,7 +158,7 @@ for i,x in enumerate(massvals):
 
 
 for a in scanxseclh:
-    print a,xsecvals[scanxseclh==a],massvals[scanmasslh==a]
+    print(a,xsecvals[scanxseclh==a],massvals[scanmasslh==a])
 
 orgbkglh = bkglh
 bkglh -= min(lh)
@@ -171,8 +171,8 @@ xsecdiff = scanxseclh-min(lh)
 # Get the ULs
 ulbymass = np.zeros(len(massvals))
 xulbymass = np.zeros(len(massvals))
-print "MASSVALS"
-print massvals
+print("MASSVALS")
+print(massvals)
 sortedmassvals = np.sort(massvals)
 for i,x in enumerate(sortedmassvals):
     l = lh[mass==x]
@@ -184,7 +184,7 @@ for i,x in enumerate(sortedmassvals):
     y.sort()
     #print l,y
     ul = calc90ul(y,l)
-    print x,ul
+    print(x,ul)
 
     ulbymass[i] = ul
     xulbymass[i] = x
@@ -221,7 +221,7 @@ plt.savefig(name)
 
 
 
-print xulbymass,ulbymass
+print(xulbymass,ulbymass)
 plt.figure()
 plt.plot(xulbymass,ulbymass,'o-')
 plt.yscale('log')
@@ -233,7 +233,7 @@ for a,b in zip(xulbymass,ulbymass):
     outfile.write(output)
 outfile.close()
 
-print "# of scan points: %d" % (len(filenames))
+print("# of scan points: %d" % (len(filenames)))
 
 ################################################################################
 # What is the significance?
@@ -255,18 +255,18 @@ sig = stats.chisqprob(D,delta_ndof)
 
 #print "\n\n"
 #print "D:   %f" % (D)
-print "noWIMP/withWIMP/diff/D/sig: %f %f %f %f %f" % (lh0,lh1,(lh1-lh0),D,sig)
+print("noWIMP/withWIMP/diff/D/sig: %f %f %f %f %f" % (lh0,lh1,(lh1-lh0),D,sig))
 
 
-print orgbkglh
-print minlh
-print orgbkglh-minlh
+print(orgbkglh)
+print(minlh)
+print(orgbkglh-minlh)
 sigma = np.sqrt(2*(orgbkglh-minlh))
-print 'sigma: ',sigma
+print('sigma: ',sigma)
 
-print erange
-print tag
-print minlh,mass[lh==minlh],xsec[lh==minlh]
+print(erange)
+print(tag)
+print(minlh,mass[lh==minlh],xsec[lh==minlh])
 
 
 

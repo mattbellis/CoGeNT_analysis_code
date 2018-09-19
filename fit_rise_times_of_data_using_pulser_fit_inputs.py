@@ -251,7 +251,7 @@ def main():
     # Read in the parameters from the file passed in on the commandline
     rt_parameters_filename = args.rt_parameters.rstrip('.py')
     tag = rt_parameters_filename
-    print ("Rise-time parameters_filename: %s" % (rt_parameters_filename))
+    print(("Rise-time parameters_filename: %s" % (rt_parameters_filename)))
     rt_parameters_file = __import__(rt_parameters_filename)
     risetime_parameters = getattr(rt_parameters_file,'risetime_parameters')
 
@@ -277,7 +277,7 @@ def main():
 
     # 3yr data
     data = [energies.copy(),tdays.copy(),rise_times.copy()]
-    print ("data before range cuts: ",len(data[0]),len(data[1]),len(data[2]))
+    print(("data before range cuts: ",len(data[0]),len(data[1]),len(data[2])))
     #exit()
 
 
@@ -287,7 +287,7 @@ def main():
     ranges,subranges,nbins = parameters.fitting_parameters(args.fit)
     
     bin_widths = np.ones(len(ranges))
-    for i,n,r in zip(range(len(nbins)),nbins,ranges):
+    for i,n,r in zip(list(range(len(nbins))),nbins,ranges):
         bin_widths[i] = (r[1]-r[0])/n
 
     # Cut events out that fall outside the range.
@@ -297,7 +297,7 @@ def main():
     if args.verbose:
         print_data(energies,tdays)
 
-    print ("data after  range cuts: ",len(data[0]),len(data[1]))
+    print(("data after  range cuts: ",len(data[0]),len(data[1])))
 
     nevents = float(len(data[0]))
 
@@ -366,7 +366,7 @@ def main():
             ehi = elo + ewidth
             index0 = data[0]>=elo
             index1 = data[0]< ehi
-            print (elo,ehi)
+            print((elo,ehi))
             index = index0*index1
             data_to_fit = data[2][index]
 
@@ -406,10 +406,10 @@ def main():
         fast_logn_frac0 = fast_num0/(fast_num0+fast_num1)
 
         nevents = len(data_to_fit)
-        print ("Nevents for this fit: ",nevents)
+        print(("Nevents for this fit: ",nevents))
         #starting_params = [-0.1,0.8,0.2*nevents,  0.6,0.52,0.8*nevents]
 
-        print (starting_params[4])
+        print((starting_params[4]))
         #exit()
         
         ############################################################################
@@ -592,7 +592,7 @@ def main():
 
     if len(expts)>0:
         #for i,fp,fe,n in zip(xrange(len(nevs)),fit_parameters,fit_errors,nevs):
-        for i,fp,fe,n in zip(range(len(nevs)),fit_parameters,fit_mnerrors,nevs):
+        for i,fp,fe,n in zip(list(range(len(nevs))),fit_parameters,fit_mnerrors,nevs):
             print ("----------")
             #ypts[0].append(fp['fast_logn_mean'])
             #ypts[1].append(fp['fast_logn_sigma'])
@@ -766,7 +766,7 @@ def main():
                     #pinit = [0.0001, 0.0001, starting_params[4]] # For exponential
                 
                 #print "before fit: ",ypts[nindex][index],yerrlo[nindex][index],yerrhi[nindex][index]
-                print ("Fitting data!!!!!! --------------- %d %d" % (k,ik))
+                print(("Fitting data!!!!!! --------------- %d %d" % (k,ik)))
                 #print "before fit: ",ypts[nindex][index]
                 if abs(sum(ypts[nindex][index])) > 0 and k<2:
                     print ("FITTING -----------")
@@ -776,7 +776,7 @@ def main():
                         out = leastsq(errfunc1, pinit, args=(expts[index], ypts[nindex][index], (yerrlo[nindex][index]+yerrhi[nindex][index])/2.0), full_output=1)
                         z = out[0]
                         zcov = out[1]
-                        print ("Data points: %d %d [%f,%f]" % (k,ik,z[0],z[1]))
+                        print(("Data points: %d %d [%f,%f]" % (k,ik,z[0],z[1])))
                         sigmas.append([z[0],z[1]])
                         '''
                         if zcov is not None:
@@ -790,7 +790,7 @@ def main():
                         out = leastsq(errfunc, pinit, args=(expts[index], ypts[nindex][index], (yerrlo[nindex][index]+yerrhi[nindex][index])/2.0), full_output=1)
                         z = out[0]
                         zcov = out[1]
-                        print ("Data points: %d %d [%f,%f,%f]" % (k,ik,z[0],z[1],z[2]))
+                        print(("Data points: %d %d [%f,%f,%f]" % (k,ik,z[0],z[1],z[2])))
                         if k==1 and ik==0:
                             sigmas.append([z[0],z[1],z[2]])
                         elif k==0:
@@ -841,7 +841,7 @@ def main():
     #print "Sum ypts[5]: ",sum(ypts[5])
     print (means)
     print (sigmas)
-    print (fast_mean_rel_k,fast_sigma_rel_k,fast_num_rel_k)
+    print((fast_mean_rel_k,fast_sigma_rel_k,fast_num_rel_k))
 
     outfilename = "risetime_parameters_from_data_%s.py" % (tag)
     outfile = open(outfilename,'w')

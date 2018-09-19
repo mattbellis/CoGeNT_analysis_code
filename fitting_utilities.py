@@ -27,13 +27,13 @@ def minuit_output(m):
 
     output = "FIXED PARAMETERS\n"
     output += "%-2s  %-16s %14s %14s\n" % ("#","PARAMETER NAME","VALUE","ERROR")
-    for n,p in zip(xrange(len(parameters)),parameters):
+    for n,p in zip(range(len(parameters)),parameters):
         if m.fixed[p]==True:
             output += "%-2d  %-16s %14.6e %14.6e\n" % (n,p,m.values[p],m.errors[p])
 
     output += "\nFREE PARAMETERS\n"
     output += "%-2s  %-16s %14s %14s\n" % ("#","PARAMETER NAME","VALUE","ERROR")
-    for n,p in zip(xrange(len(parameters)),parameters):
+    for n,p in zip(range(len(parameters)),parameters):
         if m.fixed[p]==False:
             output += "%-2d  %-16s %14.6e %14.6e\n" % (n,p,m.values[p],m.errors[p])
 
@@ -44,15 +44,15 @@ def minuit_output(m):
 ################################################################################
 def dict2kwd(d,verbose=False):
 
-    keys,vals = d.keys(),d.values()
+    keys,vals = list(d.keys()),list(d.values())
 
     params_names = ()
 
     kwd = {}
     #for k,v in d.iteritems():
-    for k,v in d.items():
+    for k,v in list(d.items()):
         if verbose:
-            print (k,v)
+            print((k,v))
         params_names += (k,)
         kwd[k] = v['start_val']
         if 'fix' in v and v['fix']==True:
@@ -103,7 +103,7 @@ class Minuit_FCN:
         #limits = {}
         kwd = {}
         #for k,v in params.iteritems():
-        for k,v in params.items():
+        for k,v in list(params.items()):
             params_names += (k,)
             '''
             if 'var_' in k and 'limits' in v:
@@ -120,8 +120,8 @@ class Minuit_FCN:
         #print "varnames"
         #print varnames
 
-        self.func_code = Struct(co_argcount=len(params),co_varnames=varnames)
-        self.func_defaults = None # Optional but makes vectorize happy
+        self.__code__ = Struct(co_argcount=len(params),co_varnames=varnames)
+        self.__defaults__ = None # Optional but makes vectorize happy
 
         print ("Finished with __init__")
 
@@ -134,7 +134,7 @@ class Minuit_FCN:
         #mc = self.data[1]
 
         #val = emlf_minuit(data0,mc,arg,self.func_code.co_varnames,self.params_dict)
-        val = emlf_normalized_minuit(data0,arg,self.func_code.co_varnames,self.params_dict)
+        val = emlf_normalized_minuit(data0,arg,self.__code__.co_varnames,self.params_dict)
 
         return val
 
@@ -169,7 +169,7 @@ def emlf_minuit(data,mc,p,parnames,params_dict):
         if 'num_' in name or 'ncalc' in name:
             ntot += p[parnames.index(name)]
     #'''
-    print (ntot,ndata)
+    print((ntot,ndata))
 
     norm_func = (fitfunc(mc,p,parnames,params_dict)).sum()/nmc
 
@@ -275,7 +275,7 @@ def emlf_normalized_minuit(data,p,parnames,params_dict):
     #print tot_pdf
     for d0,d1,t in zip(data[0],data[1],tot_pdf):
         if t<0:
-            print ("IN FITTING UTILITIES: ",d0,d1,t,np.log(t))
+            print(("IN FITTING UTILITIES: ",d0,d1,t,np.log(t)))
     likelihood_func = (-np.log(tot_pdf)).sum()
     #print "nevents, nevents_fit: %f %f" % (ndata,num_tot)
     #print "vals         : %12.3f %12.3f %12.3f" % (likelihood_func,pois(num_tot,ndata),likelihood_func-pois(num_tot,ndata))
@@ -299,7 +299,7 @@ def emlf_normalized_minuit(data,p,parnames,params_dict):
         ret += ((fitval-expected)**2)/(2*(uncert**2)) 
 
     #print "vals         : %12.3f %12.3f %12.3f" % (likelihood_func,num_tot,likelihood_func-num_tot)
-    print ("nll: %12.3f\tsurf/neut/comp/wimps: %8.2f %8.2f %8.2f %8.2f" % (ret,num_surf,num_neutrons,num_comp,num_wimps))
+    print(("nll: %12.3f\tsurf/neut/comp/wimps: %8.2f %8.2f %8.2f %8.2f" % (ret,num_surf,num_neutrons,num_comp,num_wimps)))
     #print "nll         : %12.3f" % (likelihood_func)
     #ret = likelihood_func - num_tot
 
@@ -341,11 +341,11 @@ def print_correlation_matrix(m):
     print ('---------------------')
     print ("\nCorrelation matrix")
     print ("\nm.matrix()")
-    print (m.matrix(correlation=True))
+    print((m.matrix(correlation=True)))
     corr_matrix = m.matrix(correlation=True)
     output = ""
-    for i in xrange(len(corr_matrix)):
-        for j in xrange(len(corr_matrix[i])):
+    for i in range(len(corr_matrix)):
+        for j in range(len(corr_matrix[i])):
             output += "%9.2e " % (corr_matrix[i][j])
         output += "\n"
     print (output)
@@ -359,7 +359,7 @@ def print_covariance_matrix(m):
     print ("\nCorrelation matrix")
     print ("\nm.covariance")
 
-    print (m.covariance)
+    print((m.covariance))
     cov_matrix = m.covariance
     output = ""
     for i in params_names:

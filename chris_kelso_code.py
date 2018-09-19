@@ -482,7 +482,7 @@ def main():
     # Find the max phase for the SHM.  This corresponds to a stream with zero velocity
 
     tc_SHM = tc(np.zeros(3))
-    print ("\nThe SHM maximum phase occurs at %f days." % (tc_SHM))
+    print(("\nThe SHM maximum phase occurs at %f days." % (tc_SHM)))
     Er = np.linspace(0.1,10.0,100)
     #Er = np.arange(0.5, 6.0, 0.5)
     dR = dRdErSHM(Er, tc_SHM, AGe, mDM,sigma_n)
@@ -502,7 +502,7 @@ def main():
 
     output = "\nSpectrum for the SHM at t=%f\n" % (tc_SHM)
     for x,y in zip(Er,dR):
-        print (x,y)
+        print((x,y))
 
     plt.figure()
     ############################################################################
@@ -519,7 +519,7 @@ def main():
     lo = xvals[10]
     hi = xvals[60]
     norm_tot = 0.0
-    print (lo,hi)
+    print((lo,hi))
     for j in range(0,360):
         #day = 30*j
         day = j
@@ -540,7 +540,7 @@ def main():
             month += 1
             print (month)
 
-    print ("SHM: ",norm_tot)
+    print(("SHM: ",norm_tot))
     plt.xlabel('Recoil energy (keVee)')
     #plt.show()
 
@@ -563,7 +563,7 @@ def main():
     print ("\n\n\n\nIn galactic coordinates, the stream with maximum modulation:\nDirection:")
     print (vMaxMod)
     tc_Max=tc(vMaxMod)
-    print ("\nMaximum phase at t=%f.\n" % (tc_Max))
+    print(("\nMaximum phase at t=%f.\n" % (tc_Max)))
 
     ############################################################################
     #Now Choose a maximum modulating stream that has a cut-off at the given energy
@@ -572,17 +572,17 @@ def main():
     #Er1=3.5 # Trying this because we go further out in energy
     v01=20 #v01 is the dispersion of this stream
     vstr1 = vstr(vMaxMod,AGe,tc_SHM,mDM,Er1)
-    print ("\nStream characteristics for a target with atomic number %.2f and energy cut-off at %f keV:" % (AGe,Er1))
+    print(("\nStream characteristics for a target with atomic number %.2f and energy cut-off at %f keV:" % (AGe,Er1)))
     vstr1 = vstr(vMaxMod,AGe,153,mDM,Er1)
     vstr1Vec = np.array([vstr1*vMaxMod[0],vstr1*vMaxMod[1],vstr1*vMaxMod[2]])
 
     print ("\nIn galactic coordinates:")
-    print ("\nSpeed=%f  Dispersion=%f." % (vstr1,v01))
+    print(("\nSpeed=%f  Dispersion=%f." % (vstr1,v01)))
 
     print ("\nIn earth's frame,");  
 
-    print ("\nmaximum: Ecutoff=%f stream speed=%f" % (EcutOff(vstr1Vec, tc_Max,AGe, mDM),vstrEarth(vstr1Vec,tc_Max)))
-    print ("\nminimum: Ecutoff=%f stream speed=%f" % (EcutOff(vstr1Vec, tc_Max+365./2.,AGe, mDM),vstrEarth(vstr1Vec,tc_Max+365./2.)))
+    print(("\nmaximum: Ecutoff=%f stream speed=%f" % (EcutOff(vstr1Vec, tc_Max,AGe, mDM),vstrEarth(vstr1Vec,tc_Max))))
+    print(("\nminimum: Ecutoff=%f stream speed=%f" % (EcutOff(vstr1Vec, tc_Max+365./2.,AGe, mDM),vstrEarth(vstr1Vec,tc_Max+365./2.))))
 
     output = "Spectrum for this stream at t=%f\n" % (tc_Max)
     for i in range(0,11):
@@ -601,16 +601,16 @@ def main():
     vSagVec = np.array([vSag*vSagHat[0],vSag*vSagHat[1],vSag*vSagHat[2]])
     tc_Sag = tc(vSagVec)
 
-    print ("\n\n\n\nThe Sagitarius Stream has a max. phase at %f.\n" % (tc_Sag))
+    print(("\n\n\n\nThe Sagitarius Stream has a max. phase at %f.\n" % (tc_Sag)))
 
 
     print ("\nIn galactic coordinates:")
-    print ("\nSpeed=%f  Dispersion=%f." % (vSag,v0Sag) )
+    print(("\nSpeed=%f  Dispersion=%f." % (vSag,v0Sag) ))
 
     print ("\nIn earth's frame,")
 
-    print ("\nmaximum: Ecutoff=%f stream speed=%f" % (EcutOff(vSagVec, tc_Sag,AGe, mDM),vstrEarth(vSagVec,tc_Sag)))
-    print ("\nminimum: Ecutoff=%f stream speed=%f" % (EcutOff(vSagVec, tc_Sag+365./2.,AGe, mDM),vstrEarth(vSagVec,tc_Sag+365./2.)))
+    print(("\nmaximum: Ecutoff=%f stream speed=%f" % (EcutOff(vSagVec, tc_Sag,AGe, mDM),vstrEarth(vSagVec,tc_Sag))))
+    print(("\nminimum: Ecutoff=%f stream speed=%f" % (EcutOff(vSagVec, tc_Sag+365./2.,AGe, mDM),vstrEarth(vSagVec,tc_Sag+365./2.))))
 
 
     output = "Spectrum for this stream at t=%f\n" % (tc_Sag)
@@ -620,7 +620,7 @@ def main():
     print (output)
 
     vDeb1 = 340
-    print ("\n\n\n\nDebris spectrum for %.1f\n" % (vDeb1))
+    print(("\n\n\n\nDebris spectrum for %.1f\n" % (vDeb1)))
 
 
     output = "\nSpectrum for debris at t=%f\n" % (tc_SHM)

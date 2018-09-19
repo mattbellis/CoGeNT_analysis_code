@@ -13,5 +13,5 @@ sig = stats.chisqprob(D,delta_ndof)
 
 #print "\n\n"
 #print "D:   %f" % (D)
-print "noWIMP/withWIMP/diff/D/sig: %f %f %f %f %f" % (lh0,lh1,(lh1-lh0),D,sig)
+print("noWIMP/withWIMP/diff/D/sig: %f %f %f %f %f" % (lh0,lh1,(lh1-lh0),D,sig))
 
