@@ -164,10 +164,10 @@ def gen_neutron_events(maxpts,max_days,name_of_output_file,pars):
 
 ################################################################################
 ################################################################################
-def gen_flat_events(maxpts,max_days,name_of_output_file): #,pars):
+def gen_flat_events(maxpts,max_days,name_of_output_file,pars):
 
     #ranges,subranges,nbins = parameters.fitting_parameters(0)
-    ranges = [[9.0,11.0],[1.0,max_days],[0.0,6.0]]
+    ranges = [[8.0,12.0],[1.0,max_days],[0.0,6.0]]
     subranges = [[],[[1,68],[75,102],[108,306],[309,459],[551,1238]],[]]
 
     lo = [ranges[0][0],ranges[1][0]]
@@ -194,7 +194,7 @@ def gen_flat_events(maxpts,max_days,name_of_output_file): #,pars):
 
         data = [e,t,0,rt_fast,0]
 
-        prob = flat_events(data,pars['final_values'],lo,hi,subranges=subranges,efficiency=None)
+        prob = flat_events(data,pars,lo,hi,subranges=subranges,efficiency=None)
 
         if max_prob_calculated<prob:
             print(("Max prob to now: %f" % (prob)))
@@ -231,7 +231,7 @@ def gen_peaks(maxpts,max_days,name_of_output_file):#,pars):
 
     # Energy, days, rise time
     #ranges = [ [9.0, 11.0], [0, max_days], [0.0, 6.0] ]
-    ranges = [[9.0,11.0],[1.0,max_days],[0.0,6.0]]
+    ranges = [[8.0,12.0],[1.0,max_days],[0.0,6.0]]
     subranges = [[],[[1,68],[75,102],[108,306],[309,459],[551,1238]],[]]
 
     lo = [ranges[0][0],ranges[1][0]]
@@ -331,7 +331,7 @@ def gen_peaks(maxpts,max_days,name_of_output_file):#,pars):
             
             npts += npts_good
 
-            print(npts)
+            #print(npts)
             #if npts%1000==0:
             #print npts
 
@@ -345,7 +345,8 @@ def gen_peaks(maxpts,max_days,name_of_output_file):#,pars):
 ################################################################################
 # Read in from a previous fits of results.
 #results_file = open(sys.argv[1])
-#results = eval(results_file.readline())
+results_file = open('results_bkg_only_for_MC_gen.txt')
+results = eval(results_file.readline())
 #print results
 #exit()
 
@@ -364,26 +365,38 @@ etot = np.array([])
 dtot = np.array([])
 rtot = np.array([])
 
-print("Generating l-shell......")
+print("Generating peaks......")
 print((datetime.datetime.now()))
-#name = "MC_files/peaks_%s.dat" % (tag)
-#energies,days,rise_times = gen_peaks(nevents,ndays,name)# ,results)
-name = "MC_files/flat_%s.dat" % (tag)
-energies,days,rise_times = gen_flat_events(nevents,ndays,name)# ,results)
+name = "MC_files/peaks_%s.dat" % (tag)
+energies,days,rise_times = gen_peaks(200,ndays,name)# ,results)
 etot = np.append(etot,energies)
 dtot = np.append(dtot,days)
 rtot = np.append(rtot,rise_times)
 print((datetime.datetime.now()))
 
+#################################
+print("Generating flat......")
+print((datetime.datetime.now()))
+name = "MC_files/flat_%s.dat" % (tag)
+energies,days,rise_times = gen_flat_events(1000,ndays,name,results)
+etot = np.append(etot,energies)
+dtot = np.append(dtot,days)
+rtot = np.append(rtot,rise_times)
+print((datetime.datetime.now()))
+
+name = "MC_files/%s.dat" % (tag)
+write_output_file(etot,dtot,rtot,name)
+
+
 #'''
 nbins = 50
 plt.figure(figsize=(12,4))
 plt.subplot(1,3,1)
-h = plt.hist(energies,bins=nbins)
+h = plt.hist(etot,bins=nbins)
 plt.subplot(1,3,2)
-h = plt.hist(days,bins=nbins)
+h = plt.hist(dtot,bins=nbins)
 plt.subplot(1,3,3)
-h = plt.hist(rise_times,bins=nbins)
+h = plt.hist(rtot,bins=nbins)
 
 plt.show()
 #'''

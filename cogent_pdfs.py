@@ -248,7 +248,7 @@ def flat_events(data,pars,lo,hi,subranges=None,efficiency=None,flag=None):
     # ``Flat" part in energy. Might be decaying away.
     # Energy
     # Comptons
-    pdf0  = pdfs.exp(x,pars['e_exp_flat'],xlo,xhi,efficiency=efficiency,flag=flag)
+    pdf0  = pdfs.exp(x,pars['e_exp_flat'],xlo,xhi,efficiency=efficiency)#,flag=flag)
     pdf0 *= pdfs.exp(y,pars['t_exp_flat'],ylo,yhi,subranges=subranges[1])
     #pdf *= pdfs.cos(y,wmod_freq,wmod_phase,wmod_amp,wmod_offst,ylo,yhi,subranges=subranges[1])
 
