@@ -223,7 +223,7 @@ def gen_flat_events(maxpts,max_days,name_of_output_file,pars):
 
 ################################################################################
 ################################################################################
-def gen_peaks(maxpts,max_days,name_of_output_file):#,pars):
+def gen_peaks(maxpts,max_days,name_of_output_file,means=[10],sigmas=[0.11],numls=[200],decay_constants=[0.000000001]):#,pars):
 
     #ranges,subranges,nbins = parameters.fitting_parameters(0)
     #print(ranges)
@@ -241,10 +241,10 @@ def gen_peaks(maxpts,max_days,name_of_output_file):#,pars):
     ############################################################################
     # l-shell peaks
     ############################################################################
-    means = [10]
-    sigmas = [0.11]
-    numls = [200]
-    decay_constants = [0.00000001]
+    #means = [10]
+    #sigmas = [0.11]
+    #numls = [200]
+    #decay_constants = [0.00000001]
     
     num_tot = 0
 
@@ -368,7 +368,8 @@ rtot = np.array([])
 print("Generating peaks......")
 print((datetime.datetime.now()))
 name = "MC_files/peaks_%s.dat" % (tag)
-energies,days,rise_times = gen_peaks(200,ndays,name)# ,results)
+#energies,days,rise_times = gen_peaks(200,ndays,name,means=[10],sigmas=[0.11],numls=[200],decay_constants=[0.000000001])# ,results)
+energies,days,rise_times = gen_peaks(1000,ndays,name,means=[9.8,10.1],sigmas=[0.11,0.11],numls=[100,40],decay_constants=[1e-6,1e-6])# ,results)
 etot = np.append(etot,energies)
 dtot = np.append(dtot,days)
 rtot = np.append(rtot,rise_times)
